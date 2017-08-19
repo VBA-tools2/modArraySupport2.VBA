@@ -116,6 +116,7 @@ End Sub
 '------------------------------------------------------------------------------
 Public Function CompareArrays(Array1 As Variant, Array2 As Variant, _
     ResultArray As Variant, Optional CompareMode As VbCompareMethod = vbTextCompare) As Boolean
+Attribute CompareArrays.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CompareArrays
 ' This function compares two arrays, Array1 and Array2, element by element, and puts the results of
@@ -298,6 +299,7 @@ End Function
 
 Public Function ConcatenateArrays(ResultArray As Variant, ArrayToAppend As Variant, _
         Optional NoCompatabilityCheck As Boolean = False) As Boolean
+Attribute ConcatenateArrays.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ConcatenateArrays
 ' This function appends ArrayToAppend to the end of ResultArray, increasing the size of ResultArray
@@ -476,6 +478,7 @@ End Function
 
 Public Function CopyArray(DestinationArray As Variant, SourceArray As Variant, _
         Optional NoCompatabilityCheck As Boolean = False) As Boolean
+Attribute CopyArray.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CopyArray
 ' This function copies the contents of SourceArray to the DestinationaArray. Both SourceArray
@@ -659,6 +662,7 @@ End Function
 
 Public Function CopyArraySubSetToArray(InputArray As Variant, ResultArray As Variant, _
     FirstElementToCopy As LongPtr, LastElementToCopy As LongPtr, DestinationElement As LongPtr) As Boolean
+Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CopyArraySubSetToArray
 ' This function copies elements of InputArray to ResultArray. It takes the elements
@@ -805,6 +809,7 @@ End Function
 
 Public Function CopyNonNothingObjectsToArray(ByRef SourceArray As Variant, _
     ByRef ResultArray As Variant, Optional NoAlerts As Boolean = False) As Boolean
+Attribute CopyNonNothingObjectsToArray.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' CopyNonNothingObjectsToArray
 ' This function copies all objects that are not Nothing from SourceArray
@@ -994,7 +999,8 @@ Public Function CopyNonNothingObjectsToArray(ByRef SourceArray As Variant, _
 End Function
 
 
-Public Function DataTypeOfArray(Arr As Variant) As VbVarType
+Public Function DataTypeOfArray(arr As Variant) As VbVarType
+Attribute DataTypeOfArray.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' DataTypeOfArray
 '
@@ -1077,6 +1083,7 @@ End Function
 
 Public Function DeleteArrayElement(InputArray As Variant, ElementNumber As LongPtr, _
     Optional ResizeDynamic As Boolean = False) As Boolean
+Attribute DeleteArrayElement.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' DeleteArrayElement
 ' This function deletes an element from InputArray, and shifts elements that are to the
@@ -1172,6 +1179,7 @@ End Function
 
 
 Public Function FirstNonEmptyStringIndexInArray(InputArray As Variant) As LongPtr
+Attribute FirstNonEmptyStringIndexInArray.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' FirstNonEmptyStringIndexInArray
 ' This returns the index into InputArray of the first non-empty string.
@@ -1220,6 +1228,7 @@ End Function
 
 Public Function InsertElementIntoArray(InputArray As Variant, Index As LongPtr, _
     Value As Variant) As Boolean
+Attribute InsertElementIntoArray.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' InsertElementIntoArray
 ' This function inserts an element with a value of Value into InputArray at locatation Index.
@@ -1322,6 +1331,7 @@ End Function
 
 
 Public Function IsArrayAllDefault(InputArray As Variant) As Boolean
+Attribute IsArrayAllDefault.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsArrayAllEmpty
 ' Returns True if the array contains all default values for its
@@ -1398,6 +1408,7 @@ End Function
 
 Public Function IsArrayAllNumeric(Arr As Variant, _
     Optional AllowNumericStrings As Boolean = False) As Boolean
+Attribute IsArrayAllNumeric.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsArrayAllNumeric
 ' This function returns True is Arr is entirely numeric. False otherwise. The AllowNumericStrings
@@ -1487,7 +1498,8 @@ Public Function IsArrayAllNumeric(Arr As Variant, _
 End Function
 
 
-Public Function IsArrayAllocated(Arr As Variant) As Boolean
+Public Function IsArrayAllocated(arr As Variant) As Boolean
+Attribute IsArrayAllocated.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsArrayAllocated
 ' Returns TRUE if the array is allocated (either a static array or a dynamic array that has been
@@ -1538,7 +1550,8 @@ Public Function IsArrayAllocated(Arr As Variant) As Boolean
 End Function
 
 
-Public Function IsArrayDynamic(ByRef Arr As Variant) As Boolean
+Public Function IsArrayDynamic(ByRef arr As Variant) As Boolean
+Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsArrayDynamic
 ' This function returns TRUE or FALSE indicating whether Arr is a dynamic array.
@@ -1607,7 +1620,8 @@ Public Function IsArrayDynamic(ByRef Arr As Variant) As Boolean
 End Function
 
 
-Public Function IsArrayEmpty(Arr As Variant) As Boolean
+Public Function IsArrayEmpty(arr As Variant) As Boolean
+Attribute IsArrayEmpty.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsArrayEmpty
 ' This function tests whether the array is empty (unallocated). Returns TRUE or FALSE.
@@ -1660,6 +1674,7 @@ End Function
 
 Public Function IsArrayObjects(InputArray As Variant, _
     Optional AllowNothing As Boolean = True) As Boolean
+Attribute IsArrayObjects.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsArrayObjects
 ' Returns True if InputArray is entirely objects (Nothing objects are
@@ -1722,6 +1737,7 @@ End Function
 
 
 Public Function IsNumericDataType(TestVar As Variant) As Boolean
+Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsNumericDataType
 '
@@ -1811,7 +1827,8 @@ Public Function IsNumericDataType(TestVar As Variant) As Boolean
 End Function
 
 
-Public Function IsVariantArrayConsistent(Arr As Variant) As Boolean
+Public Function IsVariantArrayConsistent(arr As Variant) As Boolean
+Attribute IsVariantArrayConsistent.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsVariantArrayConsistent
 '
@@ -1913,6 +1930,7 @@ End Function
 
 
 Public Function IsVariantArrayNumeric(TestArray As Variant) As Boolean
+Attribute IsVariantArrayNumeric.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsVariantArrayNumeric
 '
@@ -1979,11 +1997,11 @@ Public Function IsVariantArrayNumeric(TestArray As Variant) As Boolean
             End If
          End If
       Next Ndx
-   Else
+   ElseIf NumDims = 2 Then
        ''''''''''''''''''''''''''''''''''''
-       ' multi-dimensional array
+       ' two-dimensional array
        ''''''''''''''''''''''''''''''''''''
-      For DimNdx = 1 To NumDims
+      For DimNdx = LBound(TestArray, 2) To UBound(TestArray, 2)
          For Ndx = LBound(TestArray, DimNdx) To UBound(TestArray, DimNdx)
             If VarType(TestArray(Ndx, DimNdx)) <> vbEmpty Then
                If IsNumericDataType(TestVar:=TestArray(Ndx, DimNdx)) = False Then
@@ -1993,6 +2011,12 @@ Public Function IsVariantArrayNumeric(TestArray As Variant) As Boolean
             End If
          Next Ndx
       Next DimNdx
+'---
+'currently there is no handler for "higher"-dimensional arrays
+'---
+   Else
+      IsVariantArrayNumeric = False
+      Exit Function
    End If
    
    '''''''''''''''''''''''''''''''''''''''
@@ -2006,6 +2030,7 @@ End Function
 
 
 Public Function MoveEmptyStringsToEndOfArray(InputArray As Variant) As Boolean
+Attribute MoveEmptyStringsToEndOfArray.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' This procedure takes the SORTED array InputArray, which, if sorted in
 ' ascending order, will have all empty strings at the front of the array.
@@ -2086,7 +2111,8 @@ Public Function MoveEmptyStringsToEndOfArray(InputArray As Variant) As Boolean
 End Function
 
 
-Public Function NumberOfArrayDimensions(Arr As Variant) As Integer
+Public Function NumberOfArrayDimensions(arr As Variant) As Integer
+Attribute NumberOfArrayDimensions.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' NumberOfArrayDimensions
 ' This function returns the number of dimensions of an array. An unallocated dynamic array
@@ -2109,7 +2135,8 @@ Public Function NumberOfArrayDimensions(Arr As Variant) As Integer
 End Function
 
 
-Public Function NumElements(Arr As Variant, Optional Dimension = 1) As Long
+Public Function NumElements(arr As Variant, Optional Dimension = 1) As LongPtr
+Attribute NumElements.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' NumElements
 ' Returns the number of elements in the specified dimension (Dimension) of the array in
@@ -2157,6 +2184,7 @@ End Function
 
 
 Public Function ResetVariantArrayToDefaults(InputArray As Variant) As Boolean
+Attribute ResetVariantArrayToDefaults.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ResetVariantArrayToDefaults
 ' This resets all the elements of an array of Variants back to their appropriate
@@ -2202,6 +2230,7 @@ End Function
 
 Public Function ReverseArrayInPlace(InputArray As Variant, _
     Optional NoAlerts As Boolean = False) As Boolean
+Attribute ReverseArrayInPlace.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ReverseArrayInPlace
 ' This procedure reverses the order of an array in place -- this is, the array variable
@@ -2281,6 +2310,7 @@ End Function
 
 Public Function ReverseArrayOfObjectsInPlace(InputArray As Variant, _
     Optional NoAlerts As Boolean = False) As Boolean
+Attribute ReverseArrayOfObjectsInPlace.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ReverseArrayOfObjectsInPlace
 ' This procedure reverses the order of an array in place -- this is, the array variable
@@ -2372,6 +2402,7 @@ End Function
 
 
 Public Function SetObjectArrayToNothing(InputArray As Variant) As Boolean
+Attribute SetObjectArrayToNothing.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' SetObjectArrrayToNothing
 ' This sets all the elements of InputArray to Nothing. Use this function
@@ -2437,6 +2468,7 @@ End Function
 
 
 Public Function AreDataTypesCompatible(DestVar As Variant, SourceVar As Variant) As Boolean
+Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' AreDataTypesCompatible
 ' This function determines if SourceVar is compatiable with DestVar. If the two
@@ -2646,6 +2678,7 @@ End Function
 
 
 Public Sub SetVariableToDefault(ByRef Variable As Variant)
+Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' SetVariableToDefault
 ' This procedure sets Variable to the appropriate default
@@ -2723,6 +2756,7 @@ End Sub
 
 
 Public Function TransposeArray(InputArr As Variant, OutputArr As Variant) As Boolean
+Attribute TransposeArray.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' TransposeArray
 ' This transposes a two-dimensional array. It returns True if successful or
@@ -2801,7 +2835,8 @@ Public Function TransposeArray(InputArr As Variant, OutputArr As Variant) As Boo
 End Function
 
 
-Public Function VectorsToArray(Arr As Variant, ParamArray Vectors()) As Boolean
+Public Function VectorsToArray(arr As Variant, ParamArray Vectors()) As Boolean
+Attribute VectorsToArray.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' VectorsToArray
 ' This function takes 1 or more single-dimensional arrays and converts
@@ -2966,6 +3001,7 @@ End Function
 
 Public Function ChangeBoundsOfArray(InputArr As Variant, _
     NewLowerBound As LongPtr, NewUpperBound) As Boolean
+Attribute ChangeBoundsOfArray.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ChangeBoundsOfArray
 ' This function changes the upper and lower bounds of the specified
@@ -3099,6 +3135,7 @@ End Function
 
 Public Function IsArraySorted(TestArray As Variant, _
     Optional Descending As Boolean = False) As Variant
+Attribute IsArraySorted.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsArraySorted
 ' This function determines whether a single-dimensional array is sorted. Because
@@ -3211,6 +3248,7 @@ End Function
 
 Public Function CombineTwoDArrays(Arr1 As Variant, _
     Arr2 As Variant) As Variant
+Attribute CombineTwoDArrays.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' TwoArraysToOneArray
 ' This takes two 2-dimensional arrays, Arr1 and Arr2, and
@@ -3422,6 +3460,7 @@ End Function
 
 Function ExpandArray(Arr As Variant, WhichDim As Long, AdditionalElements As Long, _
         FillValue As Variant) As Variant
+Attribute ExpandArray.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' ExpandArray
 ' This expands a two-dimensional array in either dimension. It returns the result
@@ -3628,7 +3667,8 @@ Function SwapArrayRows(Arr As Variant, Row1 As Long, Row2 As Long) As Variant
 End Function
 
 
-Function SwapArrayColumns(Arr As Variant, Col1 As Long, Col2 As Long) As Variant
+Function SwapArrayColumns(arr As Variant, Col1 As LongPtr, Col2 As LongPtr) As Variant
+Attribute SwapArrayColumns.VB_ProcData.VB_Invoke_Func = " \n20"
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' SwapArrayColumns
 ' This function returns an array based on Arr with Col1 and Col2 swapped.
@@ -3698,7 +3738,8 @@ Function SwapArrayColumns(Arr As Variant, Col1 As Long, Col2 As Long) As Variant
 End Function
 
 
-Function GetColumn(Arr As Variant, ResultArr As Variant, ColumnNumber As Long) As Boolean
+Function GetColumn(arr As Variant, ResultArr As Variant, ColumnNumber As LongPtr) As Boolean
+Attribute GetColumn.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetColumn
 ' This populates ResultArr with a one-dimensional array that is the
@@ -3758,7 +3799,8 @@ Function GetColumn(Arr As Variant, ResultArr As Variant, ColumnNumber As Long) A
 End Function
 
 
-Function GetRow(Arr As Variant, ResultArr As Variant, RowNumber As Long) As Boolean
+Function GetRow(arr As Variant, ResultArr As Variant, RowNumber As LongPtr) As Boolean
+Attribute GetRow.VB_ProcData.VB_Invoke_Func = " \n20"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' GetRow
 ' This populates ResultArr with a one-dimensional array that is the
