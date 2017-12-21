@@ -10,6 +10,9 @@ Attribute VB_Name = "modArraySupport"
 '     If ... Then Exit Function
 '- create unit tests for these functions
 '  (get example arrays from web sites referring to array stuff)
+'- how to handle 'vbLong'/'vbLongLong'?
+'  does it work automatically also on 32-bit systems or is some special
+'  handling needed?
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -991,9 +994,9 @@ Attribute InsertElementIntoArray.VB_ProcData.VB_Invoke_Func = " \n20"
    'overwritten when we shift elements to the right, and the Value will be
    'inserted at Index.
    On Error Resume Next
-   Err.Clear
+   err.Clear
    InputArray(UBound(InputArray)) = Value
-   If Err.Number <> 0 Then
+   If err.Number <> 0 Then
       'An error occurred, most likely an error 13, type mismatch.
       'Redim the array back to its original size and exit the function.
       ReDim Preserve InputArray(LBound(InputArray) To UBound(InputArray) - 1)
@@ -1167,7 +1170,7 @@ Attribute IsArrayAllocated.VB_ProcData.VB_Invoke_Func = " \n20"
    'Attempt to get the UBound of the array. If the array has not been allocated,
    'an error will occur. Test Err.Number to see if an error occurred.
    N = UBound(Arr, 1)
-   If (Err.Number = 0) Then
+   If (err.Number = 0) Then
        'Under some circumstances, if an array is not allocated, Err.Number
        'will be 0. To acccomodate this case, we test whether LBound <= Ubound.
        'If this is True, the array is allocated. Otherwise, the array is not
@@ -1216,7 +1219,7 @@ Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n20"
    LUBound = UBound(Arr)
    
    On Error Resume Next
-   Err.Clear
+   err.Clear
    
    'Attempt to increase the UBound of Arr and test the value of Err.Number.
    'If Arr is a static array, either single- or multi-dimensional, we'll get a
@@ -1230,7 +1233,7 @@ Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n20"
    'For either C_NO_ERROR or C_ERR_SUBSCRIPT_OUT_OF_RANGE, return TRUE.
    'For C_ERR_ARRAY_IS_FIXED_OR_LOCKED, return FALSE.
    ReDim Preserve Arr(LBound(Arr) To LUBound + 1)
-   Select Case Err.Number
+   Select Case err.Number
       Case C_ERR_NO_ERROR
          'We successfully increased the UBound of Arr.
          'Do a ReDim Preserve to restore the original UBound.
@@ -1273,7 +1276,7 @@ Attribute IsArrayEmpty.VB_ProcData.VB_Invoke_Func = " \n20"
    Dim UB As LongPtr
    
    
-   Err.Clear
+   err.Clear
    On Error Resume Next
    If Not IsArray(Arr) Then
       'we weren't passed an array, return True
@@ -1283,7 +1286,7 @@ Attribute IsArrayEmpty.VB_ProcData.VB_Invoke_Func = " \n20"
    'Attempt to get the UBound of the array. If the array is
    'unallocated, an error will occur.
    UB = UBound(Arr, 1)
-   If (Err.Number <> 0) Then
+   If (err.Number <> 0) Then
       IsArrayEmpty = True
    Else
       'On rare occassion, under circumstances I cannot reliably replictate,
@@ -1291,7 +1294,7 @@ Attribute IsArrayEmpty.VB_ProcData.VB_Invoke_Func = " \n20"
       'On these occassions, LBound is 0 and UBoung is -1.
       'To accomodate the weird behavior, test to see if LB > UB.
       'If so, the array is not allocated.
-      Err.Clear
+      err.Clear
       LB = LBound(Arr)
       If LB > UB Then
          IsArrayEmpty = True
@@ -1691,7 +1694,7 @@ Attribute NumberOfArrayDimensions.VB_ProcData.VB_Invoke_Func = " \n20"
    Do
       Ndx = Ndx + 1
       Res = UBound(Arr, Ndx)
-   Loop Until Err.Number <> 0
+   Loop Until err.Number <> 0
    
    NumberOfArrayDimensions = Ndx - 1
 
@@ -2179,8 +2182,9 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n20"
             Variable = Empty
          Case vbInteger
             Variable = CInt(0)
+'         Case vbLong, vbLongLong
          Case vbLong
-            Variable = CLng(0)
+            Variable = CLngPtr(0)
          Case vbNull
             Variable = Empty
          Case vbObject
