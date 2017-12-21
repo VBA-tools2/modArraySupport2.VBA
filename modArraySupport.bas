@@ -10,9 +10,6 @@ Attribute VB_Name = "modArraySupport"
 '     If ... Then Exit Function
 '- create unit tests for these functions
 '  (get example arrays from web sites referring to array stuff)
-'- how to handle 'vbLong'/'vbLongLong'?
-'  does it work automatically also on 32-bit systems or is some special
-'  handling needed?
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -891,7 +888,7 @@ Attribute DeleteArrayElement.VB_ProcData.VB_Invoke_Func = " \n20"
    End If
    'Set the last element of the InputArray to the proper default value
    Select Case VType
-      Case vbByte, vbInteger, vbLong, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
+      Case vbByte, vbInteger, vbLong, vbLongLong, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
          InputArray(UBound(InputArray)) = 0
       Case vbString
          InputArray(UBound(InputArray)) = vbNullString
@@ -1106,7 +1103,7 @@ Attribute IsArrayAllNumeric.VB_ProcData.VB_Invoke_Func = " \n20"
    'Loop through the array
    For Ndx = LBound(Arr) To UBound(Arr)
       Select Case VarType(Arr(Ndx))
-         Case vbInteger, vbLong, vbDouble, vbSingle, vbCurrency, vbDecimal, vbEmpty
+         Case vbInteger, vbLong, vbLongLong, vbDouble, vbSingle, vbCurrency, vbDecimal, vbEmpty
             'all valid numeric types
          Case vbString
             'For strings, check the AllowNumericStrings parameter.
@@ -1361,7 +1358,7 @@ End Function
 '      vbDecimal
 '      vbDouble
 '      vbInteger
-'      vbLong
+'      vbLong, vbLongLong
 '      vbSingle
 '
 'It will return FALSE for any other data type, including empty Variants and objects.
@@ -1427,7 +1424,7 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n20"
 '---
          Element = TestVar(LBound(TestVar))
          Select Case VarType(Element)
-            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbSingle
+            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbLongLong, vbSingle
                IsNumericDataType = True
                Exit Function
             Case Else
@@ -1435,7 +1432,7 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n20"
          End Select
       Else
          Select Case VarType(TestVar) - vbArray
-            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbSingle
+            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbLongLong, vbSingle
                IsNumericDataType = True
                Exit Function
             Case Else
@@ -1445,7 +1442,7 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n20"
    End If
    
    Select Case VarType(TestVar)
-      Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbSingle
+      Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbLongLong, vbSingle
          IsNumericDataType = True
       Case Else
          IsNumericDataType = False
@@ -2031,9 +2028,9 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
                Case Else
                   Exit Function
             End Select
-         Case vbLong
+         Case vbLong, vbLongLong
             Select Case SVType
-               Case vbInteger, vbLong
+               Case vbInteger, vbLong, vbLongLong
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2041,7 +2038,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbSingle
             Select Case SVType
-               Case vbInteger, vbLong, vbSingle
+               Case vbInteger, vbLong, vbLongLong, vbSingle
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2049,7 +2046,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbDouble
             Select Case SVType
-               Case vbInteger, vbLong, vbSingle, vbDouble
+               Case vbInteger, vbLong, vbLongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2089,7 +2086,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbCurrency
             Select Case SVType
-               Case vbInteger, vbLong, vbSingle, vbDouble
+               Case vbInteger, vbLong, vbLongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2097,7 +2094,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbDecimal
             Select Case SVType
-               Case vbInteger, vbLong, vbSingle, vbDouble
+               Case vbInteger, vbLong, vbLongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2105,7 +2102,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbDate
             Select Case SVType
-               Case vbLong, vbSingle, vbDouble
+               Case vbLong, vbLongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2182,8 +2179,7 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n20"
             Variable = Empty
          Case vbInteger
             Variable = CInt(0)
-'         Case vbLong, vbLongLong
-         Case vbLong
+         Case vbLong, vbLongLong
             Variable = CLngPtr(0)
          Case vbNull
             Variable = Empty
