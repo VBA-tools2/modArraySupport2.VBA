@@ -70,9 +70,9 @@ Option Compare Text
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 'Error Number Constants
-Public Const C_ERR_NO_ERROR = 0&
-Public Const C_ERR_SUBSCRIPT_OUT_OF_RANGE = 9&
-Public Const C_ERR_ARRAY_IS_FIXED_OR_LOCKED = 10&
+Private Const C_ERR_NO_ERROR As LongPtr = 0
+Private Const C_ERR_SUBSCRIPT_OUT_OF_RANGE As LongPtr = 9
+Private Const C_ERR_ARRAY_IS_FIXED_OR_LOCKED As LongPtr = 10
 
 
 '------------------------------------------------------------------------------
@@ -121,8 +121,6 @@ Sub AddUDFToCustomCategory()
       .MacroOptions Category:=sCategory, Macro:="VectorsToArray"
    End With
 End Sub
-
-
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -857,6 +855,9 @@ Attribute DeleteArrayElement.VB_ProcData.VB_Invoke_Func = " \n20"
    Dim Ndx As LongPtr
    Dim VType As VbVarType
    
+   Dim LongLong As LongPtr
+   LongLong = DeclareLongLong
+   
    
    'Set the default return value
    DeleteArrayElement = False
@@ -888,7 +889,7 @@ Attribute DeleteArrayElement.VB_ProcData.VB_Invoke_Func = " \n20"
    End If
    'Set the last element of the InputArray to the proper default value
    Select Case VType
-      Case vbByte, vbInteger, vbLong, vbLongLong, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
+      Case vbByte, vbInteger, vbLong, LongLong, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
          InputArray(UBound(InputArray)) = 0
       Case vbString
          InputArray(UBound(InputArray)) = vbNullString
@@ -1089,6 +1090,9 @@ Attribute IsArrayAllNumeric.VB_ProcData.VB_Invoke_Func = " \n20"
 
    Dim Ndx As LongPtr
    
+   Dim LongLong As LongPtr
+   LongLong = DeclareLongLong
+   
    
    'Set the default return value
    IsArrayAllNumeric = False
@@ -1103,7 +1107,7 @@ Attribute IsArrayAllNumeric.VB_ProcData.VB_Invoke_Func = " \n20"
    'Loop through the array
    For Ndx = LBound(Arr) To UBound(Arr)
       Select Case VarType(Arr(Ndx))
-         Case vbInteger, vbLong, vbLongLong, vbDouble, vbSingle, vbCurrency, vbDecimal, vbEmpty
+         Case vbInteger, vbLong, LongLong, vbDouble, vbSingle, vbCurrency, vbDecimal, vbEmpty
             'all valid numeric types
          Case vbString
             'For strings, check the AllowNumericStrings parameter.
@@ -1401,6 +1405,9 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n20"
    Dim Element As Variant
    Dim NumDims As LongPtr
    
+   Dim LongLong As LongPtr
+   LongLong = DeclareLongLong
+   
    
    'Set the default return value
    IsNumericDataType = False
@@ -1424,7 +1431,7 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n20"
 '---
          Element = TestVar(LBound(TestVar))
          Select Case VarType(Element)
-            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbLongLong, vbSingle
+            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLong, vbSingle
                IsNumericDataType = True
                Exit Function
             Case Else
@@ -1432,7 +1439,7 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n20"
          End Select
       Else
          Select Case VarType(TestVar) - vbArray
-            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbLongLong, vbSingle
+            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLong, vbSingle
                IsNumericDataType = True
                Exit Function
             Case Else
@@ -1442,7 +1449,7 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n20"
    End If
    
    Select Case VarType(TestVar)
-      Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbLongLong, vbSingle
+      Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLong, vbSingle
          IsNumericDataType = True
       Case Else
          IsNumericDataType = False
@@ -1979,6 +1986,9 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
    Dim SVType As VbVarType
    Dim DVType As VbVarType
    
+   Dim LongLong As LongPtr
+   LongLong = DeclareLongLong
+   
    
    'Set the default return value
    AreDataTypesCompatible = False
@@ -2028,9 +2038,9 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
                Case Else
                   Exit Function
             End Select
-         Case vbLong, vbLongLong
+         Case vbLong, LongLong
             Select Case SVType
-               Case vbInteger, vbLong, vbLongLong
+               Case vbInteger, vbLong, LongLong
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2038,7 +2048,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbSingle
             Select Case SVType
-               Case vbInteger, vbLong, vbLongLong, vbSingle
+               Case vbInteger, vbLong, LongLong, vbSingle
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2046,7 +2056,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbDouble
             Select Case SVType
-               Case vbInteger, vbLong, vbLongLong, vbSingle, vbDouble
+               Case vbInteger, vbLong, LongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2086,7 +2096,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbCurrency
             Select Case SVType
-               Case vbInteger, vbLong, vbLongLong, vbSingle, vbDouble
+               Case vbInteger, vbLong, LongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2094,7 +2104,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbDecimal
             Select Case SVType
-               Case vbInteger, vbLong, vbLongLong, vbSingle, vbDouble
+               Case vbInteger, vbLong, LongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2102,7 +2112,7 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n20"
             End Select
          Case vbDate
             Select Case SVType
-               Case vbLong, vbLongLong, vbSingle, vbDouble
+               Case vbLong, LongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
                   Exit Function
                Case Else
@@ -2149,6 +2159,10 @@ Public Sub SetVariableToDefault( _
 )
 Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n20"
 
+   Dim LongLong As LongPtr
+   LongLong = DeclareLongLong
+   
+   
    'We test with IsObject here so that the object itself, not the default
    'property of the object, is evaluated.
    If IsObject(Variable) Then
@@ -2179,7 +2193,7 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n20"
             Variable = Empty
          Case vbInteger
             Variable = CInt(0)
-         Case vbLong, vbLongLong
+         Case vbLong, LongLong
             Variable = CLngPtr(0)
          Case vbNull
             Variable = Empty
