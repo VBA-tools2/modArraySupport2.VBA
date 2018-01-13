@@ -30,12 +30,12 @@ Option Compare Text
 'For details on these functions, see www.cpearson.com/excel/VBAArrays.htm
 '
 'This module contains the following functions:
-'     AreDataTypesCompatible
+'     AreDataTypesCompatible           --> changed order of arguments
 '     ChangeBoundsOfArray
 '     CombineTwoDArrays
 '     CompareArrays
 '     ConcatenateArrays
-'     CopyArray
+'     CopyArray                        --> changed order of arguments
 '     CopyArraySubSetToArray
 '     CopyNonNothingObjectsToArray
 '     DataTypeOfArray
@@ -49,12 +49,12 @@ Option Compare Text
 '     IsArrayAllNumeric
 '     IsArrayAllocated
 '     IsArrayDynamic
-'     IsArrayEmpty
+'     (IsArrayEmpty)                   --> = Not IsArryAllocated
 '     IsArrayObjects
 '     IsArraySorted
 '     IsNumericDataType
 '     IsVariantArrayConsistent
-'     IsVariantArrayNumeric
+'     (IsVariantArrayNumeric)          --> merged into `IsArrayAllNumeric'
 '     MoveEmptyStringsToEndOfArray
 '     NumberOfArrayDimensions
 '     NumElements
@@ -105,12 +105,12 @@ Public Sub AddUDFToCustomCategory()
       .MacroOptions Category:=sCategory, Macro:="IsArrayAllNumeric"
       .MacroOptions Category:=sCategory, Macro:="IsArrayAllocated"
       .MacroOptions Category:=sCategory, Macro:="IsArrayDynamic"
-      .MacroOptions Category:=sCategory, Macro:="IsArrayEmpty"
+'      .MacroOptions Category:=sCategory, Macro:="IsArrayEmpty"
       .MacroOptions Category:=sCategory, Macro:="IsArrayObjects"
       .MacroOptions Category:=sCategory, Macro:="IsArraySorted"
       .MacroOptions Category:=sCategory, Macro:="IsNumericDataType"
       .MacroOptions Category:=sCategory, Macro:="IsVariantArrayConsistent"
-      .MacroOptions Category:=sCategory, Macro:="IsVariantArrayNumeric"
+'      .MacroOptions Category:=sCategory, Macro:="IsVariantArrayNumeric"
       .MacroOptions Category:=sCategory, Macro:="MoveEmptyStringsToEndOfArray"
       .MacroOptions Category:=sCategory, Macro:="NumberOfArrayDimensions"
       .MacroOptions Category:=sCategory, Macro:="NumElements"
@@ -532,7 +532,7 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
    'ResultArray is dynamic and can be resized
    Else
       'Test whether we need to resize the array, and resize it if required
-      If IsArrayEmpty(ResultArray) Then
+      If Not IsArrayAllocated(ResultArray) Then
          'ResultArray is unallocated. Resize it to
          'DestinationElement + NumElementsToCopy - 1.
          'This provides empty elements to the left of the DestinationElement
@@ -586,7 +586,8 @@ End Function
 'This function copies all objects that are not Nothing from SourceArray
 'to ResultArray. ResultArray MUST be a dynamic array of type Object or Variant.
 'E.g.,
-'      Dim ResultArray() As Object 'Or
+'      Dim ResultArray() As Object
+'Or
 '      Dim ResultArray() as Variant
 '
 'ResultArray will be Erased and then resized to hold the non-Nothing elements
@@ -600,7 +601,7 @@ End Function
 '
 'This function uses the following procedures.
 '      IsArrayDynamic
-'      IsArrayEmpty
+'      IsArrayAllocated
 '      NumberOfArrayDimensions
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function CopyNonNothingObjectsToArray( _
@@ -728,11 +729,10 @@ End Function
 'E.g.,
 'Dim R As VbVarType
 'R = DataTypeOfArray(A(LBound(A)))
-'This function supports one- and two-dimensional arrays. It does not support
+'This function supports one- and multi-dimensional arrays. It does not support
 'user-defined types. If 'Arr' is an array of empty variants ('vbEmpty') it
 'returns 'vbVariant'.
-'Returns -1 if 'Arr' is not an array and the negative number of dimensions
-'if 'Arr' has a higher dimension than two.
+'Returns -1 if 'Arr' is not an array.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function DataTypeOfArray( _
    Arr As Variant _
@@ -740,7 +740,7 @@ Public Function DataTypeOfArray( _
 Attribute DataTypeOfArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim Element As Variant
-   Dim NumDimensions As LongPtr
+   Dim StoredElement As Variant
    
    
    If Not IsArray(Arr) Then
@@ -753,41 +753,31 @@ Attribute DataTypeOfArray.VB_ProcData.VB_Invoke_Func = " \n19"
    'elements of the array (e.g., the 'VarType' of an array of 'Long's is 8195,
    'which is 'vbArray + vbLong'). Thus, to get the basic data type of the
    'array, we subtract the value 'vbArray'.
-   If IsArrayEmpty(Arr) Then
+   If Not IsArrayAllocated(Arr) Then
       DataTypeOfArray = VarType(Arr) - vbArray
    Else
-      'get the number of dimensions in the array
-      NumDimensions = NumberOfArrayDimensions(Arr)
-      'set variable 'Element' to first element of the first dimension of the
-      'array if 'NumDimensions' is less than 3 ...
-      If NumDimensions = 1 Then
-         If IsObject(Arr(LBound(Arr))) Then
+      '(We use this for loop to get the first element of an array of arbitrary
+      'dimensionality)
+      For Each Element In Arr
+         If IsObject(Element) Then
             DataTypeOfArray = vbObject
             Exit Function
          End If
-         Element = Arr(LBound(Arr))
-      ElseIf NumDimensions = 2 Then
-         If IsObject(Arr(LBound(Arr), LBound(Arr, 2))) Then
-            DataTypeOfArray = vbObject
-            Exit Function
-         End If
-         Element = Arr(LBound(Arr), LBound(Arr, 2))
-      '... else return the negative number of 'NumDimensions'
-      Else
-         DataTypeOfArray = -1 * NumDimensions
-         Exit Function
-      End If
+         StoredElement = Element
+         Exit For
+      Next
       
-      'If we were passed an array of arrays, 'IsArray(Element)' will be true.
-      'Therefore, return 'vbArray'. If 'IsArray(Element)' is false, we weren't
-      'passed an array of arrays, so simply return the data type of 'Element'.
-      If IsArray(Element) Then
+      'If we were passed an array of arrays, 'IsArray(StoredElement)' will be
+      'true. Therefore, return 'vbArray'. If 'IsArray(StoredElement)' is false,
+      'we weren't passed an array of arrays, so simply return the data type of
+      ''StoredElement'.
+      If IsArray(StoredElement) Then
          DataTypeOfArray = vbArray
       Else
-         If VarType(Element) = vbEmpty Then
+         If VarType(StoredElement) = vbEmpty Then
             DataTypeOfArray = vbVariant
          Else
-            DataTypeOfArray = VarType(Element)
+            DataTypeOfArray = VarType(StoredElement)
          End If
       End If
    End If
@@ -1038,45 +1028,32 @@ End Function
 'containing numeric data are considered numeric. If this parameter is 'True', a
 'numeric string is considered a numeric variable. If this parameter is omitted
 'or 'False', a numeric string is not considered a numeric variable. Variants
-'that are numeric or 'Empty' are allowed. Variants that are arrays, objects, or
-'non-numeric data are not allowed.
+'that are numeric or empty are allowed. Variants that are objects or
+'non-numeric data are not allowed. With the 'AllowArrayElements' parameter it
+'can be stated, if (sub-)arrays should also be tested for numeric data.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'2do:
-'- What is meant with "Variants that are [...] 'Empty' are allowed"?
-'  I would say that an empty array then should return 'True', but it returns
-'  'False'.
-'-----
-'- This function only tests a vector
-'  --> so a better name would be 'IsVectorAllNumeric'
-'- There is no test for the 1-dimensionality
-'- What is the benefit of this function over 'IsVariantArrayNumeric'?
 Public Function IsArrayAllNumeric( _
    Arr As Variant, _
-   Optional AllowNumericStrings As Boolean = False _
+   Optional AllowNumericStrings As Boolean = False, _
+   Optional AllowArrayElements As Boolean = False _
       ) As Boolean
 Attribute IsArrayAllNumeric.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim i As LongPtr
-   
-   Dim LongLong As LongPtr
-   LongLong = DeclareLongLong
-   
+   Dim Element As Variant
    
    'Set the default return value
    IsArrayAllNumeric = False
    
    If Not IsArray(Arr) Then Exit Function
-   'Ensure Arr is allocated (non-empty)
-'---
-'2do: what is really needed: 'IsArrayEmpty' or 'IsArrayAllocated'?
-'---
-   If IsArrayEmpty(Arr) Then Exit Function
+   If Not IsArrayAllocated(Arr) Then Exit Function
    
    'Loop through the array
-   For i = LBound(Arr) To UBound(Arr)
-      Select Case VarType(Arr(i))
-         Case vbInteger, vbLong, LongLong, vbDouble, vbSingle, vbCurrency, vbDecimal, vbEmpty
-            'all valid numeric types
+   For Each Element In Arr
+      If IsObject(Element) Then Exit Function
+      
+      Select Case VarType(Element)
+         Case vbEmpty
+            'is (also) allowed
          Case vbString
             'For strings, check the 'AllowNumericStrings' parameter.
             'If True and the element is a numeric string, allow it.
@@ -1084,20 +1061,32 @@ Attribute IsArrayAllNumeric.VB_ProcData.VB_Invoke_Func = " \n19"
             'If 'AllowNumericStrings' is 'False', all strings, even
             'numeric strings, will cause a result of 'False'.
             If AllowNumericStrings = True Then
-               If Not IsNumeric(Arr(i)) Then Exit Function
+               If Not IsNumeric(Element) Then Exit Function
             Else
                Exit Function
             End If
-         Case vbVariant
-            'For Variants, disallow Arrays and Objects.
-            'If the element is not an array or an object, test whether it is
-            'numeric. Allow numeric Variants.
-            If IsArray(Arr(i)) Then Exit Function
-            If IsObject(Arr(i)) Then Exit Function
-            If Not IsNumeric(Arr(i)) Then Exit Function
+         Case Is >= vbVariant
+            'For Variants, disallow Objects.
+            If IsObject(Element) Then Exit Function
+            'If the element is an array ...
+            If IsArray(Element) Then
+               '... only test the elements, if (numeric) array elements are
+               'allowed
+               If AllowArrayElements Then
+                  'Test the elements (recursively) with the same rules as the
+                  'main array
+                  If Not IsArrayAllNumeric( _
+                        Element, AllowNumericStrings, AllowArrayElements) Then _
+                              Exit Function
+               Else
+                  Exit Function
+               End If
+            'If the element is not an array, test, if it is of numeric type.
+            Else
+               If Not IsNumeric(Element) Then Exit Function
+            End If
          Case Else
-            'any other data type returns 'False'
-            Exit Function
+            If Not IsNumeric(Element) Then Exit Function
       End Select
    Next
    
@@ -1117,19 +1106,21 @@ End Function
 'does not distinguish between allocated and unallocated arrays. It will return
 ''True' for both allocated and unallocated arrays. This function tests whether
 'the array has actually been allocated.
-'
-'This function is just the reverse of 'IsArrayEmpty'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'called by
 '  - ChangeBoundsOfArray
 '  - ConcatenateArrays
 '  - CopyArray
+'  - CopyArraySubSetToArray
+'  - DataTypeOfArray
 '  - InsertElementIntoArray
 '  - IsArrayAllDefault
+'  - IsArrayAllNumeric
+'  - IsArrayDynamic
 '  - IsNumericDataType
 '  - IsVariantArrayConsistent
-'  - IsVariantArrayNumeric
 '  - MoveEmptyStringsToEndOfArray
+'  - NumElements
 '  - SetObjectArrayToNothing
 Public Function IsArrayAllocated( _
    Arr As Variant _
@@ -1181,9 +1172,8 @@ Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n19"
    
    If Not IsArray(Arr) Then Exit Function
    
-   'If the array is empty, it hasn't been allocated yet, so we know it must be
-   'a dynamic array
-   If IsArrayEmpty(Arr) Then
+   'If the array is unallocated, we know it must be a dynamic array
+   If Not IsArrayAllocated(Arr) Then
       IsArrayDynamic = True
       Exit Function
    End If
@@ -1228,58 +1218,6 @@ Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n19"
          'Some unexpected error occurred. Be safe and return False.
          IsArrayDynamic = False
    End Select
-
-End Function
-
-
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'IsArrayEmpty
-'This function tests whether the array is empty (unallocated). Returns TRUE or FALSE.
-'
-'The VBA IsArray function indicates whether a variable is an array, but it does not
-'distinguish between allocated and unallocated arrays. It will return TRUE for both
-'allocated and unallocated arrays. This function tests whether the array has actually
-'been allocated.
-'
-'This function is really the reverse of IsArrayAllocated.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'called by
-'  - CopyArraySubSetToArray
-'  - DataTypeOfArray
-'  - IsArrayAllNumeric
-'  - IsArrayDynamic
-'  - NumElements
-Public Function IsArrayEmpty( _
-   Arr As Variant _
-      ) As Boolean
-Attribute IsArrayEmpty.VB_ProcData.VB_Invoke_Func = " \n19"
-
-   Dim LB As LongPtr
-   Dim UB As LongPtr
-   
-   
-   err.Clear
-   On Error Resume Next
-   If Not IsArray(Arr) Then
-      'we weren't passed an array, return True
-      IsArrayEmpty = True
-   End If
-   
-   'Attempt to get the UBound of the array. If the array is
-   'unallocated, an error will occur.
-   UB = UBound(Arr, 1)
-   If (err.Number <> 0) Then
-      IsArrayEmpty = True
-   Else
-      'On rare occassion, under circumstances I cannot reliably replictate,
-      'Err.Number will be 0 for an unallocated, empty array.
-      'On these occassions, LBound is 0 and UBound is -1.
-      'To accomodate the weird behavior, test to see if LB > UB.
-      'If so, the array is not allocated.
-      err.Clear
-      LB = LBound(Arr)
-      IsArrayEmpty = (LB > UB)
-   End If
 
 End Function
 
@@ -1349,7 +1287,7 @@ End Function
 'TestVar is an array of Variants, the function will indicate only whether
 'the first element of the array is numeric. Other elements of the array
 'may not be numeric data types. To test an entire array of variants
-'to ensure they are all numeric data types, use the IsVariantArrayNumeric
+'to ensure they are all numeric data types, use the IsArrayAllNumeric
 'function.
 '
 'It will return FALSE for any other data type. Use this procedure
@@ -1374,8 +1312,6 @@ End Function
 'IsNumeric should only be used to test strings for numeric content
 'when converting a string value to a numeric variable.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'called by
-'  - IsVariantArrayNumeric
 Public Function IsNumericDataType( _
    TestVar As Variant _
       ) As Boolean
@@ -1395,7 +1331,7 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n19"
       NumDims = NumberOfArrayDimensions(TestVar)
 '---
 '2do:
-'- is a change needed here? First test, if 'IsVariantArrayNumeric' is supposed
+'- is a change needed here? First test, if 'IsArrayAllNumeric' is supposed
 '  to handle this!
 '---
       If NumDims > 1 Then
@@ -1513,83 +1449,49 @@ Attribute IsVariantArrayConsistent.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'IsVariantArrayNumeric
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''IsVariantArrayNumeric
+''This function returns 'True' if all the elements of an array of variants are
+''numeric data types. They need not all be the same data type. You can have a
+''mix of 'Integer's, 'Long's, 'Double's, and 'Single's.
+''As long as they are all numeric data types, the function will return 'True'.
+''If a non-numeric data type is encountered, the function will return 'False'.
+''Also, it will return 'False' if 'TestArray' is not an array, or if 'TestArray'
+''has not been allocated. 'TestArray' may be a multi-dimensional array. This
+''procedure uses the 'IsNumericDataType' function to determine whether a
+''variable is a numeric data type. If there is an uninitialized variant
+''('VarType = vbEmpty') in the array, it is skipped and not used in the
+''comparison (i.e., 'Empty' is considered a valid numeric data type since you
+''can assign a number to it).
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Public Function IsVariantArrayNumeric( _
+'   TestArray As Variant _
+'      ) As Boolean
 '
-'This function returns TRUE if all the elements of an array of
-'variants are numeric data types. They need not all be the same data
-'type. You can have a mix of Integer, Longs, Doubles, and Singles.
-'As long as they are all numeric data types, the function will
-'return TRUE. If a non-numeric data type is encountered, the
-'function will return FALSE. Also, it will return FALSE if
-'TestArray is not an array, or if TestArray has not been
-'allocated. TestArray may be a multi-dimensional array. This
-'procedure uses the IsNumericDataType function to determine whether
-'a variable is a numeric data type. If there is an uninitialized
-'variant (VarType = vbEmpty) in the array, it is skipped and not
-'used in the comparison (i.e., Empty is considered a valid numeric
-'data type since you can assign a number to it).
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'2do:
-'- add "Optional AllowNumericStrings As Boolean = False" from
-'  'IsArrayAllNumeric'?
-Public Function IsVariantArrayNumeric( _
-   TestArray As Variant _
-      ) As Boolean
-Attribute IsVariantArrayNumeric.VB_ProcData.VB_Invoke_Func = " \n19"
-
-   Dim Ndx As LongPtr
-   Dim DimNdx As LongPtr
-   Dim NumDims As LongPtr
-   
-   
-   'Set the default return value
-   IsVariantArrayNumeric = False
-   
-   If Not IsArray(TestArray) Then Exit Function
-   If Not IsArrayAllocated(TestArray) Then Exit Function
-   
-'---
-'2do:
-'- can this be simplified with a simple
-'     Dim item as Variant
-'     For Each item in TestArray
-'        ...
-'     Next
-'  ?
-'  (see <https://excelmacromastery.com/excel-vba-array/>)
-'---
-   NumDims = NumberOfArrayDimensions(TestArray)
-   Select Case NumDims
-      Case 1
-         For Ndx = LBound(TestArray) To UBound(TestArray)
-            If IsObject(TestArray(Ndx)) Then Exit Function
-              
-            If VarType(TestArray(Ndx)) <> vbEmpty Then
-               If Not IsNumericDataType(TestArray(Ndx)) Then
-                  Exit Function
-               End If
-            End If
-         Next
-      Case 2
-         For DimNdx = LBound(TestArray, 2) To UBound(TestArray, 2)
-            For Ndx = LBound(TestArray, DimNdx) To UBound(TestArray, DimNdx)
-               If VarType(TestArray(Ndx, DimNdx)) <> vbEmpty Then
-                  If Not IsNumericDataType(TestArray(Ndx, DimNdx)) Then
-                     Exit Function
-                  End If
-               End If
-            Next
-         Next
-      Case Else
-         'currently there is no handler for "higher"-dimensional arrays
-         Exit Function
-   End Select
-   
-   'If we made it up to here, then the array is entirely numeric
-   IsVariantArrayNumeric = True
-
-End Function
+'   Dim element As Variant
+'
+'
+'   'Set the default return value
+'   IsVariantArrayNumeric = False
+'
+'   If Not IsArray(TestArray) Then Exit Function
+'   If Not IsArrayAllocated(TestArray) Then Exit Function
+'
+'   For Each element In TestArray
+'      If IsObject(element) Then Exit Function
+'
+'      Select Case VarType(element)
+'         Case vbEmpty
+'            'allowed
+'         Case Else
+'            If Not IsNumericDataType(element) Then Exit Function
+'      End Select
+'   Next
+'
+'   'If we made it up to here, then the array is entirely numeric
+'   IsVariantArrayNumeric = True
+'
+'End Function
 
 
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1655,11 +1557,12 @@ Attribute MoveEmptyStringsToEndOfArray.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'NumberOfArrayDimensions
-'This function returns the number of dimensions of an array. An unallocated dynamic array
-'has 0 dimensions. This condition can also be tested with IsArrayEmpty.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This function returns the number of dimensions of an array. An unallocated
+'dynamic array has 0 dimensions.
+'(This condition can also be tested with 'Not IsArrayAllocated'.)
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'called by
 '  - ChangeBoundsOfArray
 '  - CombineTwoDArrays
@@ -1668,7 +1571,6 @@ End Function
 '  - CopyArray
 '  - CopyArraySubSetToArray
 '  - CopyNonNothingObjectsToArray
-'  - DataTypeOfArray
 '  - DeleteArrayElement
 '  - ExpandArray
 '  - FirstNonEmptyStringIndexInArray
@@ -1679,7 +1581,6 @@ End Function
 '  - IsArrayObjects
 '  - IsNumericDataType
 '  - IsVariantArrayConsistent
-'  - IsVariantArrayNumeric
 '  - NumElements
 '  - ResetVariantArrayToDefaults
 '  - ReverseArrayInPlace
@@ -1694,20 +1595,20 @@ Public Function NumberOfArrayDimensions( _
       ) As LongPtr
 Attribute NumberOfArrayDimensions.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim Ndx As LongPtr
+   Dim i As LongPtr
    Dim Res As LongPtr
    
    
    On Error Resume Next
-   'Loop, increasing the dimension index Ndx, until an error occurs.
-   'An error will occur when Ndx exceeds the number of dimension in the array.
-   'Return Ndx - 1.
+   'Loop, increasing the dimension index 'i', until an error occurs.
+   'An error will occur when 'i' exceeds the number of dimension in the array.
+   'Return 'i' - 1.
    Do
-      Ndx = Ndx + 1
-      Res = UBound(Arr, Ndx)
+      i = i + 1
+      Res = UBound(Arr, i)
    Loop Until err.Number <> 0
    
-   NumberOfArrayDimensions = Ndx - 1
+   NumberOfArrayDimensions = i - 1
 
 End Function
 
@@ -1737,7 +1638,7 @@ Attribute NumElements.VB_ProcData.VB_Invoke_Func = " \n19"
    NumElements = 0
    
    If Not IsArray(Arr) Then Exit Function
-   If IsArrayEmpty(Arr) Then Exit Function
+   If Not IsArrayAllocated(Arr) Then Exit Function
    
    'ensure that Dimension is at least 1
    If Dimension < 1 Then Exit Function
@@ -1973,16 +1874,18 @@ Attribute SetObjectArrayToNothing.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'AreDataTypesCompatible
-'This function determines if SourceVar is compatiable with DestVar. If the two
-'data types are the same, they are compatible. If the value of SourceVar can
-'be stored in DestVar with no loss of precision or an overflow, they are compatible.
-'For example, if DestVar is a Long and SourceVar is an Integer, they are compatible
-'because an integer can be stored in a Long with no loss of information. If DestVar
-'is a Long and SourceVar is a Double, they are not compatible because information
-'will be lost converting from a Double to a Long (the decimal portion will be lost).
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This function determines if 'SourceVar' is compatiable with 'DestVar'. If the
+'two data types are the same, they are compatible. If the value of 'SourceVar'
+'can be stored in 'DestVar' with no loss of precision or an overflow, they are
+'compatible.
+'For example, if 'DestVar' is a 'Long' and 'SourceVar' is an 'Integer', they
+'are compatible because an 'Integer' can be stored in a 'Long' with no loss of
+'information. If 'DestVar' is a 'Long' and 'SourceVar' is a 'Double', they are
+'not compatible because information will be lost converting from a 'Double' to
+'a 'Long' (the decimal portion will be lost).
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'SP: - changed order of arguments (to be consistent: "Source" first, then "Dest")
 '-----
 'called by
@@ -2004,155 +1907,109 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n19"
    'Set the default return value
    AreDataTypesCompatible = False
    
-   'If DestVar is an array, get the type of array. If it is an array its
-   'VarType is vbArray + VarType(element) so we subtract vbArray to get then
-   'data type of the aray. E.g., the VarType of an array of Longs is
-   '8195 = vbArray + vbLong,
-   '8195 - vbArray = vbLong (=3).
-   If IsArray(DestVar) Then
-      DVType = VarType(DestVar) - vbArray
-   Else
-      DVType = VarType(DestVar)
-   End If
-   'If SourceVar is an array, get the type of array
-   If IsArray(SourceVar) Then
-      SVType = VarType(SourceVar) - vbArray
-   Else
-      SVType = VarType(SourceVar)
-   End If
-   
    'If one variable is an array and the other is not an array, they are incompatible
    If ((IsArray(DestVar) = True) And (IsArray(SourceVar) = False) Or _
        (IsArray(DestVar) = False) And (IsArray(SourceVar) = True)) Then
       Exit Function
    End If
    
-'---
-'2do:
-'- there is no loop, so can't all "Exit Function"s be safely removed, because
-'  the function would be exited anyway after the corresponding line?
-'---
-   '''Test the data type of DestVar and return a result if SourceVar is
-   '''compatible with that type.
-   'The the variable types are the same, they are compatible
+   'If 'SourceVar' is an array, get the type of array. If it is an array its
+   ''VarType' is 'vbArray + VarType(element)' so we subtract 'vbArray' to get
+   'the data type of the array. E.g., the 'VarType' of an array of 'Long's is
+   '8195 = vbArray + vbLong,
+   '8195 - vbArray = vbLong (= 3).
+   If IsArray(SourceVar) Then
+      SVType = VarType(SourceVar) - vbArray
+   Else
+      SVType = VarType(SourceVar)
+   End If
+   'If 'DestVar' is an array, get the type of array
+   If IsArray(DestVar) Then
+      DVType = VarType(DestVar) - vbArray
+   Else
+      DVType = VarType(DestVar)
+   End If
+   
+   'Test the data type of 'DestVar' and return a result if 'SourceVar' is
+   'compatible with that type.
    If SVType = DVType Then
+      'The variable types are the same --> they are compatible
       AreDataTypesCompatible = True
-      Exit Function
    'If the data types are not the same, determine whether they are compatible
    Else
       Select Case DVType
          Case vbInteger
-            Select Case SVType
-               Case vbInteger
-                  AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
-            End Select
+            'there is no compatible match for that
+            '(that isn't already catched above)
          Case vbLong, LongLong
             Select Case SVType
                Case vbInteger, vbLong, LongLong
                   AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
             End Select
          Case vbSingle
             Select Case SVType
                Case vbInteger, vbLong, LongLong, vbSingle
                   AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
             End Select
          Case vbDouble
             Select Case SVType
                Case vbInteger, vbLong, LongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
             End Select
-         Case vbString
-            Select Case SVType
-               Case vbString
-                  AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
-            End Select
-         Case vbObject
-            Select Case SVType
-               Case vbObject
-                  AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
-            End Select
+'         'this is already covered above
+'         Case vbString
+'            Select Case SVType
+'               Case vbString
+'                  AreDataTypesCompatible = True
+'            End Select
+'         'this is already covered above
+'         Case vbObject
+'            Select Case SVType
+'               Case vbObject
+'                  AreDataTypesCompatible = True
+'            End Select
          Case vbBoolean
             Select Case SVType
                Case vbBoolean, vbInteger
                   AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
             End Select
-         Case vbByte
-            Select Case SVType
-               Case vbByte
-                  AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
-            End Select
+'         'this is already covered above
+'         Case vbByte
+'            Select Case SVType
+'               Case vbByte
+'                  AreDataTypesCompatible = True
+'            End Select
          Case vbCurrency
             Select Case SVType
                Case vbInteger, vbLong, LongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
             End Select
          Case vbDecimal
             Select Case SVType
                Case vbInteger, vbLong, LongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
             End Select
          Case vbDate
             Select Case SVType
                Case vbLong, LongLong, vbSingle, vbDouble
                   AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
             End Select
          Case vbEmpty
             Select Case SVType
                Case vbVariant
                   AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
             End Select
          Case vbError
-            AreDataTypesCompatible = False
-            Exit Function
          Case vbNull
-            Exit Function
-         Case vbObject
-            Select Case SVType
-               Case vbObject
-                  AreDataTypesCompatible = True
-                  Exit Function
-               Case Else
-                  Exit Function
-            End Select
-          Case vbVariant
+'         'this is already covered above
+'         Case vbObject
+'            Select Case SVType
+'               Case vbObject
+'                  AreDataTypesCompatible = True
+'            End Select
+         Case vbVariant
+            'everything is compatible to a 'Variant'
             AreDataTypesCompatible = True
-            Exit Function
       End Select
    End If
 

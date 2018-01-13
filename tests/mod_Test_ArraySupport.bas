@@ -37,19 +37,207 @@ End Sub
 
 
 '==============================================================================
+'unit tests for 'AreDataTypesCompatible'
+'==============================================================================
+
+'@TestMethod
+Public Sub AreDataTypesCompatible_ScalarSourceArrayDest_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Source As LongPtr
+   Dim Dest() As LongPtr
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.AreDataTypesCompatible(Source, Dest)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub AreDataTypesCompatible_BothStringScalars_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Source As String
+   Dim Dest As String
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.AreDataTypesCompatible(Source, Dest)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub AreDataTypesCompatible_BothStringArrays_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Source() As String
+   Dim Dest() As String
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.AreDataTypesCompatible(Source, Dest)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub AreDataTypesCompatible_LongSourceIntegerDest_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Source As LongPtr
+   Dim Dest As Integer
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.AreDataTypesCompatible(Source, Dest)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub AreDataTypesCompatible_IntegerSourceLongDest_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Source As Integer
+   Dim Dest As LongPtr
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.AreDataTypesCompatible(Source, Dest)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub AreDataTypesCompatible_DoubleSourceLongDest_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Source As Double
+   Dim Dest As LongPtr
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.AreDataTypesCompatible(Source, Dest)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub AreDataTypesCompatible_BothObjects_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Source As Object
+   Dim Dest As Object
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.AreDataTypesCompatible(Source, Dest)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub AreDataTypesCompatible_SingleSourceDateDest_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Source As Single
+   Dim Dest As Date
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.AreDataTypesCompatible(Source, Dest)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+''2do: How to do this test?
+''@TestMethod
+'Public Sub AreDataTypesCompatible_VariantSourceEmptyDest_ReturnsTrue()
+'   On Error GoTo TestFail
+'
+'   'Arrange:
+'   Dim Source(0) As Variant
+'   Dim Dest(0) As Variant
+'   Dim vDummy As Variant
+'
+'
+'   'Act:
+'   Source(0) = vDummy
+'
+'   'Assert:
+'   Assert.IsFalse modArraySupport.AreDataTypesCompatible(Source(0), Dest)
+'
+'TestExit:
+'   Exit Sub
+'TestFail:
+'   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+'End Sub
+
+
+'==============================================================================
 'unit tests for 'CompareArrays'
 '==============================================================================
 
 '@TestMethod
 Public Sub CompareArrays_UnallocatedArrays_ReturnsFalse()
    On Error GoTo TestFail
-   
+
    'Arrange:
    Dim Arr1() As String
    Dim Arr2() As String
    Dim ResArr() As LongPtr
-   
-   
+
+
    'Act:
    'Assert:
    Assert.IsFalse modArraySupport.CompareArrays(Arr1, Arr2, ResArr)
@@ -69,30 +257,30 @@ Public Sub CompareArrays_LegalAndTextCompare_ReturnsTrueAndResArr()
    Dim aExpected As Variant
    aExpected = Array(-1, 1, -1, 0, 0)
    '===========================================================================
-   
+
    Dim Arr1(1 To 5) As String
    Dim Arr2(1 To 5) As String
    Dim ResArr() As LongPtr
    Dim i As LongPtr
-   
-   
+
+
    'Arrange:
    Arr1(1) = "2"
    Arr1(2) = "c"
    Arr1(3) = vbNullString
    Arr1(4) = "."
    Arr1(5) = "B"
-   
+
    Arr2(1) = "4"
    Arr2(2) = "a"
    Arr2(3) = "x"
    Arr2(4) = "."
    Arr2(5) = "b"
-   
+
    'Act:
    If Not modArraySupport.CompareArrays(Arr1, Arr2, ResArr, vbTextCompare) _
          Then GoTo TestFail
-   
+
    'Assert:
    For i = LBound(ResArr) To UBound(ResArr)
       Assert.AreEqual CLngPtr(aExpected(i - 1)), ResArr(i)
@@ -113,30 +301,30 @@ Public Sub CompareArrays_LegalAndBinaryCompare_ReturnsTrueAndResArr()
    Dim Arr2(1 To 5) As String
    Dim ResArr() As LongPtr
    Dim i As LongPtr
-   
+
    '===========================================================================
    Dim aExpected As Variant
    aExpected = Array(-1, 1, -1, 0, -1)
    '===========================================================================
-   
-   
+
+
    'Arrange:
    Arr1(1) = "2"
    Arr1(2) = "c"
    Arr1(3) = vbNullString
    Arr1(4) = "."
    Arr1(5) = "B"
-   
+
    Arr2(1) = "4"
    Arr2(2) = "a"
    Arr2(3) = "x"
    Arr2(4) = "."
    Arr2(5) = "b"
-   
+
    'Act:
    If Not modArraySupport.CompareArrays(Arr1, Arr2, ResArr, vbBinaryCompare) _
          Then GoTo TestFail
-   
+
    'Assert:
    For i = LBound(ResArr) To UBound(ResArr)
       Assert.AreEqual CLngPtr(aExpected(i - 1)), ResArr(i)
@@ -160,15 +348,15 @@ Public Sub ConcatenateArrays_StaticResultArray_ResultsFalse()
    'Arrange:
    Dim ResultArray(1) As LongPtr       'MUST be dynamic
    Dim ArrayToAppend(1) As LongPtr
-   
-   
+
+
    ResultArray(1) = 8
    ArrayToAppend(1) = 111
-   
+
    'Act:
    'Assert:
    Assert.IsFalse modArraySupport.ConcatenateArrays(ResultArray, ArrayToAppend)
-   
+
 TestExit:
    Exit Sub
 TestFail:
@@ -183,15 +371,15 @@ Public Sub ConcatenateArrays_BothArraysUnallocated_ResultsUnallocatedArray()
    'Arrange:
    Dim ResultArray() As LongPtr        'MUST be dynamic
    Dim ArrayToAppend() As LongPtr
-   
-   
+
+
    'Act:
    If Not modArraySupport.ConcatenateArrays(ResultArray, ArrayToAppend) Then _
          GoTo TestFail
-   
+
    'Assert:
    Assert.IsFalse IsArrayAllocated(ResultArray)
-   
+
 TestExit:
    Exit Sub
 TestFail:
@@ -207,26 +395,26 @@ Public Sub ConcatenateArrays_ArrayToAppendUnallocated_ResultsUnchangedResultArra
    Dim ResultArray() As LongPtr        'MUST be dynamic
    Dim ArrayToAppend() As LongPtr
    Dim i As LongPtr
-   
+
    '===========================================================================
    Dim aExpected As Variant
    aExpected = Array(8, 9)
    '===========================================================================
-   
-   
+
+
    ReDim ResultArray(1 To 2)
    ResultArray(1) = 8
    ResultArray(2) = 9
-   
+
    'Act:
    If Not modArraySupport.ConcatenateArrays(ResultArray, ArrayToAppend) Then _
          GoTo TestFail
-   
+
    'Assert:
    For i = LBound(ResultArray) To UBound(ResultArray)
       Assert.AreEqual CLngPtr(aExpected(i - 1)), CLngPtr(ResultArray(i))
    Next
-   
+
 TestExit:
    Exit Sub
 TestFail:
@@ -241,13 +429,13 @@ Public Sub ConcatenateArrays_LegalLong_ResultsTrueAndResultArray()
    Dim ResultArray() As LongPtr        'MUST be dynamic
    Dim ArrayToAppend(1 To 3) As Integer
    Dim i As LongPtr
-   
+
    '===========================================================================
    Dim aExpected As Variant
    aExpected = Array(8, 9, 10, 111, 112, 113)
    '===========================================================================
-   
-   
+
+
    'Arrange:
    ReDim ResultArray(1 To 3)
    ResultArray(1) = 8
@@ -261,12 +449,12 @@ Public Sub ConcatenateArrays_LegalLong_ResultsTrueAndResultArray()
    'Act:
    If Not modArraySupport.ConcatenateArrays(ResultArray, ArrayToAppend) Then _
          GoTo TestFail
-   
+
    'Assert:
    For i = LBound(ResultArray) To UBound(ResultArray)
       Assert.AreEqual CLngPtr(aExpected(i - 1)), CLngPtr(ResultArray(i))
    Next
-   
+
 TestExit:
    Exit Sub
 TestFail:
@@ -340,36 +528,161 @@ End Sub
 '==============================================================================
 
 '@TestMethod
-Public Sub DemoCopyArray()
+Public Sub CopyArray_UnallocatedSrc_ResultsTrueAndUnchangedDest()
+   On Error GoTo TestFail
+
+   Dim Src() As LongPtr
+   Dim Dest(0) As Integer
+
+   '===========================================================================
+   Dim aExpected As Variant
+   aExpected = Array(50)
+   '===========================================================================
+
+
+   'Arrange:
+   Dest(0) = 50
+
+   'Act:
+   If Not modArraySupport.CopyArray(Src, Dest) Then _
+         GoTo TestFail
+
+   'Assert:
+   Assert.AreEqual aExpected(0), Dest(0)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub CopyArray_IncompatibleDest_ResultsFalse()
+   On Error GoTo TestFail
 
    Dim Src(1 To 2) As LongPtr
    Dim Dest(1 To 2) As Integer
-   Dim Ndx As LongPtr
-   Dim B As Boolean
-   
-   
+
+
+   'Arrange:
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.CopyArray(Src, Dest)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub CopyArray_AllocatedDestLessElementsThenSrc_ResultsTrueAndDestArray()
+   On Error GoTo TestFail
+
+   Dim Src(1 To 3) As LongPtr
+   Dim Dest(10 To 11) As LongPtr
+   Dim i As LongPtr
+
+   '===========================================================================
+   Dim aExpected As Variant
+   aExpected = Array(1, 2)
+   '===========================================================================
+
+
+   'Arrange:
+   Src(1) = 1
+   Src(2) = 2
+   Src(3) = 3
+
+   'Act:
+   If Not modArraySupport.CopyArray(Src, Dest) Then _
+         GoTo TestFail
+
+   'Assert:
+   For i = LBound(Dest) To UBound(Dest)
+      Assert.AreEqual CLngPtr(aExpected(i - 10)), CLngPtr(Dest(i))
+   Next
+
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub CopyArray_AllocatedDestMoreElementsThenSrc_ResultsTrueAndDestArray()
+   On Error GoTo TestFail
+
+   Dim Src(1 To 3) As LongPtr
+   Dim Dest(10 To 13) As LongPtr
+   Dim i As LongPtr
+
+   '===========================================================================
+   Dim aExpected As Variant
+   aExpected = Array(1, 2, 3, 0)
+   '===========================================================================
+
+
+   'Arrange:
+   Src(1) = 1
+   Src(2) = 2
+   Src(3) = 3
+
+   'Act:
+   If Not modArraySupport.CopyArray(Src, Dest) Then _
+         GoTo TestFail
+
+   'Assert:
+   For i = LBound(Dest) To UBound(Dest)
+      Assert.AreEqual CLngPtr(aExpected(i - 10)), CLngPtr(Dest(i))
+   Next
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub CopyArray_NoCompatibilityCheck_ResultsTrueAndDestArrayWithOverflow()
+   On Error GoTo TestFail
+
+   Dim Src(1 To 2) As LongPtr
+   Dim Dest(1 To 2) As Integer
+   Dim i As LongPtr
+
+   '===========================================================================
+   Dim aExpected As Variant
+   aExpected = Array(1234, 0)
+   '===========================================================================
+
+
+   'Arrange:
    Src(1) = 1234
    Src(2) = Rows.Count * 10
 
-   B = modArraySupport.CopyArray(Src, Dest, True)
-   
-   If B = True Then
-      If modArraySupport.IsArrayAllocated(Dest) = True Then
-         For Ndx = LBound(Dest) To UBound(Dest)
-            If IsObject(Dest(Ndx)) = True Then
-Debug.Print CStr(Ndx), "is object"
-            Else
-Debug.Print CStr(Ndx), Dest(Ndx)
-            End If
-         Next Ndx
-      Else
-Debug.Print "Dest is not allocated."
-      End If
-   Else
-Debug.Print "CopyArray returneed False"
-   End If
+   'Act:
+   If Not modArraySupport.CopyArray(Src, Dest, True) Then _
+         GoTo TestFail
 
+   'Assert:
+   For i = LBound(Dest) To UBound(Dest)
+      Assert.AreEqual aExpected(i - 1), Dest(i)
+   Next
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+
+'2do: Add tests with Objects
 
 
 Public Sub DemoCopyArraySubSetToArray()
@@ -382,8 +695,8 @@ Public Sub DemoCopyArraySubSetToArray()
    Dim DestNdx As LongPtr
    Dim B As Boolean
    Dim N As LongPtr
-   
-   
+
+
    For N = LBound(InputArray) To UBound(InputArray)
       InputArray(N) = N * 10
    Next N
@@ -396,10 +709,10 @@ Public Sub DemoCopyArraySubSetToArray()
    StartNdx = 1
    EndNdx = 5
    DestNdx = 3
-   
+
    B = modArraySupport.CopyArraySubSetToArray( _
          InputArray, ResultArray, StartNdx, EndNdx, DestNdx)
-    
+
    If B = True Then
       If modArraySupport.IsArrayAllocated(ResultArray) = True Then
          For N = LBound(ResultArray) To UBound(ResultArray)
@@ -425,16 +738,16 @@ Public Sub DemoCopyNonNothingObjectsToArray()
    Dim ResultArray() As Object
    Dim B As Boolean
    Dim N As LongPtr
-   
-   
-   Set SourceArray(1) = Range("a1")
+
+
+   Set SourceArray(1) = Range("A1")
    Set SourceArray(2) = Range("A2")
    Set SourceArray(3) = Nothing
    Set SourceArray(4) = Nothing
    Set SourceArray(5) = Range("A5")
-   
+
    B = modArraySupport.CopyNonNothingObjectsToArray(SourceArray, ResultArray, False)
-   
+
    If B = True Then
       For N = LBound(ResultArray) To UBound(ResultArray)
 Debug.Print CStr(N), ResultArray(N).Address
@@ -446,16 +759,141 @@ Debug.Print "CopyNonNothingObjectsToArray returned False"
 End Sub
 
 
-Public Sub DemoDataTypeOfArray()
+'==============================================================================
+'unit tests for 'DataTypeOfArray'
+'==============================================================================
 
-   Dim A(1 To 4) As String
-   Dim T As VbVarType
+'@TestMethod
+Public Sub DataTypeOfArray_NoArray_ReturnsMinusOne()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim sTest As String
+   Dim aActual As VbVarType
+
+   '===========================================================================
+   Const aExpected As LongPtr = -1
+   '===========================================================================
 
 
-   T = modArraySupport.DataTypeOfArray(A)
-Debug.Print T
+   'Act:
+   aActual = modArraySupport.DataTypeOfArray(sTest)
 
+   'Assert:
+   Assert.AreEqual aExpected, CLngPtr(aActual)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
+
+
+'@TestMethod
+Public Sub DataTypeOfArray_UnallocatedArray_ReturnsVbDouble()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim A() As Double
+   Dim aActual As VbVarType
+
+   '===========================================================================
+   Const aExpected As LongPtr = vbDouble
+   '===========================================================================
+
+
+   'Act:
+   aActual = modArraySupport.DataTypeOfArray(A)
+
+   'Assert:
+   Assert.AreEqual aExpected, aActual
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub DataTypeOfArray_Test1DStringArray_ReturnsVbString()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim A(1 To 4) As String
+   Dim aActual As VbVarType
+
+   '===========================================================================
+   Const aExpected As LongPtr = vbString
+   '===========================================================================
+
+
+   'Act:
+   aActual = modArraySupport.DataTypeOfArray(A)
+
+   'Assert:
+   Assert.AreEqual aExpected, aActual
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub DataTypeOfArray_Test2DStringArray_ReturnsVbString()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim A(1 To 4, 5 To 6) As String
+   Dim aActual As VbVarType
+
+   '===========================================================================
+   Const aExpected As LongPtr = vbString
+   '===========================================================================
+
+
+   'Act:
+   aActual = modArraySupport.DataTypeOfArray(A)
+
+   'Assert:
+   Assert.AreEqual aExpected, aActual
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub DataTypeOfArray_Test3DStringArray_ReturnsMinusThree()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim A(1 To 4, 5 To 6, 8 To 8) As String
+   Dim aActual As VbVarType
+
+   '===========================================================================
+   Const aExpected As LongPtr = vbString
+   '===========================================================================
+
+
+   'Act:
+   aActual = modArraySupport.DataTypeOfArray(A)
+
+   'Assert:
+   Assert.AreEqual aExpected, aActual
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'2do: Add tests with Objects
 
 
 Public Sub DemoDeleteArrayElement()
@@ -475,7 +913,7 @@ Public Sub DemoDeleteArrayElement()
    Dyn(3) = "ABC"
 
    B = modArraySupport.DeleteArrayElement(Stat, 1, False)
-   
+
    If B = True Then
       For N = LBound(Stat) To UBound(Stat)
 Debug.Print CStr(N), Stat(N)
@@ -486,7 +924,7 @@ Debug.Print "DeleteArrayElement returned false"
 
 
    B = modArraySupport.DeleteArrayElement(Dyn, 2, False)
-   
+
    If B = True Then
       For N = LBound(Dyn) To UBound(Dyn)
 Debug.Print CStr(N), Dyn(N)
@@ -502,13 +940,13 @@ Public Sub DemoFirstNonEmptyStringIndexInArray()
 
    Dim A(1 To 4) As String
    Dim R As LongPtr
-   
-   
+
+
    A(1) = vbNullString
    A(2) = vbNullString
    A(3) = "A"
    A(4) = "B"
-   
+
    R = modArraySupport.FirstNonEmptyStringIndexInArray(A)
 Debug.Print "FirstNonEmptyStringIndexInArray", CStr(R)
 
@@ -520,15 +958,15 @@ Public Sub DemoInsertElementIntoArray()
    Dim Arr() As LongPtr
    Dim N As LongPtr
    Dim B As Boolean
-   
-   
+
+
    ReDim Arr(1 To 10)
    For N = LBound(Arr) To UBound(Arr)
       Arr(N) = N * 10
    Next N
 
    B = modArraySupport.InsertElementIntoArray(Arr, 5, 12345)
-   
+
    If B = True Then
       For N = LBound(Arr) To UBound(Arr)
 Debug.Print CStr(N), Arr(N)
@@ -541,7 +979,7 @@ End Sub
 
 
 Public Sub DemoIsArrayAllDefault()
-   
+
    Dim L(1 To 4) As LongPtr
    Dim Obj(1 To 4) As Object
    Dim B As Boolean
@@ -560,47 +998,380 @@ Debug.Print "IsArrayAllDefault Obj", B
 End Sub
 
 
-Public Sub DemoIsArrayAllNumeric()
-   
-   Dim V(1 To 3) As Variant
-   Dim B As Boolean
-   
-   
-   V(1) = "abc"
-   V(2) = 2
-   V(3) = Empty
-   
-   B = modArraySupport.IsArrayAllNumeric(V, True)
-Debug.Print "IsArrayAllNumeric:", B
+'==============================================================================
+'unit tests for 'IsArrayAllNumeric'
+'==============================================================================
 
+'@TestMethod
+Public Sub IsArrayAllNumeric_NoArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim V As Variant
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllNumeric(V)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
 
-Public Sub DemoIsArrayAllocated()
-   
-   Dim B As Boolean
+'@TestMethod
+Public Sub IsArrayAllNumeric_UnallocatedArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim V() As Variant
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllNumeric(V)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_IncludingNumericStringAllowNumericStringsFalse_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = "100"
+   V(2) = 2
+   V(3) = Empty
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllNumeric(V, False)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_IncludingNumericStringAllowNumericStringsTrue_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = "100"
+   V(2) = 2
+   V(3) = Empty
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsArrayAllNumeric(V, True)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_IncludingNonNumericString_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = "abc"
+   V(2) = 2
+   V(3) = Empty
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllNumeric(V, True)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_Numeric1DVariantArray_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = 123
+   V(2) = 456
+   V(3) = 789
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsArrayAllNumeric(V)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_1DVariantArrayWithObject_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = 123
+   Set V(2) = ThisWorkbook.Worksheets(1).Range("A1")
+   V(3) = 789
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllNumeric(V)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_1DVariantArrayWithUnallocatedEntry_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = 123
+   V(3) = 789
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsArrayAllNumeric(V)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_Numeric2DVariantArray_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3, 4 To 5) As Variant
+
+
+   'Arrange:
+   V(1, 4) = 123
+   V(2, 4) = 456
+   V(3, 4) = 789
+
+   V(1, 5) = -5
+   V(3, 5) = -10
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsArrayAllNumeric(V)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_2DVariantArrayWithObject_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3, 4 To 5) As Variant
+
+
+   'Arrange:
+   V(1, 4) = 123
+   Set V(2, 4) = ThisWorkbook.Worksheets(1).Range("A1")
+   V(3, 4) = 789
+
+   V(1, 5) = -5
+   V(3, 5) = -10
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllNumeric(V)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_1DVariantArrayWithArrayAllowArrayElementsFalse_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = 123
+   V(2) = Array(-5)
+   V(3) = 789
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllNumeric(V)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_1DVariantArrayWithArrayAllowArrayElementsTrue_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = 123
+   V(2) = Array(-5)
+   V(3) = 789
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsArrayAllNumeric(V, , True)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_1DVariantArrayWithArrayAllowArrayElementsTrue_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = 123
+   V(2) = Array(-5, "-5")
+   V(3) = 789
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllNumeric(V, , True)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllNumeric_1DVariantArrayWithArrayAllowNumericStringsTrueAllowArrayElementsTrue_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim V(1 To 3) As Variant
+
+
+   'Arrange:
+   V(1) = 123
+   V(2) = Array(-5, "-5")
+   V(3) = 789
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsArrayAllNumeric(V, True, True)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'==============================================================================
+'unit tests for 'IsArrayAllocated'
+'==============================================================================
+
+'@TestMethod
+Public Sub IsArrayAllocated_AllocatedArray_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
    Dim AllocArray(1 To 3) As Variant
+
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsArrayAllocated(AllocArray)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsArrayAllocated_UnAllocatedArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
    Dim UnAllocArray() As Variant
-   
-   
-   B = modArraySupport.IsArrayAllocated(AllocArray)
-Debug.Print "IsArrayAllocated AllocArray:", B
 
-   B = modArraySupport.IsArrayAllocated(UnAllocArray)
-Debug.Print "IsArrayAllocated UnAllocArray:", B
 
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllocated(UnAllocArray)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
 
 Public Sub DemoIsArrayDynamic()
-   
+
    Dim B As Boolean
    Dim StaticArray(1 To 3) As LongPtr
    Dim DynArray() As LongPtr
-   
-   
+
+
    ReDim DynArray(1 To 3)
-   
+
    B = modArraySupport.IsArrayDynamic(StaticArray)
 Debug.Print "IsArrayDynamic StaticArray:", B
 
@@ -610,34 +1381,16 @@ Debug.Print "IsArrayDynamic DynArray:", B
 End Sub
 
 
-Public Sub DemoIsArrayEmpty()
-
-   Dim EmptyArray() As LongPtr
-   Dim NonEmptyArray() As LongPtr
-   Dim B As Boolean
-
-   
-   ReDim NonEmptyArray(1 To 3)
-   
-   B = modArraySupport.IsArrayEmpty(EmptyArray)
-Debug.Print "IsArrayEmpty: EmptyArray:", B
-
-   B = modArraySupport.IsArrayEmpty(NonEmptyArray)
-Debug.Print "IsArrayEmpty: NonEmptyArray:", B
-
-End Sub
-
-
 Public Sub DemoIsArrayObjects()
-   
+
    Dim V(1 To 3) As Variant
    Dim B As Boolean
-   
-   
+
+
    Set V(1) = Nothing
    Set V(2) = Range("A1")
    V(3) = Range("A1")
-   
+
    B = modArraySupport.IsArrayObjects(V, True)
 Debug.Print "IsArrayObjects With AllowNothing = True:", B
 
@@ -648,13 +1401,13 @@ End Sub
 
 
 Public Sub DemoIsNumericDataType()
-   
+
    Dim V As Variant
    Dim VEmpty As Variant
    Dim S As String
    Dim B As Boolean
-   
-   
+
+
    V = 123
    S = "123"
 
@@ -674,7 +1427,7 @@ Debug.Print "IsNumericDataType:", B
    V = Array("a", "b", "c")
    B = modArraySupport.IsNumericDataType(V)
 Debug.Print "IsNumericDataType:", B
- 
+
 End Sub
 
 
@@ -682,8 +1435,8 @@ Public Sub DemoIsVariantArrayConsistent()
 
    Dim B As Boolean
    Dim V(1 To 3) As Variant
-   
-   
+
+
    Set V(1) = Range("A1")
    Set V(2) = Nothing
    Set V(3) = Range("A3")
@@ -694,37 +1447,21 @@ Debug.Print "IsVariantArrayConsistent:", B
 End Sub
 
 
-Public Sub DemoIsVariantArrayNumeric()
-
-   Dim B As Boolean
-   Dim V(1 To 3) As Variant
-   
-   
-   V(1) = 123
-   Set V(2) = Range("A1")
-   V(3) = 789
-   
-   B = modArraySupport.IsVariantArrayNumeric(V)
-Debug.Print "IsVariantArrayNumeric", B
-
-End Sub
-
-
 Public Sub DemoMoveEmptyStringsToEndOfArray()
-   
+
    Dim B As Boolean
    Dim N As LongPtr
    Dim S(1 To 5) As String
-   
-   
+
+
    S(1) = vbNullString
    S(2) = vbNullString
    S(3) = "C"
    S(4) = "D"
    S(5) = "E"
-   
+
    B = modArraySupport.MoveEmptyStringsToEndOfArray(S)
-   
+
    If B = True Then
       For N = LBound(S) To UBound(S)
          If S(N) = vbNullString Then
@@ -740,23 +1477,85 @@ Debug.Print "MoveEmptyStringsToEndOfArray returned False"
 End Sub
 
 
-Public Sub DemoNumberOfArrayDimensions()
+'==============================================================================
+'unit tests for 'NumberOfArrayDimensions'
+'==============================================================================
 
-   Dim EmptyArray() As LongPtr
-   Dim OneArray(1 To 3) As LongPtr
-   Dim ThreeArray(1 To 3, 1 To 2, 1 To 1)
+'@TestMethod
+Public Sub NumberOfArrayDimensions_UnallocatedArray_ReturnsZero()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr() As LongPtr
    Dim N As LongPtr
 
+   '===========================================================================
+   Const aExpected As LongPtr = 0
+   '===========================================================================
 
-   N = modArraySupport.NumberOfArrayDimensions(EmptyArray)
-Debug.Print "NumberOfArrayDimensions EmptyArray", N
 
-   N = modArraySupport.NumberOfArrayDimensions(OneArray)
-Debug.Print "NumberOfArrayDimensions OneArray", N
+   'Act:
+   N = modArraySupport.NumberOfArrayDimensions(Arr)
 
-   N = modArraySupport.NumberOfArrayDimensions(ThreeArray)
-Debug.Print "NumberOfArrayDimensions ThreeArray", N
+   'Assert:
+   Assert.AreEqual aExpected, N
 
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub NumberOfArrayDimensions_1DArray_ReturnsOne()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr(1 To 3) As LongPtr
+   Dim N As LongPtr
+
+   '===========================================================================
+   Const aExpected As LongPtr = 1
+   '===========================================================================
+
+
+   'Act:
+   N = modArraySupport.NumberOfArrayDimensions(Arr)
+
+   'Assert:
+   Assert.AreEqual aExpected, N
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub NumberOfArrayDimensions_3DArray_ReturnsThree()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr(1 To 3, 1 To 2, 1 To 1)
+   Dim N As LongPtr
+
+   '===========================================================================
+   Const aExpected As LongPtr = 3
+   '===========================================================================
+
+
+   'Act:
+   N = modArraySupport.NumberOfArrayDimensions(Arr)
+
+   'Assert:
+   Assert.AreEqual aExpected, N
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
 
 
@@ -792,9 +1591,9 @@ Public Sub DemoResetVariantArrayToDefaults()
    Set V(3) = Range("A1")
    V(4) = CDec(123)
    V(5) = Null
-   
+
    B = modArraySupport.ResetVariantArrayToDefaults(V)
-   
+
    If B = True Then
       For N = LBound(V) To UBound(V)
          If IsObject(V(N)) = True Then
@@ -819,16 +1618,16 @@ Public Sub DemoReverseArrayInPlace()
    Dim V(1 To 5) As LongPtr
    Dim N As LongPtr
    Dim B As Boolean
-   
-   
+
+
    V(1) = 1
    V(2) = 2
    V(3) = 3
    V(4) = 4
    V(5) = 5
-   
+
    B = modArraySupport.ReverseArrayInPlace(V)
-   
+
    If B = True Then
 Debug.Print "REVERSED ARRAY --------------------------------------"
       For N = LBound(V) To UBound(V)
@@ -844,16 +1643,16 @@ Public Sub DemoReverseArrayOfObjectsInPlace()
    Dim B As Boolean
    Dim N As LongPtr
    Dim V(1 To 5) As Object
-   
-   
+
+
    Set V(1) = Range("A1")
    Set V(2) = Nothing
    Set V(3) = Range("A3")
    Set V(4) = Range("A4")
    Set V(5) = Range("A5")
-   
+
    B = modArraySupport.ReverseArrayOfObjectsInPlace(V)
-   
+
    If B = True Then
 Debug.Print "REVERSED ARRAY --------------------------------------"
       For N = LBound(V) To UBound(V)
@@ -868,20 +1667,20 @@ End Sub
 
 
 Public Sub DemoSetObjectArrayToNothing()
-   
+
    Dim StaticArray(1 To 2) As Range
    Dim DynamicArray(1 To 2) As Range
    Dim B As Boolean
    Dim N As LongPtr
-   
-   
+
+
    Set StaticArray(1) = Range("A1")
    Set StaticArray(2) = Nothing
    Set DynamicArray(1) = Range("A1")
    Set DynamicArray(2) = Range("A2")
-   
+
    B = modArraySupport.SetObjectArrayToNothing(StaticArray)
-   
+
    If B = True Then
       For N = LBound(StaticArray) To UBound(StaticArray)
          If StaticArray(N) Is Nothing Then
@@ -889,10 +1688,10 @@ Debug.Print CStr(N), "is nothing "
          End If
       Next N
    End If
-    
-   
+
+
    B = modArraySupport.SetObjectArrayToNothing(DynamicArray)
-   
+
    If B = True Then
       For N = LBound(DynamicArray) To UBound(DynamicArray)
          If DynamicArray(N) Is Nothing Then
@@ -911,16 +1710,16 @@ Public Sub DemoVectorsToArray()
    Dim R As LongPtr
    Dim C As LongPtr
    Dim S As String
-   
+
    Dim AA()
    Dim BB()
    Dim CC() As String
-   
-   
+
+
    ReDim AA(0 To 2)
    ReDim BB(1 To 5)
    ReDim CC(2 To 5)
-    
+
 
    AA(0) = 16
    AA(1) = 2
@@ -935,9 +1734,9 @@ Public Sub DemoVectorsToArray()
    CC(3) = "B"
    CC(4) = "C"
    CC(5) = "D"
-   
+
    B = modArraySupport.VectorsToArray(A, AA, BB, CC)
-   
+
    If B = True Then
       For R = LBound(A, 1) To UBound(A, 1)
          S = vbNullString
@@ -989,7 +1788,7 @@ Debug.Print "LBound1: " & CStr(LBound(A, 1)) & " Ubound1: " & CStr(UBound(A, 1))
 Debug.Print S
    Next RowNdx
 Debug.Print "Transposed Array:"
-   
+
    Res = modArraySupport.TransposeArray(A, B)
 Debug.Print "LBound1: " & CStr(LBound(B, 1)) & " Ubound1: " & CStr(UBound(B, 1)), _
             "LBound2: " & CStr(LBound(B, 2)) & " UBound2: " & CStr(UBound(B, 2))
@@ -1045,7 +1844,7 @@ Public Sub DemoChangeBoundsOfArray()
 
    NewLB = 20
    NewUB = 25
-   
+
    B = modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB)
 
 Debug.Print "New LBound: " & CStr(LBound(Arr)), "New UBound: " & CStr(UBound(Arr))
@@ -1084,8 +1883,8 @@ Public Sub DemoIsArraySorted()
    Dim L(1 To 3) As LongPtr
    Dim R As Variant
    Dim Desc As Boolean
-   
-   
+
+
    Desc = True
    S(1) = "B"
    S(2) = "B"
@@ -1094,9 +1893,9 @@ Public Sub DemoIsArraySorted()
    L(1) = 1
    L(2) = 2
    L(3) = 3
-   
+
    R = modArraySupport.IsArraySorted(S, Desc)
-   
+
    If IsNull(R) = True Then
 Debug.Print "Error From IsArraySorted"
    Else
@@ -1118,13 +1917,13 @@ Public Sub DemoCombineTwoDArrays()
    Dim S As String
    Dim V As Variant
    Dim E As Variant
-   
+
    Dim A() As String
    Dim B() As String
    Dim C() As String
    Dim D() As String
-   
-   
+
+
    'Ensure it works on 1-Based arrays
    ReDim A(1 To 2, 1 To 2)
    ReDim B(1 To 2, 1 To 2)
@@ -1148,16 +1947,16 @@ Debug.Print "--- 1 BASED ARRAY -----------------------"
    A(0, 1) = "b"
    A(1, 0) = "c"
    A(1, 1) = "d"
-   
+
    B(0, 0) = "e"
    B(0, 1) = "f"
    B(1, 0) = "g"
    B(1, 1) = "h"
-   
+
 Debug.Print "--- 0 BASED ARRAY -----------------------"
    V = modArraySupport.CombineTwoDArrays(A, B)
    Call DebugPrint2DArray(V)
-   
+
    'Ensure it works on Positive-Based arrays
    ReDim A(5 To 6, 5 To 6)
    ReDim B(5 To 6, 5 To 6)
@@ -1170,11 +1969,11 @@ Debug.Print "--- 0 BASED ARRAY -----------------------"
    B(5, 6) = "f"
    B(6, 5) = "g"
    B(6, 6) = "h"
-   
+
 Debug.Print "--- POSITIVE BASED ARRAY -----------------------"
    V = modArraySupport.CombineTwoDArrays(A, B)
    Call DebugPrint2DArray(V)
-   
+
    'Ensure it works on Negative-Based arrays
    ReDim A(-6 To -5, -6 To -5)
    ReDim B(-6 To -5, -6 To -5)
@@ -1187,22 +1986,22 @@ Debug.Print "--- POSITIVE BASED ARRAY -----------------------"
    B(-6, -5) = "f"
    B(-5, -6) = "g"
    B(-5, -5) = "h"
-    
+
 Debug.Print "--- NEGATIVE BASED ARRAY -----------------------"
    V = modArraySupport.CombineTwoDArrays(A, B)
    Call DebugPrint2DArray(V)
-   
+
    'Ensure Nesting Works
    ReDim A(1 To 2, 1 To 2)
    ReDim B(1 To 2, 1 To 2)
    ReDim C(1 To 2, 1 To 2)
    ReDim D(1 To 2, 1 To 2)
-    
+
    A(1, 1) = "a"
    A(1, 2) = "b"
    A(2, 1) = "c"
    A(2, 2) = "d"
-    
+
    B(1, 1) = "e"
    B(1, 2) = "f"
    B(2, 1) = "g"
@@ -1212,7 +2011,7 @@ Debug.Print "--- NEGATIVE BASED ARRAY -----------------------"
    C(1, 2) = "j"
    C(2, 1) = "k"
    C(2, 2) = "l"
-    
+
    D(1, 1) = "m"
    D(1, 2) = "n"
    D(2, 1) = "o"
@@ -1321,14 +2120,14 @@ End Sub
 
 
 Public Sub DemoSwapArrayRows()
-   
+
    Dim R As LongPtr
    Dim C As LongPtr
    Dim S As String
    Dim A(1 To 3, 1 To 2)
    Dim B()
-   
-   
+
+
    A(1, 1) = "a"
    A(1, 2) = "b"
    A(2, 1) = "c"
@@ -1360,14 +2159,14 @@ End Sub
 
 
 Public Sub DemoSwapArrayColumns()
-   
+
    Dim R As LongPtr
    Dim C As LongPtr
    Dim S As String
    Dim A(1 To 3, 1 To 2)
    Dim B()
-   
-   
+
+
    A(1, 1) = "a"
    A(1, 2) = "b"
    A(2, 1) = "c"
@@ -1404,17 +2203,17 @@ Public Sub DemoGetColumn()
    Dim Result() As LongPtr
    Dim B As Boolean
    Dim N As LongPtr
-   
-   
+
+
    InputArr(1, 1) = 1
    InputArr(1, 2) = 2
    InputArr(1, 3) = 3
    InputArr(2, 1) = 4
    InputArr(2, 2) = 5
    InputArr(2, 3) = 6
-   
+
    B = modArraySupport.GetColumn(InputArr, Result, 3)
-   
+
    If B = True Then
       For N = LBound(Result) To UBound(Result)
 Debug.Print Result(N)
@@ -1432,17 +2231,17 @@ Public Sub DemoGetRow()
    Dim Result() As LongPtr
    Dim B As Boolean
    Dim N As LongPtr
-   
-   
+
+
    InputArr(1, 1) = 1
    InputArr(1, 2) = 2
    InputArr(1, 3) = 3
    InputArr(2, 1) = 4
    InputArr(2, 2) = 5
    InputArr(2, 3) = 6
-   
+
    B = modArraySupport.GetRow(InputArr, Result, 2)
-   
+
    If B = True Then
       For N = LBound(Result) To UBound(Result)
 Debug.Print Result(N)
