@@ -154,10 +154,10 @@ End Sub
 '  compared with 'StrComp'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function CompareArrays( _
-   Array1 As Variant, _
-   Array2 As Variant, _
-   ResultArray As Variant, _
-   Optional CompareMode As VbCompareMethod = vbTextCompare _
+   ByVal Array1 As Variant, _
+   ByVal Array2 As Variant, _
+   ByRef ResultArray As Variant, _
+   Optional ByVal CompareMode As VbCompareMethod = vbTextCompare _
       ) As Boolean
 Attribute CompareArrays.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -253,9 +253,9 @@ End Function
 'Both 'ResultArray' and 'ArrayToAppend' must be one-dimensional arrays.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ConcatenateArrays( _
-   ResultArray As Variant, _
-   ArrayToAppend As Variant, _
-   Optional NoCompatabilityCheck As Boolean = False _
+   ByRef ResultArray As Variant, _
+   ByVal ArrayToAppend As Variant, _
+   Optional ByVal NoCompatabilityCheck As Boolean = False _
       ) As Boolean
 Attribute ConcatenateArrays.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -393,9 +393,9 @@ End Function
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'SP: - changed order of arguments (to be consistent: "Source" first, then "Dest")
 Public Function CopyArray( _
-   SourceArray As Variant, _
-   DestinationArray As Variant, _
-   Optional NoCompatabilityCheck As Boolean = False _
+   ByVal SourceArray As Variant, _
+   ByRef DestinationArray As Variant, _
+   Optional ByVal NoCompatabilityCheck As Boolean = False _
       ) As Boolean
 Attribute CopyArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -735,7 +735,7 @@ End Function
 'Returns -1 if 'Arr' is not an array.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function DataTypeOfArray( _
-   Arr As Variant _
+   ByVal Arr As Variant _
       ) As VbVarType
 Attribute DataTypeOfArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -1033,9 +1033,9 @@ End Function
 'can be stated, if (sub-)arrays should also be tested for numeric data.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function IsArrayAllNumeric( _
-   Arr As Variant, _
-   Optional AllowNumericStrings As Boolean = False, _
-   Optional AllowArrayElements As Boolean = False _
+   ByVal Arr As Variant, _
+   Optional ByVal AllowNumericStrings As Boolean = False, _
+   Optional ByVal AllowArrayElements As Boolean = False _
       ) As Boolean
 Attribute IsArrayAllNumeric.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -1123,7 +1123,7 @@ End Function
 '  - NumElements
 '  - SetObjectArrayToNothing
 Public Function IsArrayAllocated( _
-   Arr As Variant _
+   ByVal Arr As Variant _
       ) As Boolean
 Attribute IsArrayAllocated.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -1591,7 +1591,7 @@ End Function
 '  - TransposeArray
 '  - VectrosToArray
 Public Function NumberOfArrayDimensions( _
-   Arr As Variant _
+   ByVal Arr As Variant _
       ) As LongPtr
 Attribute NumberOfArrayDimensions.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -1892,8 +1892,8 @@ End Function
 '  - ConcatenateArrays
 '  - CopyArray
 Public Function AreDataTypesCompatible( _
-   SourceVar As Variant, _
-   DestVar As Variant _
+   ByVal SourceVar As Variant, _
+   ByVal DestVar As Variant _
       ) As Boolean
 Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -1908,8 +1908,8 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n19"
    AreDataTypesCompatible = False
    
    'If one variable is an array and the other is not an array, they are incompatible
-   If ((IsArray(DestVar) = True) And (IsArray(SourceVar) = False) Or _
-       (IsArray(DestVar) = False) And (IsArray(SourceVar) = True)) Then
+   If (IsArray(SourceVar) And Not IsArray(DestVar)) Or _
+       (Not IsArray(SourceVar) And IsArray(DestVar)) Then
       Exit Function
    End If
    
@@ -2088,16 +2088,16 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n19"
 End Sub
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'TransposeArray
-'This transposes a two-dimensional array. It returns True if successful or
-'False if an error occurs. InputArr must be two-dimensions. OutputArr must be
-'a dynamic array. It will be Erased and resized, so any existing content will
-'be destroyed.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This transposes a two-dimensional array. It returns 'True' if successful or
+''False' if an error occurs. 'InputArr' must be two-dimensional. 'OutputArr'
+'must be a dynamic array. It will be erased and resized, so any existing
+'content will be destroyed.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function TransposeArray( _
-   InputArr As Variant, _
-   OutputArr As Variant _
+   ByVal InputArr As Variant, _
+   ByRef OutputArr As Variant _
       ) As Boolean
 Attribute TransposeArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -2113,24 +2113,23 @@ Attribute TransposeArray.VB_ProcData.VB_Invoke_Func = " \n19"
    TransposeArray = False
    
    If Not IsArray(InputArr) Then Exit Function
-   If Not IsArray(OutputArr) Then Exit Function
-   If Not IsArrayDynamic(OutputArr) Then Exit Function
    If NumberOfArrayDimensions(InputArr) <> 2 Then Exit Function
+   If Not IsArrayDynamic(OutputArr) Then Exit Function
    
-   'Get the Lower and Upper bounds of InputArr
+   'Get the Lower and Upper bounds of 'InputArr'
    LB1 = LBound(InputArr, 1)
    LB2 = LBound(InputArr, 2)
    UB1 = UBound(InputArr, 1)
    UB2 = UBound(InputArr, 2)
    
-   'Erase and ReDim OutputArr
+   'Erase and 'ReDim OutputArr'
+   'Note the that the 'LBound' and 'UBound' values are preserved.
    Erase OutputArr
-   'Redim the Output array. Not the that the LBound and UBound values are preserved.
-   ReDim OutputArr(LB2 To LB2 + UB2 - LB2, LB1 To LB1 + UB1 - LB1)
-   'Loop through the elemetns of InputArr and put each value in the proper
-   'element of the tranposed array
-   For RowNdx = LBound(InputArr, 2) To UBound(InputArr, 2)
-      For ColNdx = LBound(InputArr, 1) To UBound(InputArr, 1)
+   ReDim OutputArr(LB2 To UB2, LB1 To UB1)
+   'Loop through the elements of 'InputArr' and put each value in the proper
+   'element of the transposed array
+   For RowNdx = LB2 To UB2
+      For ColNdx = LB1 To UB1
          OutputArr(RowNdx, ColNdx) = InputArr(ColNdx, RowNdx)
       Next
    Next
@@ -2250,20 +2249,19 @@ Attribute VectorsToArray.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'ChangeBoundsOfArray
-'This function changes the upper and lower bounds of the specified
-'array. InputArr MUST be a single-dimensional dynamic array.
-'If the new size of the array (NewUpperBound - NewLowerBound + 1)
-'is greater than the original array, the unused elements on
-'right side of the array are the default values for the data type
-'of the array. If the new size is less than the original size,
-'only the first (left-most) N elements are included in the new array.
-'The elements of the array may be simple variables (Strings, Longs, etc.),
-'Object, or Arrays. User-Defined Types are not supported.
-'
+'This function changes the upper and lower bounds of the specified array.
+''InputArr' MUST be a single-dimensional dynamic array.
+'If the new size of the array (NewUpperBound - NewLowerBound + 1) is greater
+'than the original array, the unused elements on the right side of the array
+'are the default values for the data type of the array. If the new size is less
+'than the original size, only the first (left-most) 'N' elements are included
+'in the new array.
+'The elements of the array may be simple variables ('String's, 'Long's, etc.),
+'objects, or arrays. User-Defined Types are not supported.
 'The function returns True if successful, False otherwise.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '2do: make 'NewUpperBound' optional and use size of 'InputArr' to calculate
 '     'NewUpperBound' if not given
 '2do: better name would be 'ChangeBoundsOfVector', because 'InputArr' has to be
@@ -2286,22 +2284,20 @@ Attribute ChangeBoundsOfArray.VB_ProcData.VB_Invoke_Func = " \n19"
    ChangeBoundsOfArray = False
    
    If NewLowerBound > NewUpperBound Then Exit Function
-   If Not IsArray(InputArr) Then Exit Function
    If Not IsArrayDynamic(InputArr) Then Exit Function
-   If Not IsArrayAllocated(InputArr) Then Exit Function
    If NumberOfArrayDimensions(InputArr) <> 1 Then Exit Function
    
-   'We need to save the IsObject status of the first element of the InputArr
-   'to properly handle the Empty variables is we are making the array larger
+   'We need to save the 'IsObject' status of the first element of 'InputArr'
+   'to properly handle 'Empty' variables if we are making the array larger
    'than it was before.
    FirstIsObject = IsObject(InputArr(LBound(InputArr)))
    
    
-   'Resize TempArr and save the values in InputArr in TempArr. TempArr will
-   'have an LBound of 1 and a UBound of the size of
+   'Resize 'TempArr' and save the values in 'InputArr' in 'TempArr'. 'TempArr'
+   'will have an LBound of 1 and a UBound of the size of
    '(NewUpperBound - NewLowerBound +1)
    ReDim TempArr(1 To (NewUpperBound - NewLowerBound + 1))
-   'Load up TempArr
+   'Load up 'TempArr'
    TempNdx = 0
    For InNdx = LBound(InputArr) To UBound(InputArr)
       TempNdx = TempNdx + 1
@@ -2320,8 +2316,8 @@ Attribute ChangeBoundsOfArray.VB_ProcData.VB_Invoke_Func = " \n19"
       End If
    Next
    
-   'Now, Erase InputArr, resize it to the new bounds, and load up the values
-   'from TempArr to the new InputArr
+   'Now, erase 'InputArr', resize it to the new bounds, and load up the values
+   'from 'TempArr' to the new 'InputArr'
    Erase InputArr
    ReDim InputArr(NewLowerBound To NewUpperBound)
    OutNdx = LBound(InputArr)
