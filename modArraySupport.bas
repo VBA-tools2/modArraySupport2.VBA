@@ -2,6 +2,9 @@ Attribute VB_Name = "modArraySupport"
 
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 '2do:
+'- check remaining instances of '(1 to' and 'to 1)'
+'  should this remain here or better be removed and at top it should be set
+'      Option Base 1
 '- recheck `ByRef' in `modArraySupport'
 '- rename 'NoCompatabilityCheck' (rule ...)
 '- refactor
@@ -491,6 +494,9 @@ End Function
 'array and it is not large enough to copy all the elements, no elements are
 'copied and the function returns 'False'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'2do: - a better name might be 'CopyVectorSubSetToVector' since only Vectors are
+'       allowed
+'     - add type compatibility checking (as optional argument)?
 Public Function CopyArraySubSetToArray( _
    InputArray As Variant, _
    ResultArray As Variant, _
@@ -502,7 +508,11 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim SrcNdx As LongPtr
    Dim DestNdx As LongPtr
+   Dim LBoundOrgResultArray As LongPtr
+   Dim UBoundOrgResultArray As LongPtr
    Dim NumElementsToCopy As LongPtr
+   Dim FinalIndexToCopyInResultArray As LongPtr
+   Dim TempArray() As Variant
    
    
    'Set the default return value
@@ -511,7 +521,7 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
    If Not IsArray(InputArray) Then Exit Function
    If Not IsArray(ResultArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
-   'Ensure ResultArray is unallocated or single dimensional
+   'Ensure 'ResultArray' is unallocated or single dimensional
    If NumberOfArrayDimensions(ResultArray) > 1 Then Exit Function
    
    'Ensure the bounds and indexes are valid
@@ -520,49 +530,75 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
    If FirstElementToCopy > LastElementToCopy Then Exit Function
    
    
-   'Calculate the number of elements we'll copy from InputArray to ResultArray
+   'Store bounds of (original) 'ResultArray'
+      'in case 'ResultArray' is unallocated and thus has no bounds
+      On Error Resume Next
+   LBoundOrgResultArray = LBound(ResultArray)
+   UBoundOrgResultArray = UBound(ResultArray)
+      On Error GoTo 0
+   
+   'Calculate the number of elements we'll copy from 'InputArray' to 'ResultArray'
    NumElementsToCopy = LastElementToCopy - FirstElementToCopy + 1
    
+   'Calculate the final element/index to copy in 'ResultArray'
+   FinalIndexToCopyInResultArray = DestinationElement + NumElementsToCopy - 1
+   
    If Not IsArrayDynamic(ResultArray) Then
-      If (DestinationElement + NumElementsToCopy - 1) > UBound(ResultArray) Then
-         'ResultArray is static and can't be resized.
+      If (FirstElementToCopy < LBoundOrgResultArray) Or _
+            (FinalIndexToCopyInResultArray <= UBoundOrgResultArray) Then
+         ''ResultArray' is static and can't be resized.
          'There is not enough room in the array to copy all the data.
          Exit Function
       End If
-   'ResultArray is dynamic and can be resized
+   ''ResultArray' is dynamic and can be resized
    Else
       'Test whether we need to resize the array, and resize it if required
       If Not IsArrayAllocated(ResultArray) Then
-         'ResultArray is unallocated. Resize it to
-         'DestinationElement + NumElementsToCopy - 1.
-         'This provides empty elements to the left of the DestinationElement
-         'and room to copy NumElementsToCopy.
-         ReDim ResultArray(1 To DestinationElement + NumElementsToCopy - 1)
-      'ResultArray is allocated.
-      Else
-         'If there isn't room enough in ResultArray to hold NumElementsToCopy
-         'starting at DestinationElement, we need to resize the array.
-         If (DestinationElement + NumElementsToCopy - 1) > UBound(ResultArray) Then
-            If DestinationElement + NumElementsToCopy > UBound(ResultArray) Then
-               'Resize the ResultArray.
-               If NumElementsToCopy + DestinationElement > UBound(ResultArray) Then
-                  ReDim Preserve ResultArray(LBound(ResultArray) To UBound(ResultArray) + DestinationElement - 1)
-               Else
-                  ReDim Preserve ResultArray(LBound(ResultArray) To UBound(ResultArray) + NumElementsToCopy)
-               End If
-            Else
-               'Resize the array to hold NumElementsToCopy starting at
-               'DestinationElement.
-               ReDim Preserve ResultArray(LBound(ResultArray) To UBound(ResultArray) + NumElementsToCopy - DestinationElement + 2)
-            End If
+         ''ResultArray' is unallocated. Resize it to
+         ''FinalIndexToCopyInResultArray'.
+         'This provides empty elements to the left of the 'DestinationElement'
+         'and room to copy 'NumElementsToCopy',
+         'if 'DestinationElement' is larger than 'Option Base' ...
+         If DestinationElement > 1 Then
+            ReDim ResultArray(1 To FinalIndexToCopyInResultArray)
+         '... and maybe empty elements to the right, if the largest element is
+         'smaller than 'Option Base'
+         ElseIf FinalIndexToCopyInResultArray < 1 Then
+            ReDim ResultArray(DestinationElement To 1)
          Else
-            'The ResultArray is large enough to hold NumberOfElementToCopy
-            'starting at DestinationElement. No need to resize the array.
+            ReDim ResultArray(DestinationElement To FinalIndexToCopyInResultArray)
+         End If
+      ''ResultArray' is allocated.
+      Else
+         If (DestinationElement >= LBoundOrgResultArray) And _
+               (FinalIndexToCopyInResultArray <= UBoundOrgResultArray) Then
+            'nothing to do in this case
+         ElseIf (DestinationElement <= LBoundOrgResultArray) And _
+               (FinalIndexToCopyInResultArray >= UBoundOrgResultArray) Then
+            'in this case all elements of 'ResultArray' will be overwritten
+            'just 'ReDim ResultArray'
+            ReDim ResultArray(DestinationElement To FinalIndexToCopyInResultArray)
+         ElseIf DestinationElement < LBoundOrgResultArray Then
+            'when we ReDim the 'LBound' the data are shifted to the new indexes
+            'as well, e.g. a former 'DestinationArray(0) = 10' would become
+            ''DestinationArray(-2) = 10' if 'DestinationElement = -2' etc.
+            'Thus, we have to restore the elements that are not overwritten.
+
+            'before 'ReDim'ming 'ResultArray' make a dummy copy of it
+            If Not CopyArray(ResultArray, TempArray) Then Exit Function
+            ReDim Preserve ResultArray(DestinationElement To UBoundOrgResultArray)
+
+            'only copy the elements back that will not be overwritten
+            For DestNdx = FinalIndexToCopyInResultArray + 1 To UBoundOrgResultArray
+               ResultArray(DestNdx) = TempArray(DestNdx)
+            Next
+         ElseIf FinalIndexToCopyInResultArray > UBoundOrgResultArray Then
+            ReDim Preserve ResultArray(LBoundOrgResultArray To FinalIndexToCopyInResultArray)
          End If
       End If
    End If
    
-   'Copy the elements from InputArray to ResultArray.
+   'Copy the elements from 'InputArray' to 'ResultArray'.
    'Note that there is no type compatibility checking when copying the elements.
    DestNdx = DestinationElement
    For SrcNdx = FirstElementToCopy To LastElementToCopy
