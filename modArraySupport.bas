@@ -15,6 +15,10 @@ Attribute VB_Name = "modArraySupport"
 '     If ... Then Exit Function
 '- create unit tests for these functions
 '  (get example arrays from web sites referring to array stuff)
+'- standardize 'InputArr' <--> 'Arr' <--> SourceArray/ResultArray
+'  --> is there some rule that one of the first is only used when
+'      one of them is only used as 'ByVal' or used as Source and Dest (ByRef)?
+'- test if functions work for objects as well
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -359,26 +363,26 @@ End Function
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'CopyArray
-'This function copies the contents of 'SourceArray' to the 'DestinationaArray'.
-'Both 'SourceArray' and 'DestinationArray' may be either static or dynamic and
+'This function copies the contents of 'SourceArray' to the 'ResultArray'.
+'Both 'SourceArray' and 'ResultArray' may be either static or dynamic and
 'either or both may be unallocated.
 '
-'If 'DestinationArray' is dynamic, it is resized to match 'SourceArray'. The
-''LBound' and 'UBound' of 'DestinationArray' will be the same as 'SourceArray',
-'and all elements of 'SourceArray' will be copied to 'DestinationArray'.
+'If 'ResultArray' is dynamic, it is resized to match 'SourceArray'. The
+''LBound' and 'UBound' of 'ResultArray' will be the same as 'SourceArray',
+'and all elements of 'SourceArray' will be copied to 'ResultArray'.
 '
-'If 'DestinationArray' is static and has more elements than 'SourceArray', all
-'of 'SourceArray' is copied to 'DestinationArray' and the right-most elements
-'of 'DestinationArray' are left intact.
+'If 'ResultArray' is static and has more elements than 'SourceArray', all
+'of 'SourceArray' is copied to 'ResultArray' and the right-most elements
+'of 'ResultArray' are left intact.
 '
-'If 'DestinationArray' is static and has fewer elements that 'SourceArray',
+'If 'ResultArray' is static and has fewer elements that 'SourceArray',
 'only the left-most elements of 'SourceArray' are copied to fill out
-''DestinationArray'.
+''ResultArray'.
 '
-'If 'SourceArray' is an unallocated array, 'DestinationArray' remains unchanged
+'If 'SourceArray' is an unallocated array, 'ResultArray' remains unchanged
 'and the procedure terminates.
 '
-'If both 'SourceArray' and 'DestinationArray' are unallocated, no changes are
+'If both 'SourceArray' and 'ResultArray' are unallocated, no changes are
 'made to either array and the procedure terminates.
 '
 ''SourceArray' may contain any type of data, including 'Object's and 'Object's
@@ -392,33 +396,33 @@ End Function
 ''NoCompatabilityCheck' parameter to 'True'. Note that you may lose information
 'during data conversion (e.g., losing decimal places when converting a 'Double'
 'to a 'Long') or you may get an overflow (storing a 'Long' in an 'Integer')
-'which will result in that element in 'DestinationArray' having a value of 0.
+'which will result in that element in 'ResultArray' having a value of 0.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'SP: - changed order of arguments (to be consistent: "Source" first, then "Dest")
+'SP: - changed order of arguments (to be consistent: "Source" first, then "Result")
 Public Function CopyArray( _
    ByVal SourceArray As Variant, _
-   ByRef DestinationArray As Variant, _
+   ByRef ResultArray As Variant, _
    Optional ByVal NoCompatabilityCheck As Boolean = False _
       ) As Boolean
 Attribute CopyArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim SNdx As LongPtr
-   Dim DNdx As LongPtr
+   Dim SrcNdx As LongPtr
+   Dim ResNdx As LongPtr
    
    
    'Set the default return value
    CopyArray = False
    
-   If Not IsArray(DestinationArray) Then Exit Function
+   If Not IsArray(ResultArray) Then Exit Function
    If Not IsArray(SourceArray) Then Exit Function
    
    'Ensure both arrays are single dimensional
    '0 indicates an unallocated array, which is allowed.
    If NumberOfArrayDimensions(SourceArray) > 1 Then Exit Function
-   If NumberOfArrayDimensions(DestinationArray) > 1 Then Exit Function
+   If NumberOfArrayDimensions(ResultArray) > 1 Then Exit Function
    
-   'If 'SourceArray' is not allocated, leave 'DestinationArray' intact and
-   'return a result of 'True'.
+   'If 'SourceArray' is not allocated, leave 'ResultArray' intact and return a
+   'result of 'True'.
    If Not IsArrayAllocated(SourceArray) Then
       CopyArray = True
       Exit Function
@@ -427,53 +431,53 @@ Attribute CopyArray.VB_ProcData.VB_Invoke_Func = " \n19"
    If NoCompatabilityCheck = False Then
       'Ensure both arrays are the same type or compatible data types. See the
       'function 'AreDataTypesCompatible' for information about compatible types.
-      If Not AreDataTypesCompatible(SourceArray, DestinationArray) Then
+      If Not AreDataTypesCompatible(SourceArray, ResultArray) Then
          Exit Function
       End If
       'If one array is an array of objects, ensure the other contains all
       'objects (or 'Nothing')
-      If VarType(DestinationArray) - vbArray = vbObject Then
+      If VarType(ResultArray) - vbArray = vbObject Then
          If IsArrayAllocated(SourceArray) Then
-            For SNdx = LBound(SourceArray) To UBound(SourceArray)
-               If Not IsObject(SourceArray(SNdx)) Then Exit Function
+            For SrcNdx = LBound(SourceArray) To UBound(SourceArray)
+               If Not IsObject(SourceArray(SrcNdx)) Then Exit Function
             Next
          End If
       End If
    End If
    
-   'If both arrays are allocated, copy from 'SourceArray' to 'DestinationArray'.
-   'If 'SourceArray' is smaller that 'DestinationArray', the right-most elements
-   'of 'DestinationArray' are left unchanged. If 'SourceArray' is larger than
-   ''DestinationArray', the right most elements of 'SourceArray' are not copied.
-   If IsArrayAllocated(DestinationArray) Then
-      DNdx = LBound(DestinationArray)
+   'If both arrays are allocated, copy from 'SourceArray' to 'ResultArray'.
+   'If 'SourceArray' is smaller that 'ResultArray', the right-most elements
+   'of 'ResultArray' are left unchanged. If 'SourceArray' is larger than
+   ''ResultArray', the right most elements of 'SourceArray' are not copied.
+   If IsArrayAllocated(ResultArray) Then
+      ResNdx = LBound(ResultArray)
       On Error Resume Next
-      For SNdx = LBound(SourceArray) To UBound(SourceArray)
-         'SP: changed 'SourceArray(DNdx)' to 'SourceArray(SNdx)' two times
+      For SrcNdx = LBound(SourceArray) To UBound(SourceArray)
+         'SP: changed 'SourceArray(ResNdx)' to 'SourceArray(SrcNdx)' two times
          '    (otherwise the function description makes no sense
          '     --> this was a bug)
-         If IsObject(SourceArray(SNdx)) Then
-            Set DestinationArray(DNdx) = SourceArray(SNdx)
+         If IsObject(SourceArray(SrcNdx)) Then
+            Set ResultArray(ResNdx) = SourceArray(SrcNdx)
          Else
-            DestinationArray(DNdx) = SourceArray(SNdx)
+            ResultArray(ResNdx) = SourceArray(SrcNdx)
          End If
-         DNdx = DNdx + 1
-         If DNdx > UBound(DestinationArray) Then
+         ResNdx = ResNdx + 1
+         If ResNdx > UBound(ResultArray) Then
             Exit For
          End If
       Next
       On Error GoTo 0
-   'If (only) 'DestinationArray' is not allocated, 'Redim DestinationArray' to
+   'If (only) 'ResultArray' is not allocated, 'Redim ResultArray' to
    'the same size as 'SourceArray' and copy the elements from 'SourceArray' to
-   ''DestinationArray'.
+   ''ResultArray'.
    Else
       On Error Resume Next
-      ReDim DestinationArray(LBound(SourceArray) To UBound(SourceArray))
-      For SNdx = LBound(SourceArray) To UBound(SourceArray)
-         If IsObject(SourceArray(SNdx)) Then
-            Set DestinationArray(SNdx) = SourceArray(SNdx)
+      ReDim ResultArray(LBound(SourceArray) To UBound(SourceArray))
+      For SrcNdx = LBound(SourceArray) To UBound(SourceArray)
+         If IsObject(SourceArray(SrcNdx)) Then
+            Set ResultArray(SrcNdx) = SourceArray(SrcNdx)
          Else
-            DestinationArray(SNdx) = SourceArray(SNdx)
+            ResultArray(SrcNdx) = SourceArray(SrcNdx)
          End If
       Next
       On Error GoTo 0
@@ -486,9 +490,10 @@ End Function
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'CopyArraySubSetToArray
-'This function copies elements of 'InputArray' to 'ResultArray'. It takes the
+'This function copies elements of 'SourceArray' to 'ResultArray'. It takes the
 'elements from 'FirstElementToCopy' to 'LastElementToCopy' (inclusive) from
-''InputArray' and copies them to 'ResultArray', starting at 'DestinationElement'.
+''SourceArray' and copies them to 'ResultArray', starting at
+''DestinationElement'.
 'Existing data in 'ResultArray' will be overwrittten. If 'ResultArray' is a
 'dynamic array, it will be resized if needed. If 'ResultArray' is a static
 'array and it is not large enough to copy all the elements, no elements are
@@ -498,7 +503,7 @@ End Function
 '       allowed
 '     - add type compatibility checking (as optional argument)?
 Public Function CopyArraySubSetToArray( _
-   InputArray As Variant, _
+   SourceArray As Variant, _
    ResultArray As Variant, _
    FirstElementToCopy As LongPtr, _
    LastElementToCopy As LongPtr, _
@@ -507,7 +512,7 @@ Public Function CopyArraySubSetToArray( _
 Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim SrcNdx As LongPtr
-   Dim DestNdx As LongPtr
+   Dim ResNdx As LongPtr
    Dim LBoundOrgResultArray As LongPtr
    Dim UBoundOrgResultArray As LongPtr
    Dim NumElementsToCopy As LongPtr
@@ -518,15 +523,14 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
    'Set the default return value
    CopyArraySubSetToArray = False
    
-   If Not IsArray(InputArray) Then Exit Function
+   If Not IsArray(SourceArray) Then Exit Function
    If Not IsArray(ResultArray) Then Exit Function
-   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
-   'Ensure 'ResultArray' is unallocated or single dimensional
+   If NumberOfArrayDimensions(SourceArray) <> 1 Then Exit Function
    If NumberOfArrayDimensions(ResultArray) > 1 Then Exit Function
    
    'Ensure the bounds and indexes are valid
-   If FirstElementToCopy < LBound(InputArray) Then Exit Function
-   If LastElementToCopy > UBound(InputArray) Then Exit Function
+   If FirstElementToCopy < LBound(SourceArray) Then Exit Function
+   If LastElementToCopy > UBound(SourceArray) Then Exit Function
    If FirstElementToCopy > LastElementToCopy Then Exit Function
    
    
@@ -537,7 +541,7 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
    UBoundOrgResultArray = UBound(ResultArray)
       On Error GoTo 0
    
-   'Calculate the number of elements we'll copy from 'InputArray' to 'ResultArray'
+   'Calculate the number of elements we'll copy from 'SourceArray' to 'ResultArray'
    NumElementsToCopy = LastElementToCopy - FirstElementToCopy + 1
    
    'Calculate the final element/index to copy in 'ResultArray'
@@ -580,8 +584,8 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
             ReDim ResultArray(DestinationElement To FinalIndexToCopyInResultArray)
          ElseIf DestinationElement < LBoundOrgResultArray Then
             'when we ReDim the 'LBound' the data are shifted to the new indexes
-            'as well, e.g. a former 'DestinationArray(0) = 10' would become
-            ''DestinationArray(-2) = 10' if 'DestinationElement = -2' etc.
+            'as well, e.g. a former 'ResultArray(0) = 10' would become
+            ''ResultArray(-2) = 10' if 'DestinationElement = -2' etc.
             'Thus, we have to restore the elements that are not overwritten.
 
             'before 'ReDim'ming 'ResultArray' make a dummy copy of it
@@ -589,8 +593,8 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
             ReDim Preserve ResultArray(DestinationElement To UBoundOrgResultArray)
 
             'only copy the elements back that will not be overwritten
-            For DestNdx = FinalIndexToCopyInResultArray + 1 To UBoundOrgResultArray
-               ResultArray(DestNdx) = TempArray(DestNdx)
+            For ResNdx = FinalIndexToCopyInResultArray + 1 To UBoundOrgResultArray
+               ResultArray(ResNdx) = TempArray(ResNdx)
             Next
          ElseIf FinalIndexToCopyInResultArray > UBoundOrgResultArray Then
             ReDim Preserve ResultArray(LBoundOrgResultArray To FinalIndexToCopyInResultArray)
@@ -598,18 +602,18 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
       End If
    End If
    
-   'Copy the elements from 'InputArray' to 'ResultArray'.
+   'Copy the elements from 'SourceArray' to 'ResultArray'.
    'Note that there is no type compatibility checking when copying the elements.
-   DestNdx = DestinationElement
+   ResNdx = DestinationElement
    For SrcNdx = FirstElementToCopy To LastElementToCopy
-      If IsObject(InputArray(SrcNdx)) Then
-         Set ResultArray(DestNdx) = InputArray(DestNdx)
+      If IsObject(SourceArray(SrcNdx)) Then
+         Set ResultArray(ResNdx) = SourceArray(SrcNdx)
       Else
          On Error Resume Next
-         ResultArray(DestNdx) = InputArray(SrcNdx)
+         ResultArray(ResNdx) = SourceArray(SrcNdx)
          On Error GoTo 0
       End If
-      DestNdx = DestNdx + 1
+      ResNdx = ResNdx + 1
    Next
    
    CopyArraySubSetToArray = True
@@ -617,130 +621,74 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'CopyNonNothingObjectsToArray
-'This function copies all objects that are not Nothing from SourceArray
-'to ResultArray. ResultArray MUST be a dynamic array of type Object or Variant.
-'E.g.,
+'This function copies all objects that are not Nothing from 'SourceArray'
+'to 'ResultArray'. 'ResultArray' MUST be a dynamic array of type 'Object' or
+''Variant', e.g.,
 '      Dim ResultArray() As Object
-'Or
+'or
 '      Dim ResultArray() as Variant
 '
-'ResultArray will be Erased and then resized to hold the non-Nothing elements
-'from SourceArray. The LBound of ResultArray will be the same as the LBound
-'of SourceArray, regardless of what its LBound was prior to calling this
-'procedure.
+''ResultArray' will be erased and then resized to hold the non-Nothing elements
+'from 'SourceArray'. The 'LBound' of 'ResultArray' will be the same as the
+''LBound' of 'SourceArray', regardless of what its 'LBound' was prior to
+'calling this procedure.
 '
-'This function returns True if the operation was successful or False if an
+'This function returns 'True' if the operation was successful or 'False' if an
 'error occurs. If an error occurs, a message box is displayed indicating the
-'error. To suppress the message boxes, set the NoAlerts parameter to True.
-'
-'This function uses the following procedures.
-'      IsArrayDynamic
-'      IsArrayAllocated
-'      NumberOfArrayDimensions
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'error. To suppress the message boxes, set the 'NoAlerts' parameter to 'True'.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'2do: rename to 'CopyNonNothingObjectsToVector'
 Public Function CopyNonNothingObjectsToArray( _
-   ByRef SourceArray As Variant, _
-   ByRef ResultArray As Variant, _
-   Optional NoAlerts As Boolean = False _
+   ByVal SourceArray As Variant, _
+   ByRef ResultArray As Variant _
       ) As Boolean
 Attribute CopyNonNothingObjectsToArray.VB_ProcData.VB_Invoke_Func = " \n19"
    
+   Dim SrcNdx  As LongPtr
    Dim ResNdx As LongPtr
-   Dim InNdx  As LongPtr
    
    
    'Set the default return value
    CopyNonNothingObjectsToArray = False
    
-   'Ensure SourceArray is an array
-   If Not IsArray(SourceArray) Then
-      If NoAlerts = False Then
-         MsgBox "SourceArray is not an array."
-      End If
-      Exit Function
-   End If
-   'Ensure SourceArray is a single dimensional array
-   Select Case NumberOfArrayDimensions(SourceArray)
-      Case 0
-         'Unallocated dynamic array. Not Allowed.
-         If NoAlerts = False Then
-            MsgBox "SourceArray is an unallocated array."
-         End If
-         Exit Function
-      Case 1
-         'Single-dimensional array. This is OK.
-      Case Else
-         'Multi-dimensional array. This is not allowed.
-         If NoAlerts = False Then
-            MsgBox "SourceArray is a multi-dimensional array. This is not allowed."
-         End If
-         Exit Function
-   End Select
-   'Ensure ResultArray is an array
-   If Not IsArray(ResultArray) Then
-      If NoAlerts = False Then
-         MsgBox "ResultArray is not an array."
-      End If
-      Exit Function
-   End If
-   'Ensure ResultArray is an dynamic
-   If Not IsArrayDynamic(ResultArray) Then
-      If NoAlerts = False Then
-         MsgBox "ResultArray is not a dynamic array."
-      End If
-      Exit Function
-   End If
-   'Ensure ResultArray is a single dimensional array
-   Select Case NumberOfArrayDimensions(ResultArray)
-      Case 0
-         'Unallocated dynamic array. This is OK.
-      Case 1
-         'Single-dimensional array. This is OK.
-      Case Else
-         'Multi-dimensional array. This is not allowed.
-         If NoAlerts = False Then
-            MsgBox "SourceArray is a multi-dimensional array. This is not allowed."
-         End If
-         Exit Function
-   End Select
+   If Not IsArray(ResultArray) Then Exit Function
+   If Not IsArrayDynamic(ResultArray) Then Exit Function
+   'Ensure 'ResultArray' is unallocated or single-dimensional
+   If NumberOfArrayDimensions(ResultArray) > 1 Then Exit Function
    
-   'Ensure that all the elements of SourceArray are in fact objects
-   For InNdx = LBound(SourceArray) To UBound(SourceArray)
-      If Not IsObject(SourceArray(InNdx)) Then
-         If NoAlerts = False Then
-            MsgBox "Element " & CStr(InNdx) & " of SourceArray is not an object."
-         End If
-         Exit Function
-      End If
-   Next
+   'Ensure that all the elements of 'SourceArray' are in fact objects
+   If Not IsArrayObjects(SourceArray) Then Exit Function
    
-   'Erase the ResultArray. Since ResultArray is dynamic, this will relase the
-   'memory used by ResultArray and return the array to an unallocated state.
+   'Erase the 'ResultArray. Since 'ResultArray' is dynamic, this will release
+   'the memory used by 'ResultArray' and return the array to an unallocated
+   'state.
    Erase ResultArray
-   'Now, size ResultArray to the size of SourceArray. After moving all the
-   'non-Nothing elements, we'll do another resize to get ResultArray to the
-   'used size. This method allows us to avoid Redim Preserve for every element.
+   'Now, size 'ResultArray' to the size of 'SourceArray'. After moving all the
+   'non-Nothing elements, we'll do another resize to get 'ResultArray' to the
+   'used size. This method allows us to avoid 'Redim Preserve' for every element.
    ReDim ResultArray(LBound(SourceArray) To UBound(SourceArray))
    
    ResNdx = LBound(SourceArray)
-   For InNdx = LBound(SourceArray) To UBound(SourceArray)
-      If Not SourceArray(InNdx) Is Nothing Then
-         Set ResultArray(ResNdx) = SourceArray(InNdx)
+   For SrcNdx = LBound(SourceArray) To UBound(SourceArray)
+      If Not SourceArray(SrcNdx) Is Nothing Then
+         Set ResultArray(ResNdx) = SourceArray(SrcNdx)
          ResNdx = ResNdx + 1
       End If
    Next
-   'Now that we've copied all the non-Nothing elements from SourceArray to
-   'ResultArray, we call Redim Preserve to resize the ResultArray to the size
-   'actually used. Test ResNdx to see if we actually copied any elements.
+   
+   'Now that we've copied all the non-Nothing elements we call 'Redim Preserve'
+   'to resize the 'ResultArray' to the size actually used. Test 'ResNdx' to see
+   'if we actually copied any elements.
    '
-   'If ResNdx > LBound(SourceArray) then we copied at least one element out
-   'of SourceArray.
+   'If 'ResNdx > LBound(SourceArray)' then we copied at least one element out
+   'of 'SourceArray' ...
    If ResNdx > LBound(SourceArray) Then
       ReDim Preserve ResultArray(LBound(ResultArray) To ResNdx - 1)
-   'Otherwise, we didn't copy any elements from SourceArray
-   '(all elements in SourceArray were Nothing). In this case, Erase ResultArray.
+   '... otherwise we didn't copy any elements from 'SourceArray'
+   '(all elements in 'SourceArray' were 'Nothing'). In this case,
+   ''Erase ResultArray'.
    Else
       Erase ResultArray
    End If
@@ -821,25 +769,29 @@ Attribute DataTypeOfArray.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'DeleteArrayElement
-'This function deletes an element from InputArray, and shifts elements that are to the
-'right of the deleted element to the left. If InputArray is a dynamic array, and the
-'ResizeDynamic parameter is True, the array will be resized one element smaller. Otherwise,
-'the right-most entry in the array is set to the default value appropriate to the data
-'type of the array (0, vbNullString, Empty, or Nothing). If the array is an array of Variant
-'types, the default data type is the data type of the last element in the array.
-'The function returns True if the elememt was successfully deleted, or False if an error
-'occurrred. This procedure works only on single-dimensional
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This function deletes an element from 'InputArray', and shifts elements that
+'are to the right of the deleted element to the left. If 'InputArray' is a
+'dynamic array, and the 'ResizeDynamic' parameter is 'True', the array will be
+'resized one element smaller. Otherwise, the right-most entry in the array is
+'set to the default value appropriate to the data type of the array
+'(0, vbNullString, Empty, or Nothing). If the array is an array of 'Variant'
+'types, the default data type is the data type of the last element in the
+'array. The function returns 'True' if the elememt was successfully deleted and
+''False' otherwise. This procedure works only on single-dimensional arrays.
+'(In case the only element is deleted, 'InputArray' is dynamic and
+''ResizeDynamic' is 'True' 'InputArray' will be erased.)
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'2do: rename to 'DeleteVectorElement'
 Public Function DeleteArrayElement( _
-   InputArray As Variant, _
-   ElementNumber As LongPtr, _
-   Optional ResizeDynamic As Boolean = False _
+   ByRef InputArray As Variant, _
+   ByVal ElementNumber As LongPtr, _
+   Optional ByVal ResizeDynamic As Boolean = False _
       ) As Boolean
 Attribute DeleteArrayElement.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim Ndx As LongPtr
+   Dim i As LongPtr
    Dim VType As VbVarType
    
    Dim LongLong As LongPtr
@@ -852,84 +804,84 @@ Attribute DeleteArrayElement.VB_ProcData.VB_Invoke_Func = " \n19"
    If Not IsArray(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
-   'Ensure we have a valid ElementNumber
+   'Ensure we have a valid 'ElementNumber'
    If ElementNumber < LBound(InputArray) Then Exit Function
    If ElementNumber > UBound(InputArray) Then Exit Function
    
-   'Get the variable data type of the element we're deleting
+   'Get the variable data type of the element we are deleting
    VType = VarType(InputArray(UBound(InputArray)))
-   If VType >= vbArray Then
+   If IsObject(InputArray(UBound(InputArray))) Then
+      VType = vbObject
+   ElseIf VType >= vbArray Then
       VType = VType - vbArray
    End If
+   
    'Shift everything to the left
-   For Ndx = ElementNumber To UBound(InputArray) - 1
-      InputArray(Ndx) = InputArray(Ndx + 1)
-   Next
-   'If ResizeDynamic is True, resize the array if it is dynamic
-   If IsArrayDynamic(InputArray) Then
-      If ResizeDynamic = True Then
-         'Resize the array and get out.
-         ReDim Preserve InputArray(LBound(InputArray) To UBound(InputArray) - 1)
-         DeleteArrayElement = True
-         Exit Function
+   For i = ElementNumber To UBound(InputArray) - 1
+      If IsObject(InputArray(i)) Then
+         Set InputArray(i) = InputArray(i + 1)
+      Else
+         InputArray(i) = InputArray(i + 1)
       End If
+   Next
+   
+   If IsArrayDynamic(InputArray) And ResizeDynamic = True Then
+      If UBound(InputArray) > LBound(InputArray) Then
+         ReDim Preserve InputArray(LBound(InputArray) To UBound(InputArray) - 1)
+      Else
+         Erase InputArray
+      End If
+   Else
+      'Set the last element of the 'InputArray' to the proper default value
+      Select Case VType
+         Case vbByte, vbInteger, vbLong, LongLong, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
+            InputArray(UBound(InputArray)) = 0
+         Case vbString
+            InputArray(UBound(InputArray)) = vbNullString
+         Case vbArray, vbVariant, vbEmpty, vbError, vbNull, vbUserDefinedType
+            InputArray(UBound(InputArray)) = Empty
+         Case vbBoolean
+            InputArray(UBound(InputArray)) = False
+         Case vbObject
+            Set InputArray(UBound(InputArray)) = Nothing
+         Case Else
+            InputArray(UBound(InputArray)) = 0
+      End Select
    End If
-   'Set the last element of the InputArray to the proper default value
-   Select Case VType
-      Case vbByte, vbInteger, vbLong, LongLong, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
-         InputArray(UBound(InputArray)) = 0
-      Case vbString
-         InputArray(UBound(InputArray)) = vbNullString
-      Case vbArray, vbVariant, vbEmpty, vbError, vbNull, vbUserDefinedType
-         InputArray(UBound(InputArray)) = Empty
-      Case vbBoolean
-         InputArray(UBound(InputArray)) = False
-      Case vbObject
-         Set InputArray(UBound(InputArray)) = Nothing
-      Case Else
-         InputArray(UBound(InputArray)) = 0
-   End Select
    
    DeleteArrayElement = True
 
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'FirstNonEmptyStringIndexInArray
-'This returns the index into InputArray of the first non-empty string.
-'This is generally used when InputArray is the result of a sort operation,
+'This returns the index in 'InputArray' of the first non-empty string.
+'This is generally used when 'InputArray' is the result of a sort operation,
 'which puts empty strings at the beginning of the array.
-'Returns -1 if an error occurred or if the entire array is empty strings.
+'Returns -1 if an error occurred or if the entire array has no empty string.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'called by
 '  - MoveEmptyStringsToEndOfArray
+'---
+'2do: - rename to 'FirstNonEmptyStringIndexInVector'
 Public Function FirstNonEmptyStringIndexInArray( _
-   InputArray As Variant _
+   ByVal InputArray As Variant _
       ) As LongPtr
 Attribute FirstNonEmptyStringIndexInArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim Ndx As LongPtr
+   Dim i As LongPtr
    
    
    'Set the default return value
    FirstNonEmptyStringIndexInArray = -1
    
    If Not IsArray(InputArray) Then Exit Function
-   Select Case NumberOfArrayDimensions(InputArray)
-      Case 0
-         'indicates an unallocated dynamic array
-         Exit Function
-      Case 1
-         'single dimensional array. OK.
-      Case Else
-         'multidimensional array. Invalid.
-         Exit Function
-   End Select
+   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
-   For Ndx = LBound(InputArray) To UBound(InputArray)
-      If InputArray(Ndx) <> vbNullString Then
-         FirstNonEmptyStringIndexInArray = Ndx
+   For i = LBound(InputArray) To UBound(InputArray)
+      If InputArray(i) <> vbNullString Then
+         FirstNonEmptyStringIndexInArray = i
          Exit Function
       End If
    Next
@@ -939,85 +891,102 @@ Attribute FirstNonEmptyStringIndexInArray.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'InsertElementIntoArray
-'This function inserts an element with a value of Value into InputArray at locatation Index.
-'InputArray must be a dynamic array. The Value is stored in location Index, and everything
-'to the right of Index is shifted to the right. The array is resized to make room for
-'the new element. The value of Index must be greater than or equal to the LBound of
-'InputArray and less than or equal to UBound+1. If Index is UBound+1, the Value is
-'placed at the end of the array.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This function inserts an element with a value of 'Value' into 'InputArray' at
+'locatation 'Index'.
+''InputArray' must be a dynamic array. The 'Value' is stored in location 'Index',
+'and everything to the right of 'Index' is shifted to the right. The array is
+'resized to make room for the new element. The value of 'Index' must be greater
+'than or equal to the 'LBound' of 'InputArray' and less than or equal to
+''UBound + 1'.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function InsertElementIntoArray( _
-   InputArray As Variant, _
-   Index As LongPtr, _
-   Value As Variant _
+   ByRef InputArray As Variant, _
+   ByVal Index As LongPtr, _
+   ByVal Value As Variant _
       ) As Boolean
 Attribute InsertElementIntoArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim Ndx As LongPtr
+   Dim i As LongPtr
    
    
    'Set the default return value
    InsertElementIntoArray = False
    
-   If Not IsArray(InputArray) Then Exit Function
    If Not IsArrayDynamic(InputArray) Then Exit Function
-   If Not IsArrayAllocated(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
-   'Ensure Index is a valid element index. We allow Index to be equal to
-   'UBound + 1 to facilitate inserting a value at the end of the array. E.g.,
-   'InsertElementIntoArray(Arr,UBound(Arr)+1,123) will insert 123 at the end
-   'of the array.
-   If (Index < LBound(InputArray)) Or (Index > UBound(InputArray) + 1) Then
-      Exit Function
-   End If
+   'Ensure 'Index' is a valid element index. We allow 'Index' to be equal to
+   ''UBound + 1' to facilitate inserting a value at the end of the array, e.g.
+   '    InsertElementIntoArray(Arr,UBound(Arr) + 1, 123)
+   'will insert "123" at the end of the array.
+   If Index < LBound(InputArray) Then Exit Function
+   If Index > UBound(InputArray) + 1 Then Exit Function
    
    'Resize the array
    ReDim Preserve InputArray(LBound(InputArray) To UBound(InputArray) + 1)
-   'First, we set the newly created last element of InputArray to Value.
-   'This is done to trap an error 13, type mismatch. This last entry will be
-   'overwritten when we shift elements to the right, and the Value will be
-   'inserted at Index.
+   
+'---
+'2do:
+'can't this be handeled with the function 'AreDataTypesCompatible' of this module?
+'---
+   'First, we set the newly created last element of 'InputArray' to 'Value'.
+   'This is done to trap an "error 13, type mismatch". This last entry will be
+   'overwritten when we shift elements to the right, and the 'Value' will be
+   'inserted at 'Index'.
    On Error Resume Next
    err.Clear
-   InputArray(UBound(InputArray)) = Value
+   If IsObject(Value) Then
+      Set InputArray(UBound(InputArray)) = Value
+   Else
+      InputArray(UBound(InputArray)) = Value
+   End If
    If err.Number <> 0 Then
       'An error occurred, most likely an error 13, type mismatch.
       'Redim the array back to its original size and exit the function.
       ReDim Preserve InputArray(LBound(InputArray) To UBound(InputArray) - 1)
       Exit Function
    End If
+'---
+   
    'Shift everything to the right
-   For Ndx = UBound(InputArray) To Index + 1 Step -1
-      InputArray(Ndx) = InputArray(Ndx - 1)
+   For i = UBound(InputArray) To Index + 1 Step -1
+      If IsObject(InputArray(i - 1)) Then
+         Set InputArray(i) = InputArray(i - 1)
+      Else
+         InputArray(i) = InputArray(i - 1)
+      End If
    Next
    
-   'Insert Value at Index
-   InputArray(Index) = Value
-       
+   'Insert 'Value' at 'Index'
+   If IsObject(Value) Then
+      Set InputArray(Index) = Value
+   Else
+      InputArray(Index) = Value
+   End If
+   
    InsertElementIntoArray = True
 
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'IsArrayAllEmpty
-'Returns True if the array contains all default values for its
-'data type:
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'IsArrayAllDefault
+'Returns 'True' if the array contains all default values for its data type:
 '  Variable Type           Value
 '  -------------           -------------------
 '  Variant                 Empty
 '  String                  vbNullString
 '  Numeric                 0
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'  Object                  Nothing
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function IsArrayAllDefault( _
-   InputArray As Variant _
+   ByVal InputArray As Variant _
       ) As Boolean
 Attribute IsArrayAllDefault.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim Ndx As LongPtr
+   Dim Element As Variant
    Dim DefaultValue As Variant
    
    
@@ -1025,8 +994,9 @@ Attribute IsArrayAllDefault.VB_ProcData.VB_Invoke_Func = " \n19"
    IsArrayAllDefault = False
    
    If Not IsArray(InputArray) Then Exit Function
-   'Ensure array is allocated. An unallocated is considered to be all the same
-   'type. Return True.
+   
+   'Ensure array is allocated. An unallocated array is considered to be all the
+   'same type. Return 'True'.
    If Not IsArrayAllocated(InputArray) Then
       IsArrayAllDefault = True
       Exit Function
@@ -1038,15 +1008,17 @@ Attribute IsArrayAllDefault.VB_ProcData.VB_Invoke_Func = " \n19"
          DefaultValue = Empty
       Case vbArray + vbString
          DefaultValue = vbNullString
+      'for all (remaining/)numeric variable types
       Case Is > vbArray
          DefaultValue = 0
    End Select
-   For Ndx = LBound(InputArray) To UBound(InputArray)
-      If IsObject(InputArray(Ndx)) Then
-         If Not InputArray(Ndx) Is Nothing Then Exit Function
+   
+   For Each Element In InputArray
+      If IsObject(Element) Then
+         If Not Element Is Nothing Then Exit Function
       Else
-         If VarType(InputArray(Ndx)) <> vbEmpty Then
-            If InputArray(Ndx) <> DefaultValue Then Exit Function
+         If VarType(Element) <> vbEmpty Then
+            If Element <> DefaultValue Then Exit Function
          End If
       End If
    Next
@@ -1136,7 +1108,7 @@ End Function
 'Returns 'True' if the array is allocated (either a static or a dynamic array
 'that has been sized with 'Redim') or 'False' if the array is not allocated
 '(a dynamic that has not yet been sized with 'Redim', or a dynamic array that
-'has been Erased). Static arrays are always allocated.
+'has been erased). Static arrays are always allocated.
 '
 'The VBA 'IsArray' function indicates whether a variable is an array, but it
 'does not distinguish between allocated and unallocated arrays. It will return
@@ -1185,22 +1157,23 @@ Attribute IsArrayAllocated.VB_ProcData.VB_Invoke_Func = " \n19"
    Else
       'error. unallocated array
    End If
-
+   
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'IsArrayDynamic
-'This function returns TRUE or FALSE indicating whether Arr is a dynamic array.
-'Note that if you attempt to ReDim a static array in the same procedure in which it is
-'declared, you'll get a compiler error and your code won't run at all.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This function returns 'True' or 'False' indicating whether 'Arr' is a dynamic
+'array.
+'Note: If you attempt to 'ReDim' a static array in the same procedure in which
+'it is declared, you'll get a compiler error and your code  won't run at all.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function IsArrayDynamic( _
    ByRef Arr As Variant _
       ) As Boolean
 Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim LUBound As LongPtr
+   Dim ArrUBound As LongPtr
    
    
    'Set the default return value
@@ -1217,61 +1190,54 @@ Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n19"
    'Save the UBound of Arr.
    'This value will be used to restore the original UBound if Arr is a
    'single-dimensional dynamic array. Unused if Arr is multi-dimensional,
-   'or if Arr is a static array.
-   LUBound = UBound(Arr)
+   'or if 'Arr' is a static array.
+   ArrUBound = UBound(Arr)
    
    On Error Resume Next
    err.Clear
    
-   'Attempt to increase the UBound of Arr and test the value of Err.Number.
-   'If Arr is a static array, either single- or multi-dimensional, we'll get a
-   'C_ERR_ARRAY_IS_FIXED_OR_LOCKED error. In this case, return FALSE.
-   '
-   'If Arr is a single-dimensional dynamic array, we'll get C_ERR_NO_ERROR error.
-   '
-   'If Arr is a multi-dimensional dynamic array, we'll get a
-   'C_ERR_SUBSCRIPT_OUT_OF_RANGE error.
-   '
-   'For either C_NO_ERROR or C_ERR_SUBSCRIPT_OUT_OF_RANGE, return TRUE.
-   'For C_ERR_ARRAY_IS_FIXED_OR_LOCKED, return FALSE.
-   ReDim Preserve Arr(LBound(Arr) To LUBound + 1)
+   'Attempt to increase the 'UBound' of 'Arr' and test the value of
+   ''Err.Number'. If 'Arr' is a static array, either single- or
+   'multi-dimensional, we'll get a 'C_ERR_ARRAY_IS_FIXED_OR_LOCKED' error. In
+   'this case, return 'False'.
+   'If 'Arr' is a single-dimensional dynamic array, we'll get 'C_ERR_NO_ERROR'
+   'error.
+   'If 'Arr' is a multi-dimensional dynamic array, we'll get a
+   ''C_ERR_SUBSCRIPT_OUT_OF_RANGE' error.
+   ReDim Preserve Arr(LBound(Arr) To ArrUBound + 1)
    Select Case err.Number
       Case C_ERR_NO_ERROR
-         'We successfully increased the UBound of Arr.
-         'Do a ReDim Preserve to restore the original UBound.
-         ReDim Preserve Arr(LBound(Arr) To LUBound)
+         'We successfully increased the 'UBound' of 'Arr'.
+         'Do a 'ReDim Preserve' to restore the original 'UBound'.
+         ReDim Preserve Arr(LBound(Arr) To ArrUBound)
          IsArrayDynamic = True
       Case C_ERR_SUBSCRIPT_OUT_OF_RANGE
-         'Arr is a multi-dimensional dynamic array.
-         'Return True.
+         ''Arr' is a multi-dimensional dynamic array.
          IsArrayDynamic = True
       Case C_ERR_ARRAY_IS_FIXED_OR_LOCKED
-         'Arr is a static single- or multi-dimensional array.
-         'Return False
+         ''Arr' is a static single- or multi-dimensional array.
          IsArrayDynamic = False
       Case Else
          'We should never get here.
-         'Some unexpected error occurred. Be safe and return False.
+         'Some unexpected error occurred. Be safe and return 'False'.
          IsArrayDynamic = False
    End Select
 
 End Function
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'IsArrayObjects
-'Returns True if InputArray is entirely objects (Nothing objects are
-'optionally allowed -- default it true, allow Nothing objects). Set the
-'AllowNothing to true or false to indicate whether Nothing objects
-'are allowed.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'Returns 'True' if 'InputArray' is entirely objects ('Nothing' objects are
+'optionally allowed -- default it 'True', allow 'Nothing' objects).
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function IsArrayObjects( _
    InputArray As Variant, _
    Optional AllowNothing As Boolean = True _
       ) As Boolean
 Attribute IsArrayObjects.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim Ndx As LongPtr
+   Dim Element As Variant
    
    
    'Set the default return value
@@ -1279,22 +1245,10 @@ Attribute IsArrayObjects.VB_ProcData.VB_Invoke_Func = " \n19"
    
    If Not IsArray(InputArray) Then Exit Function
    
-   'Ensure we have a single dimensional array
-   Select Case NumberOfArrayDimensions(InputArray)
-      Case 0
-         'Unallocated dynamic array. Not allowed.
-         Exit Function
-      Case 1
-         'OK
-      Case Else
-         'Multi-dimensional array. Not allowed.
-         Exit Function
-   End Select
-   
-   For Ndx = LBound(InputArray) To UBound(InputArray)
-      If Not IsObject(InputArray(Ndx)) Then Exit Function
-      If InputArray(Ndx) Is Nothing Then
-         If AllowNothing = False Then Exit Function
+   For Each Element In InputArray
+      If Not IsObject(Element) Then Exit Function
+      If Element Is Nothing Then
+         If Not AllowNothing Then Exit Function
       End If
    Next
    
@@ -1303,32 +1257,26 @@ Attribute IsArrayObjects.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'IsNumericDataType
-'
-'This function returns TRUE or FALSE indicating whether the data
-'type of a variable is a numeric data type. It will return TRUE
-'for all of the following data types:
-'      vbCurrency
-'      vbDecimal
-'      vbDouble
-'      vbInteger
-'      vbLong, vbLongLong
-'      vbSingle
-'
-'It will return FALSE for any other data type, including empty Variants and objects.
-'If TestVar is an allocated array, it will test data type of the array
-'and return TRUE or FALSE for that data type. If TestVar is an allocated
-'array, it tests the data type of the first element of the array. If
-'TestVar is an array of Variants, the function will indicate only whether
-'the first element of the array is numeric. Other elements of the array
-'may not be numeric data types. To test an entire array of variants
-'to ensure they are all numeric data types, use the IsArrayAllNumeric
-'function.
-'
-'It will return FALSE for any other data type. Use this procedure
-'instead of VBA's IsNumeric function because IsNumeric will return
-'TRUE if the variable is a string containing numeric data. This
+'This function returns 'True' or 'False' indicating whether the data type of a
+'variable is a numeric data type. It will return 'True' for the data types
+'  - vbCurrency
+'  - vbDecimal
+'  - vbDouble
+'  - vbInteger
+'  - vbLong, vbLongLong
+'  - vbSingle
+'and 'False' for any other data type, including empty 'Variant's and 'Object's.
+'If 'TestVar' is an allocated array, it will test the data type of the array
+'and return 'True' or 'False' for that data type. If 'TestVar' is an allocated
+'array, it tests the data type of the first element of the array. (If 'TestVar'
+'is an array of 'Variant's, the function will indicate only whether the first
+'element of the array is numeric. Other elements of the array may not be
+'numeric data types. To test an entire array of Variants to ensure they are all
+'numeric data types, use the 'IsArrayAllNumeric' function.)
+'Use this procedure instead of VBA's 'IsNumeric' function because 'IsNumeric'
+'will return 'True' if the variable is a string containing numeric data. This
 'will cause problems with code like
 '       Dim V1 As Variant
 '       Dim V2 As Variant
@@ -1339,15 +1287,12 @@ End Function
 '               Debug.Print V1 + V2
 '           End If
 '       End If
-'
-'The output of the Debug.Print statement will be "12", not 3,
-'because V1 and V2 are strings and the '+'operator acts like
-'the '&'operator when used with strings. This can lead to
-'unexpected results.
-'
-'IsNumeric should only be used to test strings for numeric content
-'when converting a string value to a numeric variable.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'The output of the 'Debug.Print' statement will be "12", not 3, because 'V1'
+'and 'V2' are strings and the '+' operator acts like the '&' operator when used
+'with strings. This can lead to unexpected results.
+''IsNumeric' should only be used to test strings for numeric content when
+'converting a string value to a numeric variable.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function IsNumericDataType( _
    TestVar As Variant _
       ) As Boolean
@@ -1370,10 +1315,8 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n19"
 '- is a change needed here? First test, if 'IsArrayAllNumeric' is supposed
 '  to handle this!
 '---
-      If NumDims > 1 Then
-         'this procedure does not support multi-dimensional arrays
-         Exit Function
-      End If
+      If NumDims > 1 Then Exit Function
+
       If IsArrayAllocated(TestVar) Then
 '---
 '2do:
@@ -1441,7 +1384,11 @@ Public Function IsVariantArrayConsistent( _
 Attribute IsVariantArrayConsistent.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim FirstDataType As VbVarType
-   Dim Ndx As LongPtr
+'---
+'2do: replace with
+'   Dim Element As Variant
+   Dim i As LongPtr
+'---
    
    
    'Set the default return value
@@ -1467,14 +1414,14 @@ Attribute IsVariantArrayConsistent.VB_ProcData.VB_Invoke_Func = " \n19"
    'Get the data type of the first element
    FirstDataType = VarType(Arr(LBound(Arr)))
    'Loop through the array and exit if a differing data type if found.
-   For Ndx = LBound(Arr) + 1 To UBound(Arr)
-      If VarType(Arr(Ndx)) <> vbEmpty Then
-         If IsObject(Arr(Ndx)) Then
-            If Not Arr(Ndx) Is Nothing Then
-               If VarType(Arr(Ndx)) <> FirstDataType Then Exit Function
+   For i = LBound(Arr) + 1 To UBound(Arr)
+      If VarType(Arr(i)) <> vbEmpty Then
+         If IsObject(Arr(i)) Then
+            If Not Arr(i) Is Nothing Then
+               If VarType(Arr(i)) <> FirstDataType Then Exit Function
             End If
          Else
-            If VarType(Arr(Ndx)) <> FirstDataType Then Exit Function
+            If VarType(Arr(i)) <> FirstDataType Then Exit Function
          End If
       End If
    Next
@@ -1492,16 +1439,16 @@ End Function
 ''mix of 'Integer's, 'Long's, 'Double's, and 'Single's.
 ''As long as they are all numeric data types, the function will return 'True'.
 ''If a non-numeric data type is encountered, the function will return 'False'.
-''Also, it will return 'False' if 'TestArray' is not an array, or if 'TestArray'
-''has not been allocated. 'TestArray' may be a multi-dimensional array. This
-''procedure uses the 'IsNumericDataType' function to determine whether a
-''variable is a numeric data type. If there is an uninitialized variant
-''('VarType = vbEmpty') in the array, it is skipped and not used in the
+''Also, it will return 'False' if 'InputArray' is not an array, or if
+'''InputArray' has not been allocated. 'InputArray' may be a multi-dimensional
+''array. This procedure uses the 'IsNumericDataType' function to determine
+''whether a variable is a numeric data type. If there is an uninitialized
+''variant ('VarType = vbEmpty') in the array, it is skipped and not used in the
 ''comparison (i.e., 'Empty' is considered a valid numeric data type since you
 ''can assign a number to it).
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'Public Function IsVariantArrayNumeric( _
-'   TestArray As Variant _
+'   InputArray As Variant _
 '      ) As Boolean
 '
 '   Dim element As Variant
@@ -1510,10 +1457,10 @@ End Function
 '   'Set the default return value
 '   IsVariantArrayNumeric = False
 '
-'   If Not IsArray(TestArray) Then Exit Function
-'   If Not IsArrayAllocated(TestArray) Then Exit Function
+'   If Not IsArray(InputArray) Then Exit Function
+'   If Not IsArrayAllocated(InputArray) Then Exit Function
 '
-'   For Each element In TestArray
+'   For Each element In InputArray
 '      If IsObject(element) Then Exit Function
 '
 '      Select Case VarType(element)
@@ -1705,7 +1652,11 @@ Public Function ResetVariantArrayToDefaults( _
       ) As Boolean
 Attribute ResetVariantArrayToDefaults.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim Ndx As LongPtr
+'---
+'2do: replace with
+'   Dim Element As Variant
+   Dim i As LongPtr
+'---
    
    'Set the default return value
    ResetVariantArrayToDefaults = False
@@ -1713,8 +1664,8 @@ Attribute ResetVariantArrayToDefaults.VB_ProcData.VB_Invoke_Func = " \n19"
    If Not IsArray(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
-   For Ndx = LBound(InputArray) To UBound(InputArray)
-      SetVariableToDefault InputArray(Ndx)
+   For i = LBound(InputArray) To UBound(InputArray)
+      SetVariableToDefault InputArray(i)
    Next
    
    ResetVariantArrayToDefaults = True
@@ -1877,7 +1828,11 @@ Public Function SetObjectArrayToNothing( _
       ) As Boolean
 Attribute SetObjectArrayToNothing.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim N As LongPtr
+'---
+'2do: replace with ????
+'   Dim Element As Variant
+   Dim i As LongPtr
+'---
    
    
    'Set the default return value
@@ -1892,8 +1847,8 @@ Attribute SetObjectArrayToNothing.VB_ProcData.VB_Invoke_Func = " \n19"
    'Empty and Nothing values. This means looping through the array twice, but
    'it ensures all or none of the elements get set to Nothing.
    If IsArrayAllocated(InputArray) Then
-      For N = LBound(InputArray) To UBound(InputArray)
-         If Not IsObject(InputArray(N)) Then Exit Function
+      For i = LBound(InputArray) To UBound(InputArray)
+         If Not IsObject(InputArray(i)) Then Exit Function
       Next
    Else
       SetObjectArrayToNothing = True
@@ -1901,8 +1856,8 @@ Attribute SetObjectArrayToNothing.VB_ProcData.VB_Invoke_Func = " \n19"
    End If
    
    'Set each element of InputArray to Nothing
-   For N = LBound(InputArray) To UBound(InputArray)
-      Set InputArray(N) = Nothing
+   For i = LBound(InputArray) To UBound(InputArray)
+      Set InputArray(i) = Nothing
    Next
    
    SetObjectArrayToNothing = True
@@ -2127,13 +2082,13 @@ End Sub
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'TransposeArray
 'This transposes a two-dimensional array. It returns 'True' if successful or
-''False' if an error occurs. 'InputArr' must be two-dimensional. 'OutputArr'
+''False' if an error occurs. 'SourceArr' must be two-dimensional. 'ResultArr'
 'must be a dynamic array. It will be erased and resized, so any existing
 'content will be destroyed.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function TransposeArray( _
-   ByVal InputArr As Variant, _
-   ByRef OutputArr As Variant _
+   ByVal SourceArr As Variant, _
+   ByRef ResultArr As Variant _
       ) As Boolean
 Attribute TransposeArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -2148,25 +2103,25 @@ Attribute TransposeArray.VB_ProcData.VB_Invoke_Func = " \n19"
    'Set the default return value
    TransposeArray = False
    
-   If Not IsArray(InputArr) Then Exit Function
-   If NumberOfArrayDimensions(InputArr) <> 2 Then Exit Function
-   If Not IsArrayDynamic(OutputArr) Then Exit Function
+   If Not IsArray(SourceArr) Then Exit Function
+   If NumberOfArrayDimensions(SourceArr) <> 2 Then Exit Function
+   If Not IsArrayDynamic(ResultArr) Then Exit Function
    
-   'Get the Lower and Upper bounds of 'InputArr'
-   LB1 = LBound(InputArr, 1)
-   LB2 = LBound(InputArr, 2)
-   UB1 = UBound(InputArr, 1)
-   UB2 = UBound(InputArr, 2)
+   'Get the Lower and Upper bounds of 'SourceArr'
+   LB1 = LBound(SourceArr, 1)
+   LB2 = LBound(SourceArr, 2)
+   UB1 = UBound(SourceArr, 1)
+   UB2 = UBound(SourceArr, 2)
    
-   'Erase and 'ReDim OutputArr'
+   'Erase and 'ReDim ResultArr'
    'Note the that the 'LBound' and 'UBound' values are preserved.
-   Erase OutputArr
-   ReDim OutputArr(LB2 To UB2, LB1 To UB1)
-   'Loop through the elements of 'InputArr' and put each value in the proper
+   Erase ResultArr
+   ReDim ResultArr(LB2 To UB2, LB1 To UB1)
+   'Loop through the elements of 'SourceArr' and put each value in the proper
    'element of the transposed array
    For RowNdx = LB2 To UB2
       For ColNdx = LB1 To UB1
-         OutputArr(RowNdx, ColNdx) = InputArr(ColNdx, RowNdx)
+         ResultArr(RowNdx, ColNdx) = SourceArr(ColNdx, RowNdx)
       Next
    Next
    
@@ -2389,30 +2344,34 @@ Attribute ChangeBoundsOfArray.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'IsArraySorted
 'This function determines whether a single-dimensional array is sorted. Because
-'sorting is an expensive operation, especially so on large array of Variants,
+'sorting is an expensive operation, especially so on a large array of Variants,
 'you may want to determine if an array is already in sorted order prior to
 'doing an actual sort.
-'This function returns True if an array is in sorted order (either ascending or
-'descending order, depending on the value of the Descending parameter -- default
-'is false = Ascending). The decision to do a string comparison (with StrComp) or
-'a numeric comparison (with < or >) is based on the data type of the first
-'element of the array.
-'If TestArray is not an array, is an unallocated dynamic array, or has more than
-'one dimension, or the VarType of TestArray is not compatible, the function
-'returns NULL.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This function returns 'True' if an array is in sorted order (either ascending
+'or descending, depending on the value of the 'Descending' parameter -- default
+'is 'False' = Ascending). The decision to do a string comparison (with
+''StrComp') or a numeric comparison (with < or >) is based on the data type of
+'the first element of the array.
+'If 'InputArray' is not an array, is an unallocated array, or has more than
+'one dimension, or the VarType of 'InputArray' is not compatible, the function
+'returns 'Null'.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'2do:
+'- rename to 'IsVectorSorted'
+'- what is distinction between 'Null' and 'False' good for?
+'  --> function return value can be changed to Boolean
 Public Function IsArraySorted( _
-   TestArray As Variant, _
+   InputArray As Variant, _
    Optional Descending As Boolean = False _
       ) As Variant
 Attribute IsArraySorted.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim StrCompResultFail As LongPtr
    Dim NumericResultFail As Boolean
-   Dim Ndx As LongPtr
+   Dim i As LongPtr
    Dim NumCompareResult As Boolean
    Dim StrCompResult As LongPtr
    
@@ -2423,28 +2382,15 @@ Attribute IsArraySorted.VB_ProcData.VB_Invoke_Func = " \n19"
    'Set the default return value
    IsArraySorted = Null
    
-   If Not IsArray(TestArray) Then Exit Function
-   If NumberOfArrayDimensions(TestArray) <> 1 Then Exit Function
-   
-   'The following code sets the values of comparison that will indicate that
-   'the array is unsorted. It the result of StrComp (for strings) or ">="
-   '(for numerics) equals the value specified below, we know that the array is
-   'unsorted.
-   If Descending = True Then
-      StrCompResultFail = -1
-      NumericResultFail = False
-   Else
-      StrCompResultFail = 1
-      NumericResultFail = True
-   End If
+   If Not IsArray(InputArray) Then Exit Function
+   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
    'Determine whether we are going to do a string comparison or a numeric
    'comparison
-   VType = VarType(TestArray(LBound(TestArray)))
+   VType = VarType(InputArray(LBound(InputArray)))
    Select Case VType
       Case vbArray, vbDataObject, vbEmpty, vbError, vbNull, vbObject, vbUserDefinedType
-         'Unsupported types. Reutrn Null.
-         IsArraySorted = Null
+         'Unsupported types.
          Exit Function
       Case vbString, vbVariant
          'Compare as string
@@ -2454,13 +2400,31 @@ Attribute IsArraySorted.VB_ProcData.VB_Invoke_Func = " \n19"
          IsString = False
    End Select
    
-   For Ndx = LBound(TestArray) To UBound(TestArray) - 1
+   'The following code sets the values of comparison that will indicate that
+   'the array is unsorted. Is the result of 'StrComp' (for strings) or ">="
+   '(for numerics) equal the value specified below, we know that the array is
+   'unsorted.
+   If Descending = True Then
+      StrCompResultFail = -1
+      NumericResultFail = False
+   Else
+      StrCompResultFail = 1
+      NumericResultFail = True
+   End If
+   
+   For i = LBound(InputArray) To UBound(InputArray) - 1
       If IsString Then
-         StrCompResult = StrComp(TestArray(Ndx), TestArray(Ndx + 1))
-         If StrCompResult = StrCompResultFail Then Exit Function
+         StrCompResult = StrComp(InputArray(i), InputArray(i + 1))
+         If StrCompResult = StrCompResultFail Then
+            IsArraySorted = False
+            Exit Function
+         End If
       Else
-         NumCompareResult = (TestArray(Ndx) >= TestArray(Ndx + 1))
-         If NumCompareResult = NumericResultFail Then Exit Function
+         NumCompareResult = (InputArray(i) >= InputArray(i + 1))
+         If NumCompareResult = NumericResultFail Then
+            IsArraySorted = False
+            Exit Function
+         End If
       End If
    Next
    
@@ -2613,26 +2577,20 @@ Attribute CombineTwoDArrays.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'ExpandArray
-'This expands a two-dimensional array in either dimension. It returns the result
-'array if successful, or NULL if an error occurred. The original array is never
-'changed.
-'Paramters:
-'--------------------
-'Arr                   is the array to be expanded.
-'
-'WhichDim              is either 1 for additional rows or 2 for
-'                      additional columns.
-'
-'AdditionalElements    is the number of additional rows or columns
-'                      to create.
-'
-'FillValue             is the value to which the new array elements should be
-'                      initialized.
-'
-'You can nest calls to Expand array to expand both the number of rows and
-'columns. E.g.,
+'This expands a two-dimensional array in either dimension. It returns the
+'result array if successful, or 'Null' if an error occurred. The original array
+'is never changed.
+'Parameters:
+'- Arr                  is the array to be expanded
+'- WhichDim             is either 1 for additional rows or
+'                       2 for additional columns
+'- AdditionalElements   is the number of additional rows or columns to create.
+'- FillValue            is the value to which the new array elements should be
+'                       initialized
+'You can nest calls to expand array to expand both the number of rows and
+'columns, e.g.
 '
 'C = ExpandArray( _
 '        ExpandArray( _
@@ -2647,12 +2605,15 @@ End Function
 '
 'This first adds three rows at the bottom of the array, and then adds four
 'columns on the right of the array.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'2do:
+'- create a type for 'WhichDim' and also replace 'ROWs_' then?
+'- should this work for objects as well?
 Public Function ExpandArray( _
-   Arr As Variant, _
-   WhichDim As LongPtr, _
-   AdditionalElements As LongPtr, _
-   FillValue As Variant _
+   ByVal Arr As Variant, _
+   ByVal WhichDim As LongPtr, _
+   ByVal AdditionalElements As LongPtr, _
+   ByVal FillValue As Variant _
       ) As Variant
 Attribute ExpandArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -2678,40 +2639,43 @@ Attribute ExpandArray.VB_ProcData.VB_Invoke_Func = " \n19"
          Exit Function
    End Select
    
-   'Ensure AdditionalElements is > 0.
-   'If AdditionalElements  = 0, return Arr.
-   If AdditionalElements < 0 Then
-      Exit Function
-   ElseIf AdditionalElements = 0 Then
+   If AdditionalElements < 0 Then Exit Function
+   If AdditionalElements = 0 Then
       ExpandArray = Arr
       Exit Function
    End If
    
    If WhichDim = ROWS_ Then
-      'Redim Result
-      ReDim Result(LBound(Arr, 1) To UBound(Arr, 1) + AdditionalElements, LBound(Arr, 2) To UBound(Arr, 2))
-      'Transfer Arr array to Result
+      'Redim 'Result'
+      ReDim Result(LBound(Arr, 1) To UBound(Arr, 1) + AdditionalElements, _
+            LBound(Arr, 2) To UBound(Arr, 2))
+      
+      'Transfer 'Arr' array to 'Result'
       For RowNdx = LBound(Arr, 1) To UBound(Arr, 1)
          For ColNdx = LBound(Arr, 2) To UBound(Arr, 2)
             Result(RowNdx, ColNdx) = Arr(RowNdx, ColNdx)
          Next
       Next
-      'Fill the rest of the result array with FillValue
+      
+      'Fill the rest of the result array with 'FillValue'
       For RowNdx = UBound(Arr, 1) + 1 To UBound(Result, 1)
          For ColNdx = LBound(Arr, 2) To UBound(Arr, 2)
             Result(RowNdx, ColNdx) = FillValue
          Next
       Next
    Else
-      'Redim Result
-      ReDim Result(LBound(Arr, 1) To UBound(Arr, 1), UBound(Arr, 2) + AdditionalElements)
-      'Transfer Arr array to Result
+      'Redim 'Result'
+      ReDim Result(LBound(Arr, 1) To UBound(Arr, 1), _
+            LBound(Arr, 2) To UBound(Arr, 2) + AdditionalElements)
+      
+      'Transfer 'Arr' array to 'Result'
       For RowNdx = LBound(Arr, 1) To UBound(Arr, 1)
          For ColNdx = LBound(Arr, 2) To UBound(Arr, 2)
             Result(RowNdx, ColNdx) = Arr(RowNdx, ColNdx)
          Next
       Next
-      'Fill the rest of the result array with FillValue
+      
+      'Fill the rest of the result array with 'FillValue'
       For RowNdx = LBound(Arr, 1) To UBound(Arr, 1)
          For ColNdx = UBound(Arr, 2) + 1 To UBound(Result, 2)
             Result(RowNdx, ColNdx) = FillValue
@@ -2824,17 +2788,17 @@ Attribute SwapArrayColumns.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'GetColumn
-'This populates ResultArr with a one-dimensional array that is the
-'specified column of Arr. The existing contents of ResultArr are
-'destroyed. ResultArr must be a dynamic array.
-'Returns True or False indicating success.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This populates 'ResultArr' with a one-dimensional array that is the specified
+'column of 'Arr'. The existing contents of 'ResultArr' are erased.
+''ResultArr' must be a dynamic array. Returns 'True' or 'False' indicating
+'success.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetColumn( _
-   Arr As Variant, _
-   ResultArr As Variant, _
-   ColumnNumber As LongPtr _
+   ByVal Arr As Variant, _
+   ByRef ResultArr As Variant, _
+   ByVal ColumnNumber As LongPtr _
       ) As Boolean
 Attribute GetColumn.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -2848,14 +2812,18 @@ Attribute GetColumn.VB_ProcData.VB_Invoke_Func = " \n19"
    If NumberOfArrayDimensions(Arr) <> 2 Then Exit Function
    If Not IsArrayDynamic(ResultArr) Then Exit Function
    
-   'Ensure ColumnNumber is less than or equal to the number of columns
+   'Ensure 'ColumnNumber' is less than or equal to the number of columns
    If UBound(Arr, 2) < ColumnNumber Then Exit Function
    If LBound(Arr, 2) > ColumnNumber Then Exit Function
    
    Erase ResultArr
    ReDim ResultArr(LBound(Arr, 1) To UBound(Arr, 1))
    For RowNdx = LBound(ResultArr) To UBound(ResultArr)
-      ResultArr(RowNdx) = Arr(RowNdx, ColumnNumber)
+      If IsObject(Arr(RowNdx, ColumnNumber)) Then
+         Set ResultArr(RowNdx) = Arr(RowNdx, ColumnNumber)
+      Else
+         ResultArr(RowNdx) = Arr(RowNdx, ColumnNumber)
+      End If
    Next
    
    GetColumn = True
@@ -2863,17 +2831,16 @@ Attribute GetColumn.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'GetRow
-'This populates ResultArr with a one-dimensional array that is the
-'specified row of Arr. The existing contents of ResultArr are
-'destroyed. ResultArr must be a dynamic array.
-'Returns True or False indicating success.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This populates 'ResultArrÄ with a one-dimensional array that is the specified
+'row of 'Arr'. The existing contents of 'ResultArr' are erased. 'ResultArr'
+'must be a dynamic array. Returns 'True' or 'False' indicating success.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function GetRow( _
-   Arr As Variant, _
-   ResultArr As Variant, _
-   RowNumber As LongPtr _
+   ByVal Arr As Variant, _
+   ByRef ResultArr As Variant, _
+   ByVal RowNumber As LongPtr _
       ) As Boolean
 Attribute GetRow.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -2887,14 +2854,18 @@ Attribute GetRow.VB_ProcData.VB_Invoke_Func = " \n19"
    If NumberOfArrayDimensions(Arr) <> 2 Then Exit Function
    If Not IsArrayDynamic(ResultArr) Then Exit Function
    
-   'Ensure ColumnNumber is less than or equal to the number of columns
+   'Ensure 'RowNumber' is less than or equal to the number of rows
    If UBound(Arr, 1) < RowNumber Then Exit Function
    If LBound(Arr, 1) > RowNumber Then Exit Function
    
    Erase ResultArr
    ReDim ResultArr(LBound(Arr, 2) To UBound(Arr, 2))
    For ColNdx = LBound(ResultArr) To UBound(ResultArr)
-      ResultArr(ColNdx) = Arr(RowNumber, ColNdx)
+      If IsObject(Arr(RowNumber, ColNdx)) Then
+         Set ResultArr(ColNdx) = Arr(RowNumber, ColNdx)
+      Else
+         ResultArr(ColNdx) = Arr(RowNumber, ColNdx)
+      End If
    Next
    
    GetRow = True
