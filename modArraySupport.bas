@@ -19,6 +19,7 @@ Attribute VB_Name = "modArraySupport"
 '  --> is there some rule that one of the first is only used when
 '      one of them is only used as 'ByVal' or used as Source and Dest (ByRef)?
 '- test if functions work for objects as well
+'- add optional arguments to skip checks (?)
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -503,11 +504,11 @@ End Function
 '       allowed
 '     - add type compatibility checking (as optional argument)?
 Public Function CopyArraySubSetToArray( _
-   SourceArray As Variant, _
-   ResultArray As Variant, _
-   FirstElementToCopy As LongPtr, _
-   LastElementToCopy As LongPtr, _
-   DestinationElement As LongPtr _
+   ByVal SourceArray As Variant, _
+   ByRef ResultArray As Variant, _
+   ByVal FirstElementToCopy As LongPtr, _
+   ByVal LastElementToCopy As LongPtr, _
+   ByVal DestinationElement As LongPtr _
       ) As Boolean
 Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -1127,7 +1128,6 @@ End Function
 '  - IsArrayDynamic
 '  - IsNumericDataType
 '  - IsVariantArrayConsistent
-'  - MoveEmptyStringsToEndOfArray
 '  - NumElements
 '  - SetObjectArrayToNothing
 Public Function IsArrayAllocated( _
@@ -1231,9 +1231,11 @@ End Function
 'Returns 'True' if 'InputArray' is entirely objects ('Nothing' objects are
 'optionally allowed -- default it 'True', allow 'Nothing' objects).
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'called by
+'  - ReverseArrayOfObjectsInPlace
 Public Function IsArrayObjects( _
-   InputArray As Variant, _
-   Optional AllowNothing As Boolean = True _
+   ByRef InputArray As Variant, _
+   Optional ByVal AllowNothing As Boolean = True _
       ) As Boolean
 Attribute IsArrayObjects.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -1268,13 +1270,10 @@ End Function
 '  - vbLong, vbLongLong
 '  - vbSingle
 'and 'False' for any other data type, including empty 'Variant's and 'Object's.
-'If 'TestVar' is an allocated array, it will test the data type of the array
+'If 'TestVar' is an unallocated array, it will test the data type of the array
 'and return 'True' or 'False' for that data type. If 'TestVar' is an allocated
-'array, it tests the data type of the first element of the array. (If 'TestVar'
-'is an array of 'Variant's, the function will indicate only whether the first
-'element of the array is numeric. Other elements of the array may not be
-'numeric data types. To test an entire array of Variants to ensure they are all
-'numeric data types, use the 'IsArrayAllNumeric' function.)
+'array, it tests all elements, if they are numeric data type using the
+''IsArrayAllNumeric' function.
 'Use this procedure instead of VBA's 'IsNumeric' function because 'IsNumeric'
 'will return 'True' if the variable is a string containing numeric data. This
 'will cause problems with code like
@@ -1294,12 +1293,11 @@ End Function
 'converting a string value to a numeric variable.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function IsNumericDataType( _
-   TestVar As Variant _
+   ByVal TestVar As Variant _
       ) As Boolean
 Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n19"
    
    Dim Element As Variant
-   Dim NumDims As LongPtr
    
    Dim LongLong As LongPtr
    LongLong = DeclareLongLong
@@ -1308,87 +1306,54 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n19"
    'Set the default return value
    IsNumericDataType = False
    
-   If IsArray(TestVar) Then
-      NumDims = NumberOfArrayDimensions(TestVar)
-'---
-'2do:
-'- is a change needed here? First test, if 'IsArrayAllNumeric' is supposed
-'  to handle this!
-'---
-      If NumDims > 1 Then Exit Function
-
-      If IsArrayAllocated(TestVar) Then
-'---
-'2do:
-'- is it intentional to test only the first element of 'TestVar'?
-'  --> according to the functions description yes ...
-'---
-         Element = TestVar(LBound(TestVar))
-         Select Case VarType(Element)
-            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLong, vbSingle
-               IsNumericDataType = True
-               Exit Function
-            Case Else
-               Exit Function
-         End Select
-      Else
+   If Not IsArray(TestVar) Then
+      Select Case VarType(TestVar)
+         Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLong, vbSingle
+            IsNumericDataType = True
+      End Select
+   Else
+      If Not IsArrayAllocated(TestVar) Then
          Select Case VarType(TestVar) - vbArray
             Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLong, vbSingle
                IsNumericDataType = True
-               Exit Function
-            Case Else
-               Exit Function
          End Select
+      Else
+         IsNumericDataType = IsArrayAllNumeric(TestVar, False, True)
       End If
    End If
    
-   Select Case VarType(TestVar)
-      Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLong, vbSingle
-         IsNumericDataType = True
-      Case Else
-         IsNumericDataType = False
-   End Select
-
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'IsVariantArrayConsistent
-'
-'This returns TRUE or FALSE indicating whether an array of variants
-'contains all the same data types. Returns FALSE under the following
+'This returns 'True' or 'False' indicating whether an array of variants
+'contains all the same data types. Returns 'False' under the following
 'circumstances:
-'      Arr is not an array
-'      Arr is an array but is unallocated
-'      Arr is a multidimensional array
-'      Arr is allocated but does not contain consistant data types.
-'
-'If Arr is an array of objects, objects that are Nothing are ignored.
-'As long as all non-Nothing objects are the same object type, the
-'function returns True.
-'
-'It returns TRUE if all the elements of the array have the same
-'data type. If Arr is an array of a specific data types, not variants,
-'(E.g., Dim V(1 To 3) As LongPtr), the function will return True. If
-'an array of variants contains an uninitialized element (VarType =
-'vbEmpty) that element is skipped and not used in the comparison. The
-'reasoning behind this is that an empty variable will return the
-'data type of the variable to which it is assigned (e.g., it will
-'return vbNullString to a String and 0 to a Double).
-'
+'      'Arr' is not an array,
+'      'Arr' is an array but is unallocated,
+'      'Arr' is a multi-dimensional array,
+'      'Arr' is allocated but does not contain consistant data types.
+'If 'Arr' is an array of objects, objects that are 'Nothing' are ignored. As
+'long as all non-'Nothing' objects are the same object type, the function
+'returns 'True'.
+'It returns 'True' if all the elements of the array have the same data type.
+'If 'Arr' is an array of a specific data types, not 'Variant's, e.g.
+'    Dim V(1 To 3) As LongPtr
+'the function will return 'True'. If an array of variants contains an
+'uninitialized element ('VarType = vbEmpty') that element is skipped and not
+'used in the comparison. The reasoning behind this is that an empty variable
+'will return the data type of the variable to which it is assigned (e.g. it
+'will return 'vbNullString' to a 'String' and '0' to a 'Double').
 'The function does not support arrays of User Defined Types.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function IsVariantArrayConsistent( _
-   Arr As Variant _
+   ByVal Arr As Variant _
       ) As Boolean
 Attribute IsVariantArrayConsistent.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim FirstDataType As VbVarType
-'---
-'2do: replace with
-'   Dim Element As Variant
-   Dim i As LongPtr
-'---
+   Dim Element As Variant
    
    
    'Set the default return value
@@ -1397,31 +1362,28 @@ Attribute IsVariantArrayConsistent.VB_ProcData.VB_Invoke_Func = " \n19"
    If Not IsArray(Arr) Then Exit Function
    If Not IsArrayAllocated(Arr) Then Exit Function
 
-   'Exit with false on multi-dimensional arrays
-'---
-'2do: can this be changed if still true?
-'---
-   If NumberOfArrayDimensions(Arr) <> 1 Then Exit Function
-   
-   'Test if we have an array of a specific type rather than Variants. If so,
-   'return TRUE and get out.
-   If (VarType(Arr) <= vbArray) And _
-       (VarType(Arr) <> vbVariant) Then
+   'Test if we have an array of a specific type rather than 'Variant's. If so,
+   'return 'True' and get out.
+   If VarType(Arr) - vbArray <> vbVariant Then
       IsVariantArrayConsistent = True
       Exit Function
    End If
    
    'Get the data type of the first element
-   FirstDataType = VarType(Arr(LBound(Arr)))
+   For Each Element In Arr
+      FirstDataType = VarType(Element)
+      Exit For
+   Next
+   
    'Loop through the array and exit if a differing data type if found.
-   For i = LBound(Arr) + 1 To UBound(Arr)
-      If VarType(Arr(i)) <> vbEmpty Then
-         If IsObject(Arr(i)) Then
-            If Not Arr(i) Is Nothing Then
-               If VarType(Arr(i)) <> FirstDataType Then Exit Function
+   For Each Element In Arr
+      If VarType(Element) <> vbEmpty Then
+         If IsObject(Element) Then
+            If Not Element Is Nothing Then
+               If VarType(Element) <> FirstDataType Then Exit Function
             End If
          Else
-            If VarType(Arr(i)) <> FirstDataType Then Exit Function
+            If VarType(Element) <> FirstDataType Then Exit Function
          End If
       End If
    Next
@@ -1477,62 +1439,59 @@ End Function
 'End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'This procedure takes the SORTED array InputArray, which, if sorted in
-'ascending order, will have all empty strings at the front of the array.
-'This procedure moves those strings to the end of the array, shifting
-'the non-empty strings forward in the array.
-'Note that InputArray MUST be sorted in ascending order.
-'Returns True if the array was correctly shifted (if necessary) and False
-'if an error occurred.
-'
-'This function uses the following functions.
-'      FirstNonEmptyStringIndexInArray
-'      NumberOfArrayDimensions
-'      IsArrayAllocated
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'MoveEmptyStringsToEndOfArray
+'This procedure takes the SORTED array 'InputArray', which, if sorted in
+'ascending order, will have all empty strings at the front of the array. This
+'procedure moves those strings to the end of the array, shifting the non-empty
+'strings forward in the array.
+'Note that 'InputArray' MUST be sorted in ascending order.
+'Returns 'True' if the array was correctly shifted (if necessary) and 'False'
+'if an error occurred.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'---
+'2do: - rename to 'MoveEmptyStringsToEndOfVector'
 Public Function MoveEmptyStringsToEndOfArray( _
-   InputArray As Variant _
+   ByRef InputArray As Variant _
       ) As Boolean
 Attribute MoveEmptyStringsToEndOfArray.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim Ndx As LongPtr
-   Dim Ndx2 As LongPtr
    Dim NonEmptyNdx As LongPtr
+   Dim LBoundArr As LongPtr
+   Dim UBoundArr As LongPtr
    Dim FirstNonEmptyNdx As LongPtr
+   Dim LastNewNonEmptyNdx As LongPtr
    
    
    'Set the default return value
    MoveEmptyStringsToEndOfArray = False
 
    If Not IsArray(InputArray) Then Exit Function
-   If Not IsArrayAllocated(InputArray) Then Exit Function
+   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
+   LBoundArr = LBound(InputArray)
+   UBoundArr = UBound(InputArray)
    
    FirstNonEmptyNdx = FirstNonEmptyStringIndexInArray(InputArray)
-   If FirstNonEmptyNdx <= LBound(InputArray) Then
+   If FirstNonEmptyNdx <= LBoundArr Then
       'No empty strings at the beginning of the array. Get out now.
       MoveEmptyStringsToEndOfArray = True
       Exit Function
    End If
    
+   LastNewNonEmptyNdx = UBoundArr + LBoundArr - FirstNonEmptyNdx
    
-   'Loop through the array, swapping vbNullStrings at the beginning with
-   'values at the end.
+   'Loop through the array and move non-empty strings to the front
    NonEmptyNdx = FirstNonEmptyNdx
-   For Ndx = LBound(InputArray) To UBound(InputArray)
-      If InputArray(Ndx) = vbNullString Then
-         InputArray(Ndx) = InputArray(NonEmptyNdx)
-         InputArray(NonEmptyNdx) = vbNullString
-         NonEmptyNdx = NonEmptyNdx + 1
-         If NonEmptyNdx > UBound(InputArray) Then
-            Exit For
-         End If
-      End If
+   For Ndx = LBoundArr To LastNewNonEmptyNdx
+      InputArray(Ndx) = InputArray(NonEmptyNdx)
+      NonEmptyNdx = NonEmptyNdx + 1
    Next
-   'Set entires (Ndx+1) to UBound(InputArray) to vbNullStrings
-   For Ndx2 = Ndx + 1 To UBound(InputArray)
-      InputArray(Ndx2) = vbNullString
+   
+   'Set last entries entries 'vbNullString's
+   For Ndx = LastNewNonEmptyNdx + 1 To UBoundArr
+      InputArray(Ndx) = vbNullString
    Next
    
    MoveEmptyStringsToEndOfArray = True
@@ -1564,6 +1523,7 @@ End Function
 '  - IsArrayObjects
 '  - IsNumericDataType
 '  - IsVariantArrayConsistent
+'  - MoveEmptyStringsToEndOfArray
 '  - NumElements
 '  - ResetVariantArrayToDefaults
 '  - ReverseArrayInPlace
@@ -1582,6 +1542,15 @@ Attribute NumberOfArrayDimensions.VB_ProcData.VB_Invoke_Func = " \n19"
    Dim Res As LongPtr
    
    
+   'it seems that an unallocated 'Object' array returns 1, so it is needed a
+   'special handler for this case
+   If DataTypeOfArray(Arr) = vbObject Then
+      If Not IsArrayAllocated(Arr) Then
+         NumberOfArrayDimensions = 0
+         Exit Function
+      End If
+   End If
+      
    On Error Resume Next
    'Loop, increasing the dimension index 'i', until an error occurs.
    'An error will occur when 'i' exceeds the number of dimension in the array.
@@ -1596,21 +1565,20 @@ Attribute NumberOfArrayDimensions.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'NumElements
-'Returns the number of elements in the specified dimension (Dimension) of the array in
-'Arr. If you omit Dimension, the first dimension is used. The function will return
-'0 under the following circumstances:
-'    Arr is not an array, or
-'    Arr is an unallocated array, or
-'    Dimension is greater than the number of dimension of Arr, or
-'    Dimension is less than 1.
-'
+'Returns the number of elements in the specified dimension ('Dimension') of the
+'array in 'Arr'. If you omit 'Dimension', the first dimension is used. The
+'function will return 0 under the following circumstances:
+'- 'Arr' is not an array, or
+'- 'Arr' is an unallocated array, or
+'- 'Dimension' is less than 1, or
+'- 'Dimension' is greater than the number of dimension of 'Arr'.
 'This function does not support arrays of user-defined Type variables.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function NumElements( _
-   Arr As Variant, _
-   Optional Dimension As LongPtr = 1 _
+   ByVal Arr As Variant, _
+   Optional ByVal Dimension As LongPtr = 1 _
       ) As LongPtr
 Attribute NumElements.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -1622,8 +1590,6 @@ Attribute NumElements.VB_ProcData.VB_Invoke_Func = " \n19"
    
    If Not IsArray(Arr) Then Exit Function
    If Not IsArrayAllocated(Arr) Then Exit Function
-   
-   'ensure that Dimension is at least 1
    If Dimension < 1 Then Exit Function
    
    'check if 'Dimension' is not larger than 'NumDimensions'
@@ -1636,96 +1602,102 @@ Attribute NumElements.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'ResetVariantArrayToDefaults
-'This resets all the elements of an array of Variants back to their appropriate
-'default values. The elements of the array may be of mixed types (e.g., some Longs,
-'some Objects, some Strings, etc). Each data type will be set to the appropriate
-'default value (0, vbNullString, Empty, or Nothing). It returns True if the
-'array was set to defautls, or False if an error occurred. InputArray must be
-'an allocated single-dimensional array. This function differs from the Erase
-'function in that it preserves the original data types, while Erase sets every
-'element to Empty.
+'This resets all the elements of an array of 'Variant's back to their
+'appropriate default values. The elements of the array may be of mixed types
+'(e.g., some 'Long's, some 'Object's, some 'String's, etc.). Each data type
+'will be set to the appropriate default value ('0', 'vbNullString', 'Empty', or
+''Nothing'). It returns 'True' if the array was set to defautls, or 'False' if
+'an error occurred. 'InputArray' must be an allocated single-dimensional array.
+'This function differs from the 'Erase' function in that it preserves the
+'original data types, while 'Erase' sets every element to 'Empty'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ResetVariantArrayToDefaults( _
-   InputArray As Variant _
+   ByRef InputArray As Variant _
       ) As Boolean
 Attribute ResetVariantArrayToDefaults.VB_ProcData.VB_Invoke_Func = " \n19"
 
-'---
-'2do: replace with
-'   Dim Element As Variant
    Dim i As LongPtr
-'---
+   Dim j As LongPtr
+   Dim k As LongPtr
+   
    
    'Set the default return value
    ResetVariantArrayToDefaults = False
    
    If Not IsArray(InputArray) Then Exit Function
-   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
-   For i = LBound(InputArray) To UBound(InputArray)
-      SetVariableToDefault InputArray(i)
-   Next
+   Select Case NumberOfArrayDimensions(InputArray)
+      Case 1
+         For i = LBound(InputArray) To UBound(InputArray)
+            SetVariableToDefault InputArray(i)
+         Next
+      Case 2
+         For i = LBound(InputArray, 1) To UBound(InputArray, 1)
+            For j = LBound(InputArray, 2) To UBound(InputArray, 2)
+               SetVariableToDefault InputArray(i, j)
+            Next
+         Next
+      Case 3
+         For i = LBound(InputArray, 1) To UBound(InputArray, 1)
+            For j = LBound(InputArray, 2) To UBound(InputArray, 2)
+               For k = LBound(InputArray, 3) To UBound(InputArray, 3)
+                  SetVariableToDefault InputArray(i, j, k)
+               Next
+            Next
+         Next
+      Case Else
+         Exit Function
+   End Select
    
    ResetVariantArrayToDefaults = True
 
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'ReverseArrayInPlace
-'This procedure reverses the order of an array in place -- this is, the array variable
-'in the calling procedure is reversed. This works only on single-dimensional arrays
-'of simple data types (String, Single, Double, Integer, Long). It will not work
-'on arrays of objects. Use ReverseArrayOfObjectsInPlace to reverse an array of objects.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This procedure reverses the order of an array in place -- this is, the array
+'variable in the calling procedure is reversed. This works only on
+'single-dimensional arrays of simple data types ('String', 'Single', 'Double',
+''Integer', 'Long'). It will not work on arrays of objects. Use
+''ReverseArrayOfObjectsInPlace' to reverse an array of objects.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'2do:
+'- rename to 'ReverseVectorInPlace?
+'- combine with 'ReverseArrayOfObjectsInPlace'?
 Public Function ReverseArrayInPlace( _
-   InputArray As Variant, _
-   Optional NoAlerts As Boolean = False _
+   ByRef InputArray As Variant _
       ) As Boolean
 Attribute ReverseArrayInPlace.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim Temp As Variant
    Dim Ndx As LongPtr
    Dim Ndx2 As LongPtr
+   Dim LBoundArr As LongPtr
+   Dim UBoundArr As LongPtr
+   Dim NoOfElements As LongPtr
+   Dim MidPoint As LongPtr
    
    
    'Set the default return value
    ReverseArrayInPlace = False
    
-   'ensure we have an array
-   If Not IsArray(InputArray) Then
-      If NoAlerts = False Then
-         MsgBox "The InputArray parameter is not an array."
-      End If
-      Exit Function
-   End If
+   If Not IsArray(InputArray) Then Exit Function
+   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
-   'Test the number of dimensions of the InputArray. If 0, we have an empty,
-   'unallocated array. Get out with an error message. If greater than one, we
-   'have a multi-dimensional array, which is not allowed. Only an allocated
-   '1-dimensional array is allowed.
-   Select Case NumberOfArrayDimensions(InputArray)
-      Case 0
-         If NoAlerts = False Then
-            MsgBox "The input array is an empty, unallocated array."
-         End If
-         Exit Function
-      Case 1
-         'ok
-      Case Else
-         If NoAlerts = False Then
-            MsgBox "The input array is multi-dimensional. ReverseArrayInPlace works only " & _
-                      "on single-dimensional arrays."
-         End If
-         Exit Function
-   End Select
+   LBoundArr = LBound(InputArray)
+   UBoundArr = UBound(InputArray)
+   NoOfElements = UBoundArr - LBoundArr + 1
    
-   Ndx2 = UBound(InputArray)
+   'calculate midpoint index of 'InputArray'
+   MidPoint = LBoundArr + (NoOfElements \ 2) - 1
    
-   'loop from the LBound of InputArray to the midpoint of InputArray
-   For Ndx = LBound(InputArray) To ((UBound(InputArray) - LBound(InputArray) + 1) \ 2) - 1
+   'initialize 'Ndx2'
+   Ndx2 = UBoundArr
+   
+   For Ndx = LBoundArr To MidPoint
       'swap the elements
       Temp = InputArray(Ndx)
       InputArray(Ndx) = InputArray(Ndx2)
@@ -1739,69 +1711,45 @@ Attribute ReverseArrayInPlace.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'ReverseArrayOfObjectsInPlace
-'This procedure reverses the order of an array in place -- this is, the array variable
-'in the calling procedure is reversed. This works only with arrays of objects. It does
-'not work on simple variables. Use ReverseArrayInPlace for simple variables. An error
-'will occur if an element of the array is not an object.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This procedure reverses the order of an array in place -- this is, the array
+'variable in the calling procedure is reversed. This works only with arrays of
+'objects. It does not work on simple variables. Use 'ReverseArrayInPlace' for
+'simple variables. An error will occur if an element of the array is not an
+'object.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ReverseArrayOfObjectsInPlace( _
-   InputArray As Variant, _
-   Optional NoAlerts As Boolean = False _
+   ByRef InputArray As Variant _
       ) As Boolean
-Attribute ReverseArrayOfObjectsInPlace.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim Temp As Variant
    Dim Ndx As LongPtr
    Dim Ndx2 As LongPtr
+   Dim LBoundArr As LongPtr
+   Dim UBoundArr As LongPtr
+   Dim NoOfElements As LongPtr
+   Dim MidPoint As LongPtr
    
    
    'Set the default return value
    ReverseArrayOfObjectsInPlace = False
    
-   'ensure we have an array
-   If Not IsArray(InputArray) Then
-      If NoAlerts = False Then
-         MsgBox "The InputArray parameter is not an array."
-      End If
-      Exit Function
-   End If
+   If Not IsArray(InputArray) Then Exit Function
+   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
+   If Not IsArrayObjects(InputArray, True) Then Exit Function
    
-   'Test the number of dimensions of the InputArray. If 0, we have an empty,
-   'unallocated array. Get out with an error message. If greater than one, we
-   'have a multi-dimensional array, which is not allowed. Only an allocated
-   '1-dimensional array is allowed.
-   Select Case NumberOfArrayDimensions(InputArray)
-      Case 0
-         If NoAlerts = False Then
-            MsgBox "The input array is an empty, unallocated array."
-         End If
-         Exit Function
-      Case 1
-         'ok
-      Case Else
-         If NoAlerts = False Then
-            MsgBox "The input array is multi-dimensional. " & _
-               "ReverseArrayInPlace works only on single-dimensional arrays."
-         End If
-         Exit Function
-   End Select
+   LBoundArr = LBound(InputArray)
+   UBoundArr = UBound(InputArray)
+   NoOfElements = UBoundArr - LBoundArr + 1
    
-   Ndx2 = UBound(InputArray)
+   'calculate midpoint index of 'InputArray'
+   MidPoint = LBoundArr + (NoOfElements \ 2) - 1
    
-   'ensure the entire array consists of objects (Nothing objects are allowed)
-   For Ndx = LBound(InputArray) To UBound(InputArray)
-      If Not IsObject(InputArray(Ndx)) Then
-         If NoAlerts = False Then
-            MsgBox "Array item " & CStr(Ndx) & " is not an object."
-         End If
-         Exit Function
-      End If
-   Next
+   Ndx2 = UBoundArr
    
-   'loop from the LBound of InputArray to the midpoint of InputArray
-   For Ndx = LBound(InputArray) To ((UBound(InputArray) - LBound(InputArray) + 1) \ 2)
+   For Ndx = LBoundArr To MidPoint
+      'swap the elements
       Set Temp = InputArray(Ndx)
       Set InputArray(Ndx) = InputArray(Ndx2)
       Set InputArray(Ndx2) = Temp
@@ -2007,12 +1955,11 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'SetVariableToDefault
-'This procedure sets Variable to the appropriate default
-'value for its data type. Note that it cannot change User-Defined
-'Types.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This procedure sets 'Variable' to the appropriate default value for its data
+'type. Note that it cannot change User-Defined Types.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'called by
 '  - ResetVariantArrayToDefaults
 Public Sub SetVariableToDefault( _
@@ -2024,15 +1971,16 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n19"
    LongLong = DeclareLongLong
    
    
-   'We test with IsObject here so that the object itself, not the default
+   'We test with 'IsObject' here so that the object itself, not the default
    'property of the object, is evaluated.
    If IsObject(Variable) Then
       Set Variable = Nothing
    Else
       Select Case VarType(Variable)
          Case Is >= vbArray
-            'The VarType of an array is equal to vbArray + VarType(ArrayElement).
-            'Here we check for anything >= vbArray
+            'The 'VarType' of an array is equal to
+            '  vbArray + VarType(ArrayElement).
+            'Here we check for anything '>=vbArray'
             Erase Variable
          Case vbBoolean
             Variable = False
@@ -2041,7 +1989,10 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n19"
          Case vbCurrency
             Variable = CCur(0)
          Case vbDataObject
+'---
+'2do: how can this be set/tested?
             Set Variable = Nothing
+'---
          Case vbDate
             Variable = CDate(0)
          Case vbDecimal
@@ -2059,7 +2010,10 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n19"
          Case vbNull
             Variable = Empty
          Case vbObject
+'---
+'2do: this was already checked above
             Set Variable = Nothing
+'---
          Case vbSingle
             Variable = CSng(0)
          Case vbString
@@ -2070,8 +2024,8 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n19"
             'assignment takes place in this procedure.
          Case vbVariant
             'This case is included for constistancy, but we will never get
-            'here. If the Variant contains data, VarType returns the type of
-            'that data. An Empty Variant is type vbEmpty.
+            'here. If the 'Variant' contains data, 'VarType' returns the type
+            'of that data. An empty 'Variant' is type 'vbEmpty'.
             Variable = Empty
       End Select
    End If
@@ -2347,25 +2301,25 @@ End Function
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'IsArraySorted
 'This function determines whether a single-dimensional array is sorted. Because
-'sorting is an expensive operation, especially so on a large array of Variants,
+'sorting is an expensive operation, especially so on a large array of 'Variant's,
 'you may want to determine if an array is already in sorted order prior to
 'doing an actual sort.
 'This function returns 'True' if an array is in sorted order (either ascending
 'or descending, depending on the value of the 'Descending' parameter -- default
-'is 'False' = Ascending). The decision to do a string comparison (with
-''StrComp') or a numeric comparison (with < or >) is based on the data type of
-'the first element of the array.
+'is 'False' = Ascending). The decision to do a string comparison (with 'StrComp')
+'or a numeric comparison (with < or >) is based on the data type of the first
+'element of the array.
 'If 'InputArray' is not an array, is an unallocated array, or has more than
 'one dimension, or the VarType of 'InputArray' is not compatible, the function
-'returns 'Null'.
+'returns 'Null'. Thus, one knows that there is nothing to sort.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '2do:
 '- rename to 'IsVectorSorted'
 '- what is distinction between 'Null' and 'False' good for?
 '  --> function return value can be changed to Boolean
 Public Function IsArraySorted( _
-   InputArray As Variant, _
-   Optional Descending As Boolean = False _
+   ByVal InputArray As Variant, _
+   Optional ByVal Descending As Boolean = False _
       ) As Variant
 Attribute IsArraySorted.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -2459,8 +2413,8 @@ End Function
 '   g    h
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function CombineTwoDArrays( _
-   Arr1 As Variant, _
-   Arr2 As Variant _
+   ByVal Arr1 As Variant, _
+   ByVal Arr2 As Variant _
       ) As Variant
 Attribute CombineTwoDArrays.VB_ProcData.VB_Invoke_Func = " \n19"
 
@@ -2895,3 +2849,4 @@ Public Function VectorTo1DArray( _
    VectorTo1DArray = ResultArray
    
 End Function
+
