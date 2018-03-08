@@ -877,6 +877,81 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'CopyNonNothingObjectsToVector
+'This function copies all objects that are not Nothing from 'SourceArray'
+'to 'ResultArray'. 'ResultArray' MUST be a dynamic array of type 'Object' or
+''Variant', e.g.,
+'      Dim ResultArray() As Object
+'or
+'      Dim ResultArray() as Variant
+'
+''ResultArray' will be erased and then resized to hold the non-Nothing elements
+'from 'SourceArray'. The 'LBound' of 'ResultArray' will be the same as the
+''LBound' of 'SourceArray', regardless of what its 'LBound' was prior to
+'calling this procedure.
+'
+'This function returns 'True' if the operation was successful or 'False' if an
+'error occurs. If an error occurs, a message box is displayed indicating the
+'error. To suppress the message boxes, set the 'NoAlerts' parameter to 'True'.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function CopyNonNothingObjectsToVector( _
+   ByVal SourceArray As Variant, _
+   ByRef ResultArray As Variant _
+      ) As Boolean
+Attribute CopyNonNothingObjectsToVector.VB_ProcData.VB_Invoke_Func = " \n19"
+   
+   Dim SrcNdx  As LongPtr
+   Dim ResNdx As LongPtr
+   
+   
+   'Set the default return value
+   CopyNonNothingObjectsToVector = False
+   
+   If Not IsArrayDynamic(ResultArray) Then Exit Function
+   'Ensure 'ResultArray' is unallocated or single-dimensional
+   If NumberOfArrayDimensions(ResultArray) > 1 Then Exit Function
+   
+   'Ensure that all the elements of 'SourceArray' are in fact objects
+   If Not IsArrayObjects(SourceArray) Then Exit Function
+   
+   'Erase the 'ResultArray. Since 'ResultArray' is dynamic, this will release
+   'the memory used by 'ResultArray' and return the array to an unallocated
+   'state.
+   Erase ResultArray
+   'Now, size 'ResultArray' to the size of 'SourceArray'. After moving all the
+   'non-Nothing elements, we'll do another resize to get 'ResultArray' to the
+   'used size. This method allows us to avoid 'Redim Preserve' for every element.
+   ReDim ResultArray(LBound(SourceArray) To UBound(SourceArray))
+   
+   ResNdx = LBound(SourceArray)
+   For SrcNdx = LBound(SourceArray) To UBound(SourceArray)
+      If Not SourceArray(SrcNdx) Is Nothing Then
+         Set ResultArray(ResNdx) = SourceArray(SrcNdx)
+         ResNdx = ResNdx + 1
+      End If
+   Next
+   
+   'Now that we've copied all the non-Nothing elements we call 'Redim Preserve'
+   'to resize the 'ResultArray' to the size actually used. Test 'ResNdx' to see
+   'if we actually copied any elements.
+   '
+   'If 'ResNdx > LBound(SourceArray)' then we copied at least one element out
+   'of 'SourceArray' ...
+   If ResNdx > LBound(SourceArray) Then
+      ReDim Preserve ResultArray(LBound(ResultArray) To ResNdx - 1)
+   '... otherwise we didn't copy any elements from 'SourceArray'
+   '(all elements in 'SourceArray' were 'Nothing'). In this case,
+   ''Erase ResultArray'.
+   Else
+      Erase ResultArray
+   End If
+   
+   CopyNonNothingObjectsToVector = True
+
+End Function
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'CopyVectorSubSetToVector
 'This function copies elements of 'SourceArray' to 'ResultArray'. It takes the
 'elements from 'FirstElementToCopy' to 'LastElementToCopy' (inclusive) from
@@ -895,7 +970,6 @@ Public Function CopyVectorSubSetToVector( _
    ByVal LastElementToCopy As LongPtr, _
    ByVal DestinationElement As LongPtr _
       ) As Boolean
-Attribute CopyVectorSubSetToVector.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim SrcNdx As LongPtr
    Dim ResNdx As LongPtr
@@ -1003,81 +1077,6 @@ Attribute CopyVectorSubSetToVector.VB_ProcData.VB_Invoke_Func = " \n19"
    Next
    
    CopyVectorSubSetToVector = True
-
-End Function
-
-
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'CopyNonNothingObjectsToVector
-'This function copies all objects that are not Nothing from 'SourceArray'
-'to 'ResultArray'. 'ResultArray' MUST be a dynamic array of type 'Object' or
-''Variant', e.g.,
-'      Dim ResultArray() As Object
-'or
-'      Dim ResultArray() as Variant
-'
-''ResultArray' will be erased and then resized to hold the non-Nothing elements
-'from 'SourceArray'. The 'LBound' of 'ResultArray' will be the same as the
-''LBound' of 'SourceArray', regardless of what its 'LBound' was prior to
-'calling this procedure.
-'
-'This function returns 'True' if the operation was successful or 'False' if an
-'error occurs. If an error occurs, a message box is displayed indicating the
-'error. To suppress the message boxes, set the 'NoAlerts' parameter to 'True'.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function CopyNonNothingObjectsToVector( _
-   ByVal SourceArray As Variant, _
-   ByRef ResultArray As Variant _
-      ) As Boolean
-Attribute CopyNonNothingObjectsToVector.VB_ProcData.VB_Invoke_Func = " \n19"
-   
-   Dim SrcNdx  As LongPtr
-   Dim ResNdx As LongPtr
-   
-   
-   'Set the default return value
-   CopyNonNothingObjectsToVector = False
-   
-   If Not IsArrayDynamic(ResultArray) Then Exit Function
-   'Ensure 'ResultArray' is unallocated or single-dimensional
-   If NumberOfArrayDimensions(ResultArray) > 1 Then Exit Function
-   
-   'Ensure that all the elements of 'SourceArray' are in fact objects
-   If Not IsArrayObjects(SourceArray) Then Exit Function
-   
-   'Erase the 'ResultArray. Since 'ResultArray' is dynamic, this will release
-   'the memory used by 'ResultArray' and return the array to an unallocated
-   'state.
-   Erase ResultArray
-   'Now, size 'ResultArray' to the size of 'SourceArray'. After moving all the
-   'non-Nothing elements, we'll do another resize to get 'ResultArray' to the
-   'used size. This method allows us to avoid 'Redim Preserve' for every element.
-   ReDim ResultArray(LBound(SourceArray) To UBound(SourceArray))
-   
-   ResNdx = LBound(SourceArray)
-   For SrcNdx = LBound(SourceArray) To UBound(SourceArray)
-      If Not SourceArray(SrcNdx) Is Nothing Then
-         Set ResultArray(ResNdx) = SourceArray(SrcNdx)
-         ResNdx = ResNdx + 1
-      End If
-   Next
-   
-   'Now that we've copied all the non-Nothing elements we call 'Redim Preserve'
-   'to resize the 'ResultArray' to the size actually used. Test 'ResNdx' to see
-   'if we actually copied any elements.
-   '
-   'If 'ResNdx > LBound(SourceArray)' then we copied at least one element out
-   'of 'SourceArray' ...
-   If ResNdx > LBound(SourceArray) Then
-      ReDim Preserve ResultArray(LBound(ResultArray) To ResNdx - 1)
-   '... otherwise we didn't copy any elements from 'SourceArray'
-   '(all elements in 'SourceArray' were 'Nothing'). In this case,
-   ''Erase ResultArray'.
-   Else
-      Erase ResultArray
-   End If
-   
-   CopyNonNothingObjectsToVector = True
 
 End Function
 
@@ -1875,91 +1874,6 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'IsVectorSorted
-'This function determines whether a single-dimensional array is sorted. Because
-'sorting is an expensive operation, especially so on a large array of 'Variant's,
-'you may want to determine if an array is already in sorted order prior to
-'doing an actual sort.
-'This function returns 'True' if an array is in sorted order (either ascending
-'or descending, depending on the value of the 'Descending' parameter -- default
-'is 'False' = Ascending). The decision to do a string comparison (with 'StrComp')
-'or a numeric comparison (with < or >) is based on the data type of the first
-'element of the array.
-'If 'InputArray' is not an array, is an unallocated array, or has more than
-'one dimension, or the VarType of 'InputArray' is not compatible, the function
-'returns 'Null'. Thus, one knows that there is nothing to sort.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function IsVectorSorted( _
-   ByVal InputArray As Variant, _
-   Optional ByVal Descending As Boolean = False _
-      ) As Variant
-
-   Dim StrCompResultFail As LongPtr
-   Dim NumericResultFail As Boolean
-   Dim i As LongPtr
-   Dim NumCompareResult As Boolean
-   Dim StrCompResult As LongPtr
-   
-   Dim IsString As Boolean
-   Dim VType As VbVarType
-   
-   
-   'Set the default return value
-   IsVectorSorted = Null
-   
-   If Not IsArray(InputArray) Then Exit Function
-   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
-   
-   'Determine whether we are going to do a string comparison or a numeric
-   'comparison
-   VType = VarType(InputArray(LBound(InputArray)))
-   Select Case VType
-      Case vbArray, vbDataObject, vbEmpty, vbError, vbNull, vbObject, vbUserDefinedType
-         'Unsupported types.
-         Exit Function
-      Case vbString, vbVariant
-         'Compare as string
-         IsString = True
-      Case Else
-         'Compare as numeric
-         IsString = False
-   End Select
-   
-   'The following code sets the values of comparison that will indicate that
-   'the array is unsorted. Is the result of 'StrComp' (for strings) or ">="
-   '(for numerics) equal the value specified below, we know that the array is
-   'unsorted.
-   If Descending = True Then
-      StrCompResultFail = -1
-      NumericResultFail = False
-   Else
-      StrCompResultFail = 1
-      NumericResultFail = True
-   End If
-   
-   For i = LBound(InputArray) To UBound(InputArray) - 1
-      If IsString Then
-         StrCompResult = StrComp(InputArray(i), InputArray(i + 1))
-         If StrCompResult = StrCompResultFail Then
-            IsVectorSorted = False
-            Exit Function
-         End If
-      Else
-         NumCompareResult = (InputArray(i) >= InputArray(i + 1))
-         If NumCompareResult = NumericResultFail Then
-            IsVectorSorted = False
-            Exit Function
-         End If
-      End If
-   Next
-   
-   'If we made it up to here, then the array is in sorted order.
-   IsVectorSorted = True
-
-End Function
-
-
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'IsNumericDataType
 'This function returns 'True' or 'False' indicating whether the data type of a
 'variable is a numeric data type. It will return 'True' for the data types
@@ -2088,6 +2002,91 @@ Public Function IsVariantArrayConsistent( _
    
    'If we make it up to here, then the array is consistent
    IsVariantArrayConsistent = True
+
+End Function
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'IsVectorSorted
+'This function determines whether a single-dimensional array is sorted. Because
+'sorting is an expensive operation, especially so on a large array of 'Variant's,
+'you may want to determine if an array is already in sorted order prior to
+'doing an actual sort.
+'This function returns 'True' if an array is in sorted order (either ascending
+'or descending, depending on the value of the 'Descending' parameter -- default
+'is 'False' = Ascending). The decision to do a string comparison (with 'StrComp')
+'or a numeric comparison (with < or >) is based on the data type of the first
+'element of the array.
+'If 'InputArray' is not an array, is an unallocated array, or has more than
+'one dimension, or the VarType of 'InputArray' is not compatible, the function
+'returns 'Null'. Thus, one knows that there is nothing to sort.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function IsVectorSorted( _
+   ByVal InputArray As Variant, _
+   Optional ByVal Descending As Boolean = False _
+      ) As Variant
+
+   Dim StrCompResultFail As LongPtr
+   Dim NumericResultFail As Boolean
+   Dim i As LongPtr
+   Dim NumCompareResult As Boolean
+   Dim StrCompResult As LongPtr
+   
+   Dim IsString As Boolean
+   Dim VType As VbVarType
+   
+   
+   'Set the default return value
+   IsVectorSorted = Null
+   
+   If Not IsArray(InputArray) Then Exit Function
+   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
+   
+   'Determine whether we are going to do a string comparison or a numeric
+   'comparison
+   VType = VarType(InputArray(LBound(InputArray)))
+   Select Case VType
+      Case vbArray, vbDataObject, vbEmpty, vbError, vbNull, vbObject, vbUserDefinedType
+         'Unsupported types.
+         Exit Function
+      Case vbString, vbVariant
+         'Compare as string
+         IsString = True
+      Case Else
+         'Compare as numeric
+         IsString = False
+   End Select
+   
+   'The following code sets the values of comparison that will indicate that
+   'the array is unsorted. Is the result of 'StrComp' (for strings) or ">="
+   '(for numerics) equal the value specified below, we know that the array is
+   'unsorted.
+   If Descending = True Then
+      StrCompResultFail = -1
+      NumericResultFail = False
+   Else
+      StrCompResultFail = 1
+      NumericResultFail = True
+   End If
+   
+   For i = LBound(InputArray) To UBound(InputArray) - 1
+      If IsString Then
+         StrCompResult = StrComp(InputArray(i), InputArray(i + 1))
+         If StrCompResult = StrCompResultFail Then
+            IsVectorSorted = False
+            Exit Function
+         End If
+      Else
+         NumCompareResult = (InputArray(i) >= InputArray(i + 1))
+         If NumCompareResult = NumericResultFail Then
+            IsVectorSorted = False
+            Exit Function
+         End If
+      End If
+   Next
+   
+   'If we made it up to here, then the array is in sorted order.
+   IsVectorSorted = True
 
 End Function
 

@@ -1613,6 +1613,169 @@ End Sub
 
 
 '==============================================================================
+'unit tests for 'CopyNonNothingObjectsToVector'
+'==============================================================================
+
+'@TestMethod
+Public Sub CopyNonNothingObjectsToVector_ScalarResultArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim SourceArray() As Object
+   Dim ScalarResult As Object
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
+         SourceArray, _
+         ScalarResult _
+   )
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub CopyNonNothingObjectsToVector_StaticResultArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim SourceArray() As Object
+   Dim ResultArray(1 To 2) As Object
+   
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
+         SourceArray, _
+         ResultArray _
+   )
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub CopyNonNothingObjectsToVector_2DResultArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim SourceArray() As Object
+   Dim ResultArray() As Object
+   
+   
+   'Arrange:
+   ReDim ResultArray(1 To 2, 1 To 1)
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
+         SourceArray, _
+         ResultArray _
+   )
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub CopyNonNothingObjectsToVector_NonObjectOnlySourceArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim SourceArray(5 To 6) As Variant
+   Dim ResultArray() As Object
+   
+   
+   'Arrange:
+   Set SourceArray(5) = Nothing
+   SourceArray(6) = 1
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
+         SourceArray, _
+         ResultArray _
+   )
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub CopyNonNothingObjectsToVector_ValidNonNothingOnlySourceArray_ReturnsTrueAndResultArray()
+   On Error GoTo TestFail
+
+   Dim SourceArray(5 To 6) As Variant
+   Dim ResultArray() As Object
+   Dim i As LongPtr
+   
+   
+   'Arrange:
+   Set SourceArray(5) = Nothing
+   Set SourceArray(6) = ThisWorkbook.Worksheets(1).Range("B2")
+   
+   'Act:
+   If Not modArraySupport.CopyNonNothingObjectsToVector( _
+         SourceArray, _
+         ResultArray _
+   ) Then _
+         GoTo TestFail
+   
+   'Assert:
+   For i = LBound(ResultArray) To UBound(ResultArray)
+      Assert.IsNotNothing ResultArray(i)
+   Next
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub CopyNonNothingObjectsToVector_NothingOnlySourceArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim SourceArray(5 To 6) As Variant
+   Dim ResultArray() As Object
+   Dim i As LongPtr
+   
+   
+   'Arrange:
+   Set SourceArray(5) = Nothing
+   Set SourceArray(6) = Nothing
+   
+   'Act:
+   If Not modArraySupport.CopyNonNothingObjectsToVector( _
+         SourceArray, _
+         ResultArray _
+   ) Then _
+         GoTo TestFail
+   
+   'Assert:
+   Assert.IsFalse modArraySupport.IsArrayAllocated(ResultArray)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'==============================================================================
 'unit tests for 'CopyVectorSubSetToVector'
 '==============================================================================
 
@@ -2477,169 +2640,6 @@ Public Sub CopyVectorSubSetToVector_TestWithObjects_ReturnsTrueAndResultArray()
          Assert.AreEqual aExpected(i).Address, ResultArray(i).Address
       End If
    Next
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'==============================================================================
-'unit tests for 'CopyNonNothingObjectsToVector'
-'==============================================================================
-
-'@TestMethod
-Public Sub CopyNonNothingObjectsToVector_ScalarResultArray_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim SourceArray() As Object
-   Dim ScalarResult As Object
-   
-   
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
-         SourceArray, _
-         ScalarResult _
-   )
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub CopyNonNothingObjectsToVector_StaticResultArray_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim SourceArray() As Object
-   Dim ResultArray(1 To 2) As Object
-   
-   
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
-         SourceArray, _
-         ResultArray _
-   )
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub CopyNonNothingObjectsToVector_2DResultArray_ReturnsFalse()
-   On Error GoTo TestFail
-
-   Dim SourceArray() As Object
-   Dim ResultArray() As Object
-   
-   
-   'Arrange:
-   ReDim ResultArray(1 To 2, 1 To 1)
-   
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
-         SourceArray, _
-         ResultArray _
-   )
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub CopyNonNothingObjectsToVector_NonObjectOnlySourceArray_ReturnsFalse()
-   On Error GoTo TestFail
-
-   Dim SourceArray(5 To 6) As Variant
-   Dim ResultArray() As Object
-   
-   
-   'Arrange:
-   Set SourceArray(5) = Nothing
-   SourceArray(6) = 1
-   
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
-         SourceArray, _
-         ResultArray _
-   )
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub CopyNonNothingObjectsToVector_ValidNonNothingOnlySourceArray_ReturnsTrueAndResultArray()
-   On Error GoTo TestFail
-
-   Dim SourceArray(5 To 6) As Variant
-   Dim ResultArray() As Object
-   Dim i As LongPtr
-   
-   
-   'Arrange:
-   Set SourceArray(5) = Nothing
-   Set SourceArray(6) = ThisWorkbook.Worksheets(1).Range("B2")
-   
-   'Act:
-   If Not modArraySupport.CopyNonNothingObjectsToVector( _
-         SourceArray, _
-         ResultArray _
-   ) Then _
-         GoTo TestFail
-   
-   'Assert:
-   For i = LBound(ResultArray) To UBound(ResultArray)
-      Assert.IsNotNothing ResultArray(i)
-   Next
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub CopyNonNothingObjectsToVector_NothingOnlySourceArray_ReturnsFalse()
-   On Error GoTo TestFail
-
-   Dim SourceArray(5 To 6) As Variant
-   Dim ResultArray() As Object
-   Dim i As LongPtr
-   
-   
-   'Arrange:
-   Set SourceArray(5) = Nothing
-   Set SourceArray(6) = Nothing
-   
-   'Act:
-   If Not modArraySupport.CopyNonNothingObjectsToVector( _
-         SourceArray, _
-         ResultArray _
-   ) Then _
-         GoTo TestFail
-   
-   'Assert:
-   Assert.IsFalse modArraySupport.IsArrayAllocated(ResultArray)
 
 TestExit:
    Exit Sub
@@ -5688,6 +5688,550 @@ End Sub
 
 
 '==============================================================================
+'unit tests for 'IsNumericDataType'
+'==============================================================================
+
+'@TestMethod
+Public Sub IsNumericDataType_LongPtrScalar_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Scalar As LongPtr
+
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsNumericDataType(Scalar)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_CurrencyScalar_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Scalar As Currency
+
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsNumericDataType(Scalar)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_StringScalar_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Scalar As String
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsNumericDataType(Scalar)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_ObjectScalar_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Scalar As Object
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsNumericDataType(Scalar)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_VariantScalarUninitialized_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Scalar As Variant
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsNumericDataType(Scalar)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_VariantScalarNumericContent_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim Scalar As Variant
+
+
+   'Arrange:
+   Scalar = 3
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsNumericDataType(Scalar)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_VariantScalarNonNumericContent_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim Scalar As Variant
+
+
+   'Arrange:
+   Scalar = "abc"
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsNumericDataType(Scalar)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_LongPtrArrayUnallocated_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr() As LongPtr
+
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsNumericDataType(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_LongPtrStaticArray_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr(5 To 6) As LongPtr
+
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsNumericDataType(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_CurrencyArray_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr() As Currency
+
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsNumericDataType(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_StringArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr() As String
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_ObjectArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr() As Object
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_VariantArrayUnallocated_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr() As Variant
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_StaticVariantArrayNumericContent_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim Arr(5 To 6) As Variant
+
+
+   'Arrange:
+   Arr(5) = 3
+   Arr(6) = 7.8
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsNumericDataType(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_StaticVariantArrayMixedContentNumericFirst_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim Arr(5 To 6) As Variant
+
+
+   'Arrange:
+   Arr(5) = -2
+   Arr(6) = "abc"
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsNumericDataType_StaticVariantArrayMixedContentNonNumericFirst_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim Arr(5 To 6) As Variant
+
+
+   'Arrange:
+   Arr(5) = "abc"
+   Arr(6) = -2
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'==============================================================================
+'unit tests for 'IsVariantArrayConsistent'
+'==============================================================================
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_NoArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Scalar As LongPtr
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsVariantArrayConsistent(Scalar)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_UnallocatedArray_ReturnsFalse()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr() As LongPtr
+
+
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsVariantArrayConsistent(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_AllocatedLongTypeArray_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr(5 To 6) As LongPtr
+
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_AllocatedObjectTypeArray_ReturnsTrue()
+   On Error GoTo TestFail
+
+   'Arrange:
+   Dim Arr(5 To 6) As Object
+
+
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_AllocatedVariantTypeArrayConsistentIntegers_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim Arr(5 To 6) As Variant
+
+
+   'Arrange:
+   Arr(5) = -100
+   Arr(6) = 3
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_AllocatedVariantTypeArrayConsistentObjects_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim Arr(5 To 7) As Variant
+
+
+   'Arrange:
+   With ThisWorkbook.Worksheets(1)
+      Set Arr(5) = .Range("B5")
+      Set Arr(6) = Nothing
+      Set Arr(7) = .Range("B7")
+   End With
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_AllocatedVariantTypeArrayInconsistentTypes_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim Arr(5 To 6) As Variant
+
+
+   'Arrange:
+   Arr(5) = -100
+   Arr(6) = "abc"
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsVariantArrayConsistent(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_2DAllocatedVariantTypeArrayConsistentIntegers_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim Arr(5 To 6, 3 To 4) As Variant
+
+
+   'Arrange:
+   Arr(5, 3) = 10
+   Arr(6, 3) = 11
+   Arr(5, 4) = 20
+   Arr(6, 4) = 21
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_2DAllocatedVariantTypeArrayConsistentObjects_ReturnsTrue()
+   On Error GoTo TestFail
+
+   Dim Arr(5 To 6, 3 To 4) As Variant
+
+
+   'Arrange:
+   With ThisWorkbook.Worksheets(1)
+      Set Arr(5, 3) = .Range("B5")
+      Set Arr(6, 3) = Nothing
+      Set Arr(5, 4) = .Range("B7")
+      Set Arr(6, 4) = Nothing
+   End With
+   
+   'Act:
+   'Assert:
+   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub IsVariantArrayConsistent_2DAllocatedVariantTypeArrayInconsistentTypes_ReturnsFalse()
+   On Error GoTo TestFail
+
+   Dim Arr(5 To 6, 3 To 4) As Variant
+
+
+   'Arrange:
+   Arr(5, 3) = -100
+   Arr(6, 3) = "abc"
+   Arr(5, 4) = Empty
+   Set Arr(6, 4) = Nothing
+   
+   'Act:
+   'Assert:
+   Assert.IsFalse modArraySupport.IsVariantArrayConsistent(Arr)
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'==============================================================================
 'unit tests for 'IsVectorSorted'
 '==============================================================================
 
@@ -6321,550 +6865,6 @@ Public Sub IsVectorSorted_VariantArrayNumberPlusStrings2DescendingTrue_ReturnsFa
    
    'Assert:
    Assert.IsFalse aResult
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'==============================================================================
-'unit tests for 'IsNumericDataType'
-'==============================================================================
-
-'@TestMethod
-Public Sub IsNumericDataType_LongPtrScalar_ReturnsTrue()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Scalar As LongPtr
-
-
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsNumericDataType(Scalar)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_CurrencyScalar_ReturnsTrue()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Scalar As Currency
-
-
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsNumericDataType(Scalar)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_StringScalar_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Scalar As String
-
-
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsNumericDataType(Scalar)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_ObjectScalar_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Scalar As Object
-
-
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsNumericDataType(Scalar)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_VariantScalarUninitialized_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Scalar As Variant
-
-
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsNumericDataType(Scalar)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_VariantScalarNumericContent_ReturnsTrue()
-   On Error GoTo TestFail
-
-   Dim Scalar As Variant
-
-
-   'Arrange:
-   Scalar = 3
-   
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsNumericDataType(Scalar)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_VariantScalarNonNumericContent_ReturnsFalse()
-   On Error GoTo TestFail
-
-   Dim Scalar As Variant
-
-
-   'Arrange:
-   Scalar = "abc"
-   
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsNumericDataType(Scalar)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_LongPtrArrayUnallocated_ReturnsTrue()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Arr() As LongPtr
-
-
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsNumericDataType(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_LongPtrStaticArray_ReturnsTrue()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Arr(5 To 6) As LongPtr
-
-
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsNumericDataType(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_CurrencyArray_ReturnsTrue()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Arr() As Currency
-
-
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsNumericDataType(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_StringArray_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Arr() As String
-
-
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_ObjectArray_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Arr() As Object
-
-
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_VariantArrayUnallocated_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Arr() As Variant
-
-
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_StaticVariantArrayNumericContent_ReturnsTrue()
-   On Error GoTo TestFail
-
-   Dim Arr(5 To 6) As Variant
-
-
-   'Arrange:
-   Arr(5) = 3
-   Arr(6) = 7.8
-   
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsNumericDataType(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_StaticVariantArrayMixedContentNumericFirst_ReturnsFalse()
-   On Error GoTo TestFail
-
-   Dim Arr(5 To 6) As Variant
-
-
-   'Arrange:
-   Arr(5) = -2
-   Arr(6) = "abc"
-   
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsNumericDataType_StaticVariantArrayMixedContentNonNumericFirst_ReturnsFalse()
-   On Error GoTo TestFail
-
-   Dim Arr(5 To 6) As Variant
-
-
-   'Arrange:
-   Arr(5) = "abc"
-   Arr(6) = -2
-   
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsNumericDataType(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'==============================================================================
-'unit tests for 'IsVariantArrayConsistent'
-'==============================================================================
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_NoArray_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Scalar As LongPtr
-
-
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsVariantArrayConsistent(Scalar)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_UnallocatedArray_ReturnsFalse()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Arr() As LongPtr
-
-
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsVariantArrayConsistent(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_AllocatedLongTypeArray_ReturnsTrue()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Arr(5 To 6) As LongPtr
-
-
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_AllocatedObjectTypeArray_ReturnsTrue()
-   On Error GoTo TestFail
-
-   'Arrange:
-   Dim Arr(5 To 6) As Object
-
-
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_AllocatedVariantTypeArrayConsistentIntegers_ReturnsTrue()
-   On Error GoTo TestFail
-
-   Dim Arr(5 To 6) As Variant
-
-
-   'Arrange:
-   Arr(5) = -100
-   Arr(6) = 3
-   
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_AllocatedVariantTypeArrayConsistentObjects_ReturnsTrue()
-   On Error GoTo TestFail
-
-   Dim Arr(5 To 7) As Variant
-
-
-   'Arrange:
-   With ThisWorkbook.Worksheets(1)
-      Set Arr(5) = .Range("B5")
-      Set Arr(6) = Nothing
-      Set Arr(7) = .Range("B7")
-   End With
-   
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_AllocatedVariantTypeArrayInconsistentTypes_ReturnsFalse()
-   On Error GoTo TestFail
-
-   Dim Arr(5 To 6) As Variant
-
-
-   'Arrange:
-   Arr(5) = -100
-   Arr(6) = "abc"
-   
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsVariantArrayConsistent(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_2DAllocatedVariantTypeArrayConsistentIntegers_ReturnsTrue()
-   On Error GoTo TestFail
-
-   Dim Arr(5 To 6, 3 To 4) As Variant
-
-
-   'Arrange:
-   Arr(5, 3) = 10
-   Arr(6, 3) = 11
-   Arr(5, 4) = 20
-   Arr(6, 4) = 21
-   
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_2DAllocatedVariantTypeArrayConsistentObjects_ReturnsTrue()
-   On Error GoTo TestFail
-
-   Dim Arr(5 To 6, 3 To 4) As Variant
-
-
-   'Arrange:
-   With ThisWorkbook.Worksheets(1)
-      Set Arr(5, 3) = .Range("B5")
-      Set Arr(6, 3) = Nothing
-      Set Arr(5, 4) = .Range("B7")
-      Set Arr(6, 4) = Nothing
-   End With
-   
-   'Act:
-   'Assert:
-   Assert.IsTrue modArraySupport.IsVariantArrayConsistent(Arr)
-
-TestExit:
-   Exit Sub
-TestFail:
-   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
-End Sub
-
-
-'@TestMethod
-Public Sub IsVariantArrayConsistent_2DAllocatedVariantTypeArrayInconsistentTypes_ReturnsFalse()
-   On Error GoTo TestFail
-
-   Dim Arr(5 To 6, 3 To 4) As Variant
-
-
-   'Arrange:
-   Arr(5, 3) = -100
-   Arr(6, 3) = "abc"
-   Arr(5, 4) = Empty
-   Set Arr(6, 4) = Nothing
-   
-   'Act:
-   'Assert:
-   Assert.IsFalse modArraySupport.IsVariantArrayConsistent(Arr)
 
 TestExit:
    Exit Sub
