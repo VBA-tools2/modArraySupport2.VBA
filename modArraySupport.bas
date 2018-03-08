@@ -20,6 +20,10 @@ Attribute VB_Name = "modArraySupport"
 '      one of them is only used as 'ByVal' or used as Source and Dest (ByRef)?
 '- test if functions work for objects as well
 '- add optional arguments to skip checks (?)
+'- check again how it was tested for Objects
+'  --> IsObject vs. VarType(...) = vbObject
+'  the first always finds an object, the latter only if it is not also
+'  something else like the content of a cell, then this type is used
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -161,6 +165,7 @@ End Sub
 '- If either element is not a numeric string, the elements are converted and
 '  compared with 'StrComp'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'2do: - a better name might be 'CompareVectors' since only Vectors are allowed
 Public Function CompareArrays( _
    ByVal Array1 As Variant, _
    ByVal Array2 As Variant, _
@@ -278,7 +283,6 @@ Attribute ConcatenateArrays.VB_ProcData.VB_Invoke_Func = " \n19"
    'Set the default result
    ConcatenateArrays = False
    
-   If Not IsArray(ResultArray) Then Exit Function
    If Not IsArray(ArrayToAppend) Then Exit Function
    If Not IsArrayDynamic(ResultArray) Then Exit Function
    
@@ -654,7 +658,6 @@ Attribute CopyNonNothingObjectsToArray.VB_ProcData.VB_Invoke_Func = " \n19"
    'Set the default return value
    CopyNonNothingObjectsToArray = False
    
-   If Not IsArray(ResultArray) Then Exit Function
    If Not IsArrayDynamic(ResultArray) Then Exit Function
    'Ensure 'ResultArray' is unallocated or single-dimensional
    If NumberOfArrayDimensions(ResultArray) > 1 Then Exit Function
@@ -902,6 +905,8 @@ End Function
 'than or equal to the 'LBound' of 'InputArray' and less than or equal to
 ''UBound + 1'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'2do: - a better name might be 'InsertElementIntoVector' since only Vectors are
+'       allowed
 Public Function InsertElementIntoArray( _
    ByRef InputArray As Variant, _
    ByVal Index As LongPtr, _
@@ -1719,9 +1724,11 @@ End Function
 'simple variables. An error will occur if an element of the array is not an
 'object.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'- rename to 'ReverseVectorOfObjectsInPlace?
 Public Function ReverseArrayOfObjectsInPlace( _
    ByRef InputArray As Variant _
       ) As Boolean
+Attribute ReverseArrayOfObjectsInPlace.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim Temp As Variant
    Dim Ndx As LongPtr
@@ -1762,51 +1769,59 @@ Public Function ReverseArrayOfObjectsInPlace( _
 End Function
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'SetObjectArrrayToNothing
-'This sets all the elements of InputArray to Nothing. Use this function
-'rather than Erase because if InputArray is an array of Variants, Erase
-'will set each element to Empty, not Nothing, and the element will cease
+'This sets all the elements of 'InputArray' to 'Nothing'. Use this function
+'rather than 'Erase' because if 'InputArray' is an array of 'Variants', 'Erase'
+'will set each element to 'Empty', not 'Nothing', and the element will cease
 'to be an object.
-'
-'The function returns True if successful, False otherwise.
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'The function returns 'True' if successful, 'False' otherwise.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function SetObjectArrayToNothing( _
-   InputArray As Variant _
+   ByRef InputArray As Variant _
       ) As Boolean
 Attribute SetObjectArrayToNothing.VB_ProcData.VB_Invoke_Func = " \n19"
 
-'---
-'2do: replace with ????
-'   Dim Element As Variant
+   Dim NoOfArrayDimensions As LongPtr
    Dim i As LongPtr
-'---
+   Dim j As LongPtr
+   Dim k As LongPtr
    
    
    'Set the default return value
    SetObjectArrayToNothing = False
    
    If Not IsArray(InputArray) Then Exit Function
-   If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
-   'Ensure the array is allocated and that each element is an object (or Nothing).
-   'If the array is not allocated, return True. We do this test before setting
-   'any element to Nothing so we don't end up with an array that is a mix of
-   'Empty and Nothing values. This means looping through the array twice, but
-   'it ensures all or none of the elements get set to Nothing.
-   If IsArrayAllocated(InputArray) Then
-      For i = LBound(InputArray) To UBound(InputArray)
-         If Not IsObject(InputArray(i)) Then Exit Function
-      Next
-   Else
-      SetObjectArrayToNothing = True
-      Exit Function
-   End If
+   NoOfArrayDimensions = NumberOfArrayDimensions(InputArray)
    
-   'Set each element of InputArray to Nothing
-   For i = LBound(InputArray) To UBound(InputArray)
-      Set InputArray(i) = Nothing
-   Next
+   If NoOfArrayDimensions < 1 Then Exit Function
+   If NoOfArrayDimensions > 3 Then Exit Function
+   If Not IsArrayObjects(InputArray, True) Then Exit Function
+   
+   'Set each element of 'InputArray' to 'Nothing'
+   Select Case NoOfArrayDimensions
+      Case 1
+         For i = LBound(InputArray) To UBound(InputArray)
+            Set InputArray(i) = Nothing
+         Next
+      Case 2
+         For i = LBound(InputArray, 1) To UBound(InputArray, 1)
+            For j = LBound(InputArray, 2) To UBound(InputArray, 2)
+               Set InputArray(i, j) = Nothing
+            Next
+         Next
+      Case 3
+         For i = LBound(InputArray, 1) To UBound(InputArray, 1)
+            For j = LBound(InputArray, 2) To UBound(InputArray, 2)
+               For k = LBound(InputArray, 3) To UBound(InputArray, 3)
+                  Set InputArray(i, j, k) = Nothing
+               Next
+            Next
+         Next
+      Case Else
+         Exit Function
+   End Select
    
    SetObjectArrayToNothing = True
 
@@ -2084,34 +2099,30 @@ Attribute TransposeArray.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'VectorsToArray
-'This function takes 1 or more single-dimensional arrays and converts
-'them into a single multi-dimensional array. Each array in Vectors
-'comprises one row of the new array. The number of columns in the
-'new array is the maximum of the number of elements in each vector.
-'Arr MUST be a dynamic array of a data type compatible with ALL the
-'elements in each Vector. The code does NOT trap for an error
+'This function takes one or more single-dimensional arrays (vectors) and
+'converts them into a single two-dimensional array. Each array in 'Vectors'
+'comprises one row of the new array. The number of columns in the new array is
+'the maximum of the number of elements in each vector.
+''Arr' MUST be a dynamic array of a data type compatible with ALL the
+'elements in each vector. The code does NOT trap for an error
 '13 - Type Mismatch.
-'
-'If the Vectors are of differing sizes, Arr is sized to hold the
-'maximum number of elements in a Vector. The procedure Erases the
-'Arr array, so when it is reallocated with Redim, all elements will
-'be the reset to their default value (0 or vbNullString or Empty).
-'Unused elements in the new array will remain the default value for
-'that data type.
-'
-'Each Vector in Vectors must be a single dimensional array, but
-'the Vectors may be of different sizes and LBounds.
-'
-'Each element in each Vector must be a simple data type. The elements
-'may NOT be Object, Arrays, or User-Defined Types.
-'
+'If the 'Vectors' are of differing sizes, 'Arr' is sized to hold the maximum
+'number of elements in a vector. The procedure erases the 'Arr' array, so when
+'it is reallocated with 'Redim', all elements will be the reset to their
+'default value ('0', 'vbNullString' or 'Empty').
+'Unused elements in the new array will remain the default value for that data
+'type.
+'Each vector in 'Vectors' must be a single-dimensional array, but the vectors
+'may be of different sizes and 'LBound's.
+'Each element in each vector must be a simple data type. The elements may NOT
+'be 'Object's, 'Array's, or 'User-Defined Types'.
 'The rows and columns of the result array are 0-based, regardless of
-'the LBound of each vector and regardless of the Option Base statement.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'the 'LBound' of each vector and regardless of the 'Option Base' statement.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function VectorsToArray( _
-   Arr As Variant, _
+   ByRef Arr As Variant, _
    ParamArray Vectors() _
       ) As Boolean
 Attribute VectorsToArray.VB_ProcData.VB_Invoke_Func = " \n19"
@@ -2119,73 +2130,90 @@ Attribute VectorsToArray.VB_ProcData.VB_Invoke_Func = " \n19"
    Dim Vector As Variant
    Dim NumRows As LongPtr
    Dim NumCols As LongPtr
+   Dim NoOfElements As LongPtr
+   Dim LBoundVector As LongPtr
    Dim RowNdx As LongPtr
    Dim ColNdx As LongPtr
    Dim VType As VbVarType
+   
+   Dim LongLong As LongPtr
+   LongLong = DeclareLongLong
    
    
    'Set the default return value
    VectorsToArray = False
    
-   If Not IsArray(Arr) Then Exit Function
    If Not IsArrayDynamic(Arr) Then Exit Function
 
-   'Ensure that at least one vector was passed in Vectors
+   'Ensure that at least one vector was passed in 'Vectors'
    If IsMissing(Vectors) Then Exit Function
    
-   'Loop through Vectors to determine the size of the result array. We do this
-   'loop first to prevent having to do a Redim Preserve. This requires looping
-   'through Vectors a second time, but this is still faster than doing
-   'Redim Preserves.
+   NumRows = 0
+   NumCols = 0
+   
+   'Loop through 'Vectors' to determine the size of the result array.
+   '(We do this loop first to prevent having to do a 'Redim Preserve'. This
+   ' requires looping through 'Vectors' a second time, but this is still faster
+   ' than doing 'Redim Preserve's.)
    For Each Vector In Vectors
-       'Ensure Vector is single dimensional array. This will take care of the
-       'case if Vector is an unallocated array (NumberOfArrayDimensions = 0
-       'for an unallocated array).
-      If NumberOfArrayDimensions(Vector) <> 1 Then Exit Function
-'---
-'2do: this test is a bit late, right?
-'---
-      'Ensure that Vector is not an array
       If Not IsArray(Vector) Then Exit Function
-      'Increment the number of rows. Each Vector is one row or the result array.
-      'Test the size of Vector. If it is larger than the existing value of
-      'NumCols, set NumCols to the new, larger, value.
-      NumRows = NumRows + 1
-      If NumCols < UBound(Vector) - LBound(Vector) + 1 Then
-         NumCols = UBound(Vector) - LBound(Vector) + 1
-      End If
+      If NumberOfArrayDimensions(Vector) <> 1 Then Exit Function
+      
+      'Increment the number of rows. Each 'Vector' is one row or the result array.
+      NumCols = NumCols + 1
+      
+      LBoundVector = LBound(Vector)
+      
+      'Store number of elements in 'Vector' and use the larger value for
+      ''NumRows'.
+      NoOfElements = UBound(Vector) - LBoundVector + 1
+      NumRows = Application.WorksheetFunction.max(NumRows, NoOfElements)
    Next
-   'Redim Arr to the appropriate size. Arr is 0-based in both directions,
-   'regardless of the LBound of the original Arr and regardless of the
-   'LBounds of the Vectors.
+   
+   'Redim 'Arr' to the appropriate size. 'Arr' is 0-based in both directions,
+   'regardless of the 'LBound' of the original 'Arr' and regardless of the
+   ''LBounds' of the 'Vectors'.
    ReDim Arr(0 To NumRows - 1, 0 To NumCols - 1)
    
-   'Loop through the rows
-   For RowNdx = 0 To NumRows - 1
-      'Loop through the columns
-      For ColNdx = 0 To NumCols - 1
-         'Set Vector (a Variant) to the Vectors(RowNdx) array. We declare
-         'Vector as a variant so it can take an  array of any simple data type.
-         Vector = Vectors(RowNdx)
-         'The vectors need not ber
-         If ColNdx < UBound(Vector) - LBound(Vector) + 1 Then
-            VType = VarType(Vector(LBound(Vector) + ColNdx))
-            If VType >= vbArray Then
-               'Test for VType >= vbArray. The VarType of an array is
-               'vbArray + VarType(element of array). E.g., the  VarType of an
-               'array of Longs equal vbArray + vbLong.  Anything greater than
-               'or equal to vbArray is an array of some time.
+   For ColNdx = 0 To NumCols - 1
+      For RowNdx = 0 To NumRows - 1
+         'Set 'Vector' (a Variant) to the 'Vectors(ColNdx)' array. We declare
+         ''Vector' as a variant so it can take an array of any simple data type.
+         Vector = Vectors(ColNdx)
+         
+         LBoundVector = LBound(Vector)
+
+         VType = VarType(Vector(LBoundVector + RowNdx))
+'         Select Case VType
+'            Case Is >= vbArray
+'               'Test for 'VType >= vbArray'. The 'VarType' of an array is
+'               ''vbArray + VarType(element of array)'. E.g., the 'VarType'
+'               'of an array of 'Long's equal 'vbArray + vbLong'. Anything
+'               'greater than or equal to 'vbArray' is an array of something.
+'               Exit Function
+'            Case vbObject
+'               Exit Function
+'            Case Else
+'               ''Vector(LBoundVector + RowNdx)' is a simple data type.
+'               'If 'Vector(LBoundVector + RowNdx)' is not a compatible data
+'               'type with 'Arr', then a "Type Mismatch" error will occur. We
+'               'do NOT trap this error.
+'               Arr(RowNdx, ColNdx) = Vector(LBoundVector + RowNdx)
+'         End Select
+         'define allowed data types and exit function for all others
+         Select Case VType
+            Case vbByte, vbInteger, vbLong, LongLong, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
+            Case vbString
+'            Case vbArray, vbVariant, vbEmpty, vbError, vbNull, vbUserDefinedType
+'               Exit Function
+            Case vbBoolean
+'            Case vbObject
+'               Exit Function
+            Case Else
                Exit Function
-            End If
-            If VType = vbObject Then
-               Exit Function
-            End If
-            'Vector(LBound(Vector) + ColNdx) is  a simple data type.
-            'If Vector(LBound(Vector) + ColNdx) is not a compatible data type
-            'with Arr, then a Type Mismatch error will occur. We do NOT trap
-            'this error.
-            Arr(RowNdx, ColNdx) = Vector(LBound(Vector) + ColNdx)
-         End If
+         End Select
+         'transfer value to 'Arr'
+         Arr(RowNdx, ColNdx) = Vector(LBoundVector + RowNdx)
       Next
    Next
    
@@ -2642,19 +2670,19 @@ Attribute ExpandArray.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'SwapArrayRows
-'This function returns an array based on Arr with Row1 and Row2 swapped.
-'It returns the result array or NULL if an error occurred.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This function returns an array based on 'Arr' with 'Row1' and 'Row2' swapped.
+'It returns the result array or 'Null' if an error occurred.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function SwapArrayRows( _
-   Arr As Variant, _
-   Row1 As LongPtr, _
-   Row2 As LongPtr _
+   ByRef Arr As Variant, _
+   ByVal Row1 As LongPtr, _
+   ByVal Row2 As LongPtr _
       ) As Variant
 Attribute SwapArrayRows.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim V As Variant
+   Dim Temp As Variant
    Dim Result As Variant
    Dim ColNdx As LongPtr
    
@@ -2665,26 +2693,27 @@ Attribute SwapArrayRows.VB_ProcData.VB_Invoke_Func = " \n19"
    If Not IsArray(Arr) Then Exit Function
    If NumberOfArrayDimensions(Arr) <> 2 Then Exit Function
    
-   'Ensure Row1 and Row2 are less than or equal to the number of rows
+   'Ensure 'Row1' and 'Row2' are valid numbers
+   If Row1 < LBound(Arr, 1) Then Exit Function
    If Row1 > UBound(Arr, 1) Then Exit Function
+   If Row2 < LBound(Arr, 1) Then Exit Function
    If Row2 > UBound(Arr, 1) Then Exit Function
    
-   'If Row1 = Row2, just return the array and exit. Nothing to do.
+   'If 'Row1 = Row2', just return the array and exit. Nothing to do.
    If Row1 = Row2 Then
       SwapArrayRows = Arr
       Exit Function
    End If
    
-   'Set Result to Arr
+   'Set 'Result' to 'Arr'
    Result = Arr
    
-   'Redim V to the number of columns
-   ReDim V(LBound(Arr, 2) To UBound(Arr, 2))
-   'Put Row1 in V
+   'Redim 'Temp' to the number of columns
+   ReDim Temp(LBound(Arr, 2) To UBound(Arr, 2))
    For ColNdx = LBound(Arr, 2) To UBound(Arr, 2)
-      V(ColNdx) = Arr(Row1, ColNdx)
+      Temp(ColNdx) = Arr(Row1, ColNdx)
       Result(Row1, ColNdx) = Arr(Row2, ColNdx)
-      Result(Row2, ColNdx) = V(ColNdx)
+      Result(Row2, ColNdx) = Temp(ColNdx)
    Next
    
    SwapArrayRows = Result
@@ -2692,19 +2721,19 @@ Attribute SwapArrayRows.VB_ProcData.VB_Invoke_Func = " \n19"
 End Function
 
 
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'SwapArrayColumns
-'This function returns an array based on Arr with Col1 and Col2 swapped.
-'It returns the result array or NULL if an error occurred.
-'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'This function returns an array based on 'Arr' with 'Col1' and 'Col2' swapped.
+'It returns the result array or 'Null' if an error occurred.
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function SwapArrayColumns( _
-   Arr As Variant, _
-   Col1 As LongPtr, _
-   Col2 As LongPtr _
+   ByRef Arr As Variant, _
+   ByVal Col1 As LongPtr, _
+   ByVal Col2 As LongPtr _
       ) As Variant
 Attribute SwapArrayColumns.VB_ProcData.VB_Invoke_Func = " \n19"
 
-   Dim V As Variant
+   Dim Temp As Variant
    Dim Result As Variant
    Dim RowNdx As LongPtr
    
@@ -2715,26 +2744,27 @@ Attribute SwapArrayColumns.VB_ProcData.VB_Invoke_Func = " \n19"
    If Not IsArray(Arr) Then Exit Function
    If NumberOfArrayDimensions(Arr) <> 2 Then Exit Function
    
-   'Ensure Col1 and Col2 are less than or equal to the number of columns
+   'Ensure 'Col1' and 'Col2' are valid column numbers
+   If Col1 < LBound(Arr, 2) Then Exit Function
    If Col1 > UBound(Arr, 2) Then Exit Function
+   If Col2 < LBound(Arr, 2) Then Exit Function
    If Col2 > UBound(Arr, 2) Then Exit Function
        
-   'If Col1 = Col2, just return the array and exit. Nothing to do.
+   'If 'Col1 = Col2', just return the array and exit. Nothing to do.
    If Col1 = Col2 Then
       SwapArrayColumns = Arr
       Exit Function
    End If
    
-   'Set Result to Arr
+   'Set 'Result' to 'Arr'
    Result = Arr
    
-   'Redim V to the number of columns
-   ReDim V(LBound(Arr, 1) To UBound(Arr, 1))
-   'Put Col2 in V
+   'Redim 'Temp' to the number of columns
+   ReDim Temp(LBound(Arr, 1) To UBound(Arr, 1))
    For RowNdx = LBound(Arr, 1) To UBound(Arr, 1)
-      V(RowNdx) = Arr(RowNdx, Col1)
+      Temp(RowNdx) = Arr(RowNdx, Col1)
       Result(RowNdx, Col1) = Arr(RowNdx, Col2)
-      Result(RowNdx, Col2) = V(RowNdx)
+      Result(RowNdx, Col2) = Temp(RowNdx)
    Next
    
    SwapArrayColumns = Result
@@ -2833,8 +2863,8 @@ End Function
 '- add to 'AddUDFToCustomCategory'
 '- add some parameter checking
 Public Function VectorTo1DArray( _
-   InputVector As Variant, _
-   Optional LowerBoundOfSecondDimension As LongPtr = 0 _
+   ByVal InputVector As Variant, _
+   Optional ByVal LowerBoundOfSecondDimension As LongPtr = 0 _
       ) As Variant
    
    Dim ResultArray() As Variant
