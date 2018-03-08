@@ -43,36 +43,36 @@ Option Compare Text
 '
 'This module contains the following functions:
 '     AreDataTypesCompatible           --> changed order of arguments
-'     ChangeBoundsOfArray
+'     ChangeBoundsOfVector             --> renamed from 'ChangeBoundsOfArray'
 '     CombineTwoDArrays
-'     CompareArrays
+'     CompareVectors                   --> renamed from 'CompareArrays'
 '     ConcatenateArrays
 '     CopyArray                        --> changed order of arguments
-'     CopyArraySubSetToArray
-'     CopyNonNothingObjectsToArray
+'     CopyVectorSubSetToVector         --> renamed from 'CopyVectorSubSetToVector'
+'     CopyNonNothingObjectsToVector    --> renamed from 'CopyNonNothingObjectsToArray'
 '     DataTypeOfArray
-'     DeleteArrayElement
+'     DeleteVectorElement              --> renamed from 'DeleteArrayElement'
 '     ExpandArray
-'     FirstNonEmptyStringIndexInArray
+'     FirstNonEmptyStringIndexInVector --> renamed from 'FirstNonEmptyStringIndexInArray'
 '     GetColumn
 '     GetRow
-'     InsertElementIntoArray
+'     InsertElementIntoVector          --> renamed from 'InsertElementIntoArray'
 '     IsArrayAllDefault
 '     IsArrayAllNumeric
 '     IsArrayAllocated
 '     IsArrayDynamic
 '     (IsArrayEmpty)                   --> = Not IsArryAllocated
 '     IsArrayObjects
-'     IsArraySorted
+'     IsVectorSorted                   --> renamed from 'IsArraySorted'
 '     IsNumericDataType
 '     IsVariantArrayConsistent
 '     (IsVariantArrayNumeric)          --> merged into `IsArrayAllNumeric'
-'     MoveEmptyStringsToEndOfArray
+'     MoveEmptyStringsToEndOfVector    --> renamed from 'MoveEmptyStringsToEndOfArray'
 '     NumberOfArrayDimensions
 '     NumElements
 '     ResetVariantArrayToDefaults
-'     ReverseArrayInPlace
-'     ReverseArrayOfObjectsInPlace
+'     ReverseVectorInPlace             --> renamed from 'ReverseArrayInPlace'
+'     ReverseVectorOfObjectsInPlace    --> renamed from 'ReverseArrayOfObjectsInPlace'
 '     SetObjectArrayToNothing
 '     SetVariableToDefault
 '     SwapArrayColumns
@@ -99,36 +99,36 @@ Public Sub AddUDFToCustomCategory()
 
    With Application
       .MacroOptions Category:=sCategory, Macro:="AreDataTypesCompatible"
-      .MacroOptions Category:=sCategory, Macro:="ChangeBoundsOfArray"
+      .MacroOptions Category:=sCategory, Macro:="ChangeBoundsOfVector"
       .MacroOptions Category:=sCategory, Macro:="CombineTwoDArrays"
-      .MacroOptions Category:=sCategory, Macro:="CompareArrays"
+      .MacroOptions Category:=sCategory, Macro:="CompareVectors"
       .MacroOptions Category:=sCategory, Macro:="ConcatenateArrays"
       .MacroOptions Category:=sCategory, Macro:="CopyArray"
-      .MacroOptions Category:=sCategory, Macro:="CopyArraySubSetToArray"
-      .MacroOptions Category:=sCategory, Macro:="CopyNonNothingObjectsToArray"
+      .MacroOptions Category:=sCategory, Macro:="CopyVectorSubSetToVector"
+      .MacroOptions Category:=sCategory, Macro:="CopyNonNothingObjectsToVector"
       .MacroOptions Category:=sCategory, Macro:="DataTypeOfArray"
-      .MacroOptions Category:=sCategory, Macro:="DeleteArrayElement"
+      .MacroOptions Category:=sCategory, Macro:="DeleteVectorElement"
       .MacroOptions Category:=sCategory, Macro:="ExpandArray"
-      .MacroOptions Category:=sCategory, Macro:="FirstNonEmptyStringIndexInArray"
+      .MacroOptions Category:=sCategory, Macro:="FirstNonEmptyStringIndexInVector"
       .MacroOptions Category:=sCategory, Macro:="GetColumn"
       .MacroOptions Category:=sCategory, Macro:="GetRow"
-      .MacroOptions Category:=sCategory, Macro:="InsertElementIntoArray"
+      .MacroOptions Category:=sCategory, Macro:="InsertElementIntoVector"
       .MacroOptions Category:=sCategory, Macro:="IsArrayAllDefault"
       .MacroOptions Category:=sCategory, Macro:="IsArrayAllNumeric"
       .MacroOptions Category:=sCategory, Macro:="IsArrayAllocated"
       .MacroOptions Category:=sCategory, Macro:="IsArrayDynamic"
 '      .MacroOptions Category:=sCategory, Macro:="IsArrayEmpty"
       .MacroOptions Category:=sCategory, Macro:="IsArrayObjects"
-      .MacroOptions Category:=sCategory, Macro:="IsArraySorted"
+      .MacroOptions Category:=sCategory, Macro:="IsVectorSorted"
       .MacroOptions Category:=sCategory, Macro:="IsNumericDataType"
       .MacroOptions Category:=sCategory, Macro:="IsVariantArrayConsistent"
 '      .MacroOptions Category:=sCategory, Macro:="IsVariantArrayNumeric"
-      .MacroOptions Category:=sCategory, Macro:="MoveEmptyStringsToEndOfArray"
+      .MacroOptions Category:=sCategory, Macro:="MoveEmptyStringsToEndOfVector"
       .MacroOptions Category:=sCategory, Macro:="NumberOfArrayDimensions"
       .MacroOptions Category:=sCategory, Macro:="NumElements"
       .MacroOptions Category:=sCategory, Macro:="ResetVariantArrayToDefaults"
-      .MacroOptions Category:=sCategory, Macro:="ReverseArrayInPlace"
-      .MacroOptions Category:=sCategory, Macro:="ReverseArrayOfObjectsInPlace"
+      .MacroOptions Category:=sCategory, Macro:="ReverseVectorInPlace"
+      .MacroOptions Category:=sCategory, Macro:="ReverseVectorOfObjectsInPlace"
       .MacroOptions Category:=sCategory, Macro:="SetObjectArrayToNothing"
       .MacroOptions Category:=sCategory, Macro:="SetVariableToDefault"
       .MacroOptions Category:=sCategory, Macro:="TransposeArray"
@@ -279,7 +279,7 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'ChangeBoundsOfArray
+'ChangeBoundsOfVector
 'This function changes the upper and lower bounds of the specified array.
 ''InputArr' MUST be a single-dimensional dynamic array.
 'If the new size of the array (NewUpperBound - NewLowerBound + 1) is greater
@@ -291,9 +291,7 @@ End Function
 'objects, or arrays. User-Defined Types are not supported.
 'The function returns True if successful, False otherwise.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'2do: better name would be 'ChangeBoundsOfVector', because 'InputArr' has to be
-'     a single dimensional array
-Public Function ChangeBoundsOfArray( _
+Public Function ChangeBoundsOfVector( _
    ByRef InputArr As Variant, _
    ByVal NewLowerBound As LongPtr, _
    Optional ByVal NewUpperBound As Variant _
@@ -307,7 +305,7 @@ Public Function ChangeBoundsOfArray( _
    
    
    'Set the default return value
-   ChangeBoundsOfArray = False
+   ChangeBoundsOfVector = False
    
    If IsMissing(NewUpperBound) Or IsEmpty(NewUpperBound) Then
       NewUpperBound = NewLowerBound + UBound(InputArr) - LBound(InputArr)
@@ -376,7 +374,7 @@ Public Function ChangeBoundsOfArray( _
       OutNdx = OutNdx + 1
    Next
    
-   ChangeBoundsOfArray = True
+   ChangeBoundsOfVector = True
 
 End Function
 
@@ -524,7 +522,7 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'CompareArrays
+'CompareVectors
 'This function compares two arrays, 'Array1' and 'Array2', element by element,
 'and puts the results of the comparisons in 'ResultArray' with the same
 ''LBound' as 'Array1'. Each element of 'ResultArray' will be -1, 0, or +1. A -1
@@ -551,14 +549,13 @@ End Function
 '- If either element is not a numeric string, the elements are converted and
 '  compared with 'StrComp'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'2do: - a better name might be 'CompareVectors' since only Vectors are allowed
-Public Function CompareArrays( _
+Public Function CompareVectors( _
    ByVal Array1 As Variant, _
    ByVal Array2 As Variant, _
    ByRef ResultArray As Variant, _
    Optional ByVal CompareMode As VbCompareMethod = vbTextCompare _
       ) As Boolean
-Attribute CompareArrays.VB_ProcData.VB_Invoke_Func = " \n19"
+Attribute CompareVectors.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim i As LongPtr
    Dim S1 As String
@@ -569,7 +566,7 @@ Attribute CompareArrays.VB_ProcData.VB_Invoke_Func = " \n19"
    
    
    'Set the default return value
-   CompareArrays = False
+   CompareVectors = False
    
    'Ensure we have a compare mode value
    If CompareMode = vbBinaryCompare Then
@@ -624,7 +621,7 @@ Attribute CompareArrays.VB_ProcData.VB_Invoke_Func = " \n19"
       End If
    Next
    
-   CompareArrays = True
+   CompareVectors = True
    
 End Function
 
@@ -880,7 +877,7 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'CopyArraySubSetToArray
+'CopyVectorSubSetToVector
 'This function copies elements of 'SourceArray' to 'ResultArray'. It takes the
 'elements from 'FirstElementToCopy' to 'LastElementToCopy' (inclusive) from
 ''SourceArray' and copies them to 'ResultArray', starting at
@@ -890,17 +887,15 @@ End Function
 'array and it is not large enough to copy all the elements, no elements are
 'copied and the function returns 'False'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'2do: - a better name might be 'CopyVectorSubSetToVector' since only Vectors are
-'       allowed
-'     - add type compatibility checking (as optional argument)?
-Public Function CopyArraySubSetToArray( _
+'2do: - add type compatibility checking (as optional argument)?
+Public Function CopyVectorSubSetToVector( _
    ByVal SourceArray As Variant, _
    ByRef ResultArray As Variant, _
    ByVal FirstElementToCopy As LongPtr, _
    ByVal LastElementToCopy As LongPtr, _
    ByVal DestinationElement As LongPtr _
       ) As Boolean
-Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
+Attribute CopyVectorSubSetToVector.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim SrcNdx As LongPtr
    Dim ResNdx As LongPtr
@@ -912,7 +907,7 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
    
    
    'Set the default return value
-   CopyArraySubSetToArray = False
+   CopyVectorSubSetToVector = False
    
    If Not IsArray(SourceArray) Then Exit Function
    If Not IsArray(ResultArray) Then Exit Function
@@ -1007,13 +1002,13 @@ Attribute CopyArraySubSetToArray.VB_ProcData.VB_Invoke_Func = " \n19"
       ResNdx = ResNdx + 1
    Next
    
-   CopyArraySubSetToArray = True
+   CopyVectorSubSetToVector = True
 
 End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'CopyNonNothingObjectsToArray
+'CopyNonNothingObjectsToVector
 'This function copies all objects that are not Nothing from 'SourceArray'
 'to 'ResultArray'. 'ResultArray' MUST be a dynamic array of type 'Object' or
 ''Variant', e.g.,
@@ -1030,19 +1025,18 @@ End Function
 'error occurs. If an error occurs, a message box is displayed indicating the
 'error. To suppress the message boxes, set the 'NoAlerts' parameter to 'True'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'2do: rename to 'CopyNonNothingObjectsToVector'
-Public Function CopyNonNothingObjectsToArray( _
+Public Function CopyNonNothingObjectsToVector( _
    ByVal SourceArray As Variant, _
    ByRef ResultArray As Variant _
       ) As Boolean
-Attribute CopyNonNothingObjectsToArray.VB_ProcData.VB_Invoke_Func = " \n19"
+Attribute CopyNonNothingObjectsToVector.VB_ProcData.VB_Invoke_Func = " \n19"
    
    Dim SrcNdx  As LongPtr
    Dim ResNdx As LongPtr
    
    
    'Set the default return value
-   CopyNonNothingObjectsToArray = False
+   CopyNonNothingObjectsToVector = False
    
    If Not IsArrayDynamic(ResultArray) Then Exit Function
    'Ensure 'ResultArray' is unallocated or single-dimensional
@@ -1083,7 +1077,7 @@ Attribute CopyNonNothingObjectsToArray.VB_ProcData.VB_Invoke_Func = " \n19"
       Erase ResultArray
    End If
    
-   CopyNonNothingObjectsToArray = True
+   CopyNonNothingObjectsToVector = True
 
 End Function
 
@@ -1160,7 +1154,7 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'DeleteArrayElement
+'DeleteVectorElement
 'This function deletes an element from 'InputArray', and shifts elements that
 'are to the right of the deleted element to the left. If 'InputArray' is a
 'dynamic array, and the 'ResizeDynamic' parameter is 'True', the array will be
@@ -1173,13 +1167,12 @@ End Function
 '(In case the only element is deleted, 'InputArray' is dynamic and
 ''ResizeDynamic' is 'True' 'InputArray' will be erased.)
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'2do: rename to 'DeleteVectorElement'
-Public Function DeleteArrayElement( _
+Public Function DeleteVectorElement( _
    ByRef InputArray As Variant, _
    ByVal ElementNumber As LongPtr, _
    Optional ByVal ResizeDynamic As Boolean = False _
       ) As Boolean
-Attribute DeleteArrayElement.VB_ProcData.VB_Invoke_Func = " \n19"
+Attribute DeleteVectorElement.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim i As LongPtr
    Dim VType As VbVarType
@@ -1189,7 +1182,7 @@ Attribute DeleteArrayElement.VB_ProcData.VB_Invoke_Func = " \n19"
    
    
    'Set the default return value
-   DeleteArrayElement = False
+   DeleteVectorElement = False
    
    If Not IsArray(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
@@ -1239,7 +1232,7 @@ Attribute DeleteArrayElement.VB_ProcData.VB_Invoke_Func = " \n19"
       End Select
    End If
    
-   DeleteArrayElement = True
+   DeleteVectorElement = True
 
 End Function
 
@@ -1401,17 +1394,16 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'FirstNonEmptyStringIndexInArray
+'FirstNonEmptyStringIndexInVector
 'This returns the index in 'InputArray' of the first non-empty string.
 'This is generally used when 'InputArray' is the result of a sort operation,
 'which puts empty strings at the beginning of the array.
 'Returns -1 if an error occurred or if the entire array has no empty string.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'called by
-'  - MoveEmptyStringsToEndOfArray
+'  - MoveEmptyStringsToEndOfVector
 '---
-'2do: - rename to 'FirstNonEmptyStringIndexInVector'
-Public Function FirstNonEmptyStringIndexInArray( _
+Public Function FirstNonEmptyStringIndexInVector( _
    ByVal InputArray As Variant _
       ) As LongPtr
 
@@ -1419,19 +1411,19 @@ Public Function FirstNonEmptyStringIndexInArray( _
    
    
    'Set the default return value
-   FirstNonEmptyStringIndexInArray = -1
+   FirstNonEmptyStringIndexInVector = -1
    
    If Not IsArray(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
    For i = LBound(InputArray) To UBound(InputArray)
       If InputArray(i) <> vbNullString Then
-         FirstNonEmptyStringIndexInArray = i
+         FirstNonEmptyStringIndexInVector = i
          Exit Function
       End If
    Next
    
-   FirstNonEmptyStringIndexInArray = -1
+   FirstNonEmptyStringIndexInVector = -1
 
 End Function
 
@@ -1522,7 +1514,7 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'InsertElementIntoArray
+'InsertElementIntoVector
 'This function inserts an element with a value of 'Value' into 'InputArray' at
 'locatation 'Index'.
 ''InputArray' must be a dynamic array. The 'Value' is stored in location 'Index',
@@ -1531,9 +1523,7 @@ End Function
 'than or equal to the 'LBound' of 'InputArray' and less than or equal to
 ''UBound + 1'.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'2do: - a better name might be 'InsertElementIntoVector' since only Vectors are
-'       allowed
-Public Function InsertElementIntoArray( _
+Public Function InsertElementIntoVector( _
    ByRef InputArray As Variant, _
    ByVal Index As LongPtr, _
    ByVal Value As Variant _
@@ -1543,14 +1533,14 @@ Public Function InsertElementIntoArray( _
    
    
    'Set the default return value
-   InsertElementIntoArray = False
+   InsertElementIntoVector = False
    
    If Not IsArrayDynamic(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
    
    'Ensure 'Index' is a valid element index. We allow 'Index' to be equal to
    ''UBound + 1' to facilitate inserting a value at the end of the array, e.g.
-   '    InsertElementIntoArray(Arr,UBound(Arr) + 1, 123)
+   '    InsertElementIntoVector(Arr,UBound(Arr) + 1, 123)
    'will insert "123" at the end of the array.
    If Index < LBound(InputArray) Then Exit Function
    If Index > UBound(InputArray) + 1 Then Exit Function
@@ -1597,7 +1587,7 @@ Public Function InsertElementIntoArray( _
       InputArray(Index) = Value
    End If
    
-   InsertElementIntoArray = True
+   InsertElementIntoVector = True
 
 End Function
 
@@ -1745,12 +1735,12 @@ End Function
 'the array has actually been allocated.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'called by
-'  - ChangeBoundsOfArray
+'  - ChangeBoundsOfVector
 '  - ConcatenateArrays
 '  - CopyArray
-'  - CopyArraySubSetToArray
+'  - CopyVectorSubSetToVector
 '  - DataTypeOfArray
-'  - InsertElementIntoArray
+'  - InsertElementIntoVector
 '  - IsArrayAllDefault
 '  - IsArrayAllNumeric
 '  - IsArrayDynamic
@@ -1858,7 +1848,7 @@ End Function
 'optionally allowed -- default it 'True', allow 'Nothing' objects).
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'called by
-'  - ReverseArrayOfObjectsInPlace
+'  - ReverseVectorOfObjectsInPlace
 Public Function IsArrayObjects( _
    ByRef InputArray As Variant, _
    Optional ByVal AllowNothing As Boolean = True _
@@ -1885,7 +1875,7 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'IsArraySorted
+'IsVectorSorted
 'This function determines whether a single-dimensional array is sorted. Because
 'sorting is an expensive operation, especially so on a large array of 'Variant's,
 'you may want to determine if an array is already in sorted order prior to
@@ -1899,11 +1889,7 @@ End Function
 'one dimension, or the VarType of 'InputArray' is not compatible, the function
 'returns 'Null'. Thus, one knows that there is nothing to sort.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'2do:
-'- rename to 'IsVectorSorted'
-'- what is distinction between 'Null' and 'False' good for?
-'  --> function return value can be changed to Boolean
-Public Function IsArraySorted( _
+Public Function IsVectorSorted( _
    ByVal InputArray As Variant, _
    Optional ByVal Descending As Boolean = False _
       ) As Variant
@@ -1919,7 +1905,7 @@ Public Function IsArraySorted( _
    
    
    'Set the default return value
-   IsArraySorted = Null
+   IsVectorSorted = Null
    
    If Not IsArray(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
@@ -1955,20 +1941,20 @@ Public Function IsArraySorted( _
       If IsString Then
          StrCompResult = StrComp(InputArray(i), InputArray(i + 1))
          If StrCompResult = StrCompResultFail Then
-            IsArraySorted = False
+            IsVectorSorted = False
             Exit Function
          End If
       Else
          NumCompareResult = (InputArray(i) >= InputArray(i + 1))
          If NumCompareResult = NumericResultFail Then
-            IsArraySorted = False
+            IsVectorSorted = False
             Exit Function
          End If
       End If
    Next
    
    'If we made it up to here, then the array is in sorted order.
-   IsArraySorted = True
+   IsVectorSorted = True
 
 End Function
 
@@ -2107,7 +2093,7 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'MoveEmptyStringsToEndOfArray
+'MoveEmptyStringsToEndOfVector
 'This procedure takes the SORTED array 'InputArray', which, if sorted in
 'ascending order, will have all empty strings at the front of the array. This
 'procedure moves those strings to the end of the array, shifting the non-empty
@@ -2117,8 +2103,7 @@ End Function
 'if an error occurred.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '---
-'2do: - rename to 'MoveEmptyStringsToEndOfVector'
-Public Function MoveEmptyStringsToEndOfArray( _
+Public Function MoveEmptyStringsToEndOfVector( _
    ByRef InputArray As Variant _
       ) As Boolean
 
@@ -2131,7 +2116,7 @@ Public Function MoveEmptyStringsToEndOfArray( _
    
    
    'Set the default return value
-   MoveEmptyStringsToEndOfArray = False
+   MoveEmptyStringsToEndOfVector = False
 
    If Not IsArray(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
@@ -2139,10 +2124,10 @@ Public Function MoveEmptyStringsToEndOfArray( _
    LBoundArr = LBound(InputArray)
    UBoundArr = UBound(InputArray)
    
-   FirstNonEmptyNdx = FirstNonEmptyStringIndexInArray(InputArray)
+   FirstNonEmptyNdx = FirstNonEmptyStringIndexInVector(InputArray)
    If FirstNonEmptyNdx <= LBoundArr Then
       'No empty strings at the beginning of the array. Get out now.
-      MoveEmptyStringsToEndOfArray = True
+      MoveEmptyStringsToEndOfVector = True
       Exit Function
    End If
    
@@ -2160,7 +2145,7 @@ Public Function MoveEmptyStringsToEndOfArray( _
       InputArray(Ndx) = vbNullString
    Next
    
-   MoveEmptyStringsToEndOfArray = True
+   MoveEmptyStringsToEndOfVector = True
 
 End Function
 
@@ -2172,28 +2157,28 @@ End Function
 '(This condition can also be tested with 'Not IsArrayAllocated'.)
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'called by
-'  - ChangeBoundsOfArray
+'  - ChangeBoundsOfVector
 '  - CombineTwoDArrays
-'  - CompareArrays
+'  - CompareVectors
 '  - ConcatenateArrays
 '  - CopyArray
-'  - CopyArraySubSetToArray
-'  - CopyNonNothingObjectsToArray
-'  - DeleteArrayElement
+'  - CopyVectorSubSetToVector
+'  - CopyNonNothingObjectsToVector
+'  - DeleteVectorElement
 '  - ExpandArray
-'  - FirstNonEmptyStringIndexInArray
+'  - FirstNonEmptyStringIndexInVector
 '  - GetColumn
 '  - GetRow
-'  - InsertElementIntoArray
-'  - IsArraySorted
+'  - InsertElementIntoVector
+'  - IsVectorSorted
 '  - IsArrayObjects
 '  - IsNumericDataType
 '  - IsVariantArrayConsistent
-'  - MoveEmptyStringsToEndOfArray
+'  - MoveEmptyStringsToEndOfVector
 '  - NumElements
 '  - ResetVariantArrayToDefaults
-'  - ReverseArrayInPlace
-'  - ReverseArrayOfObjectsInPlace
+'  - ReverseVectorInPlace
+'  - ReverseVectorOfObjectsInPlace
 '  - SetObjectArrayToNothing
 '  - SwapArrayColumns
 '  - SwapArrayRows
@@ -2320,17 +2305,16 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'ReverseArrayInPlace
+'ReverseVectorInPlace
 'This procedure reverses the order of an array in place -- this is, the array
 'variable in the calling procedure is reversed. This works only on
 'single-dimensional arrays of simple data types ('String', 'Single', 'Double',
 ''Integer', 'Long'). It will not work on arrays of objects. Use
-''ReverseArrayOfObjectsInPlace' to reverse an array of objects.
+''ReverseVectorOfObjectsInPlace' to reverse an array of objects.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '2do:
-'- rename to 'ReverseVectorInPlace?
-'- combine with 'ReverseArrayOfObjectsInPlace'?
-Public Function ReverseArrayInPlace( _
+'- combine with 'ReverseVectorOfObjectsInPlace'?
+Public Function ReverseVectorInPlace( _
    ByRef InputArray As Variant _
       ) As Boolean
 
@@ -2344,7 +2328,7 @@ Public Function ReverseArrayInPlace( _
    
    
    'Set the default return value
-   ReverseArrayInPlace = False
+   ReverseVectorInPlace = False
    
    If Not IsArray(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
@@ -2368,21 +2352,20 @@ Public Function ReverseArrayInPlace( _
       Ndx2 = Ndx2 - 1
    Next
    
-   ReverseArrayInPlace = True
+   ReverseVectorInPlace = True
 
 End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'ReverseArrayOfObjectsInPlace
+'ReverseVectorOfObjectsInPlace
 'This procedure reverses the order of an array in place -- this is, the array
 'variable in the calling procedure is reversed. This works only with arrays of
-'objects. It does not work on simple variables. Use 'ReverseArrayInPlace' for
+'objects. It does not work on simple variables. Use 'ReverseVectorInPlace' for
 'simple variables. An error will occur if an element of the array is not an
 'object.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'- rename to 'ReverseVectorOfObjectsInPlace?
-Public Function ReverseArrayOfObjectsInPlace( _
+Public Function ReverseVectorOfObjectsInPlace( _
    ByRef InputArray As Variant _
       ) As Boolean
 
@@ -2396,7 +2379,7 @@ Public Function ReverseArrayOfObjectsInPlace( _
    
    
    'Set the default return value
-   ReverseArrayOfObjectsInPlace = False
+   ReverseVectorOfObjectsInPlace = False
    
    If Not IsArray(InputArray) Then Exit Function
    If NumberOfArrayDimensions(InputArray) <> 1 Then Exit Function
@@ -2420,7 +2403,7 @@ Public Function ReverseArrayOfObjectsInPlace( _
       Ndx2 = Ndx2 - 1
    Next
    
-   ReverseArrayOfObjectsInPlace = True
+   ReverseVectorOfObjectsInPlace = True
 
 End Function
 

@@ -201,7 +201,7 @@ End Sub
 
 
 ''2do: How to do this test?
-''     --> in 'ChangeBoundsOfArray_VariantArr_ReturnsTrueAndChangedArr' are
+''     --> in 'ChangeBoundsOfVector_VariantArr_ReturnsTrueAndChangedArr' are
 ''         'Empty' entries added at the end of the array
 ''@TestMethod
 'Public Sub AreDataTypesCompatible_VariantSourceEmptyDest_ReturnsTrue()
@@ -229,11 +229,11 @@ End Sub
 
 
 '==============================================================================
-'unit tests for 'ChangeBoundsOfArray'
+'unit tests for 'ChangeBoundsOfVector'
 '==============================================================================
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_LBGreaterUB_ReturnsFalse()
+Public Sub ChangeBoundsOfVector_LBGreaterUB_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -247,7 +247,7 @@ Public Sub ChangeBoundsOfArray_LBGreaterUB_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB)
+   Assert.IsFalse modArraySupport.ChangeBoundsOfVector(Arr, NewLB, NewUB)
 
 TestExit:
    Exit Sub
@@ -257,7 +257,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_ScalarInput_ReturnsFalse()
+Public Sub ChangeBoundsOfVector_ScalarInput_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -271,7 +271,7 @@ Public Sub ChangeBoundsOfArray_ScalarInput_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ChangeBoundsOfArray(Scalar, NewLB, NewUB)
+   Assert.IsFalse modArraySupport.ChangeBoundsOfVector(Scalar, NewLB, NewUB)
 
 TestExit:
    Exit Sub
@@ -281,7 +281,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_StaticArray_ReturnsFalse()
+Public Sub ChangeBoundsOfVector_StaticArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -295,7 +295,7 @@ Public Sub ChangeBoundsOfArray_StaticArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB)
+   Assert.IsFalse modArraySupport.ChangeBoundsOfVector(Arr, NewLB, NewUB)
 
 TestExit:
    Exit Sub
@@ -305,7 +305,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_UnallocatedArray_ReturnsFalse()
+Public Sub ChangeBoundsOfVector_UnallocatedArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -319,7 +319,7 @@ Public Sub ChangeBoundsOfArray_UnallocatedArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB)
+   Assert.IsFalse modArraySupport.ChangeBoundsOfVector(Arr, NewLB, NewUB)
 
 TestExit:
    Exit Sub
@@ -329,7 +329,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_2DArray_ReturnsFalse()
+Public Sub ChangeBoundsOfVector_2DArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -343,7 +343,7 @@ Public Sub ChangeBoundsOfArray_2DArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB)
+   Assert.IsFalse modArraySupport.ChangeBoundsOfVector(Arr, NewLB, NewUB)
 
 TestExit:
    Exit Sub
@@ -353,7 +353,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_LongInputArr_ReturnsTrueAndChangedArr()
+Public Sub ChangeBoundsOfVector_LongInputArr_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
    Dim Arr() As LongPtr
@@ -379,7 +379,7 @@ Public Sub ChangeBoundsOfArray_LongInputArr_ReturnsTrueAndChangedArr()
 
 
    'Act:
-   If Not modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB) _
+   If Not modArraySupport.ChangeBoundsOfVector(Arr, NewLB, NewUB) _
          Then GoTo TestFail
 
    'Assert:
@@ -393,7 +393,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_SmallerUBDiffThanSource_ReturnsTrueAndChangedArr()
+Public Sub ChangeBoundsOfVector_SmallerUBDiffThanSource_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
    Dim Arr() As LongPtr
@@ -415,7 +415,7 @@ Public Sub ChangeBoundsOfArray_SmallerUBDiffThanSource_ReturnsTrueAndChangedArr(
 
 
    'Act:
-   If Not modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB) _
+   If Not modArraySupport.ChangeBoundsOfVector(Arr, NewLB, NewUB) _
          Then GoTo TestFail
 
    'Assert:
@@ -429,7 +429,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_VariantArr_ReturnsTrueAndChangedArr()
+Public Sub ChangeBoundsOfVector_VariantArr_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
    Dim Arr() As Variant
@@ -456,7 +456,7 @@ Public Sub ChangeBoundsOfArray_VariantArr_ReturnsTrueAndChangedArr()
 
 
    'Act:
-   If Not modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB) _
+   If Not modArraySupport.ChangeBoundsOfVector(Arr, NewLB, NewUB) _
          Then GoTo TestFail
 
    'Assert:
@@ -476,7 +476,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_LongInputArrNoUpperBound_ReturnsTrueAndChangedArr()
+Public Sub ChangeBoundsOfVector_LongInputArrNoUpperBound_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
    Dim Arr() As LongPtr
@@ -500,7 +500,7 @@ Public Sub ChangeBoundsOfArray_LongInputArrNoUpperBound_ReturnsTrueAndChangedArr
 
 
    'Act:
-   If Not modArraySupport.ChangeBoundsOfArray(Arr, NewLB) _
+   If Not modArraySupport.ChangeBoundsOfVector(Arr, NewLB) _
          Then GoTo TestFail
 
    'Assert:
@@ -516,7 +516,7 @@ End Sub
 '2do: not sure if the test is done right
 '     --> is testing for 'Is(Not)Nothing sufficient?
 '@TestMethod
-Public Sub ChangeBoundsOfArray_RangeArr_ReturnsTrueAndChangedArr()
+Public Sub ChangeBoundsOfVector_RangeArr_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
    Dim Arr() As Range
@@ -546,7 +546,7 @@ Public Sub ChangeBoundsOfArray_RangeArr_ReturnsTrueAndChangedArr()
    End With
 
    'Act:
-   If Not modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB) _
+   If Not modArraySupport.ChangeBoundsOfVector(Arr, NewLB, NewUB) _
          Then GoTo TestFail
 
    'Assert:
@@ -566,7 +566,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ChangeBoundsOfArray_CustomClass_ReturnsTrueAndChangedArr()
+Public Sub ChangeBoundsOfVector_CustomClass_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
    Dim Arr() As cls_4Test_modArraySupport
@@ -604,7 +604,7 @@ Public Sub ChangeBoundsOfArray_CustomClass_ReturnsTrueAndChangedArr()
    Arr(7).Value = 3
 
    'Act:
-   If Not modArraySupport.ChangeBoundsOfArray(Arr, NewLB, NewUB) _
+   If Not modArraySupport.ChangeBoundsOfVector(Arr, NewLB, NewUB) _
          Then GoTo TestFail
 
    'Assert:
@@ -1155,11 +1155,11 @@ End Sub
 
 
 '==============================================================================
-'unit tests for 'CompareArrays'
+'unit tests for 'CompareVectors'
 '==============================================================================
 
 '@TestMethod
-Public Sub CompareArrays_UnallocatedArrays_ReturnsFalse()
+Public Sub CompareVectors_UnallocatedArrays_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -1170,7 +1170,7 @@ Public Sub CompareArrays_UnallocatedArrays_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CompareArrays(Arr1, Arr2, ResArr)
+   Assert.IsFalse modArraySupport.CompareVectors(Arr1, Arr2, ResArr)
 
 TestExit:
    Exit Sub
@@ -1180,7 +1180,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CompareArrays_LegalAndTextCompare_ReturnsTrueAndResArr()
+Public Sub CompareVectors_LegalAndTextCompare_ReturnsTrueAndResArr()
    On Error GoTo TestFail
 
    Dim Arr1(1 To 5) As String
@@ -1211,7 +1211,7 @@ Public Sub CompareArrays_LegalAndTextCompare_ReturnsTrueAndResArr()
    Arr2(5) = "b"
 
    'Act:
-   If Not modArraySupport.CompareArrays(Arr1, Arr2, ResArr, vbTextCompare) _
+   If Not modArraySupport.CompareVectors(Arr1, Arr2, ResArr, vbTextCompare) _
          Then GoTo TestFail
 
    'Assert:
@@ -1225,7 +1225,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CompareArrays_LegalAndBinaryCompare_ReturnsTrueAndResArr()
+Public Sub CompareVectors_LegalAndBinaryCompare_ReturnsTrueAndResArr()
    On Error GoTo TestFail
 
    Dim Arr1(1 To 5) As String
@@ -1256,7 +1256,7 @@ Public Sub CompareArrays_LegalAndBinaryCompare_ReturnsTrueAndResArr()
    Arr2(5) = "b"
 
    'Act:
-   If Not modArraySupport.CompareArrays(Arr1, Arr2, ResArr, vbBinaryCompare) _
+   If Not modArraySupport.CompareVectors(Arr1, Arr2, ResArr, vbBinaryCompare) _
          Then GoTo TestFail
 
    'Assert:
@@ -1613,11 +1613,11 @@ End Sub
 
 
 '==============================================================================
-'unit tests for 'CopyArraySubSetToArray'
+'unit tests for 'CopyVectorSubSetToVector'
 '==============================================================================
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_ScalarInput_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_ScalarInput_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -1633,7 +1633,7 @@ Public Sub CopyArraySubSetToArray_ScalarInput_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsFalse modArraySupport.CopyVectorSubSetToVector( _
          Scalar, _
          ResultArray, _
          FirstElementToCopy, _
@@ -1649,7 +1649,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_ScalarResult_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_ScalarResult_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -1665,7 +1665,7 @@ Public Sub CopyArraySubSetToArray_ScalarResult_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsFalse modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ScalarResult, _
          FirstElementToCopy, _
@@ -1681,7 +1681,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_UnallocatedInputArray_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_UnallocatedInputArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -1697,7 +1697,7 @@ Public Sub CopyArraySubSetToArray_UnallocatedInputArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsFalse modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -1713,7 +1713,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_2DInputArray_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_2DInputArray_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -1731,7 +1731,7 @@ Public Sub CopyArraySubSetToArray_2DInputArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsFalse modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -1747,7 +1747,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_2DResultArray_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_2DResultArray_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -1766,7 +1766,7 @@ Public Sub CopyArraySubSetToArray_2DResultArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsFalse modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -1782,7 +1782,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_TooSmallFirstElementToCopy_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_TooSmallFirstElementToCopy_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -1801,7 +1801,7 @@ Public Sub CopyArraySubSetToArray_TooSmallFirstElementToCopy_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsFalse modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -1817,7 +1817,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_TooLargeLastElementToCopy_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_TooLargeLastElementToCopy_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -1836,7 +1836,7 @@ Public Sub CopyArraySubSetToArray_TooLargeLastElementToCopy_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsFalse modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -1852,7 +1852,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_FirstElementLargerLastElement_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_FirstElementLargerLastElement_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -1871,7 +1871,7 @@ Public Sub CopyArraySubSetToArray_FirstElementLargerLastElement_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsFalse modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -1887,7 +1887,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_NotEnoughRoomInStaticResultArray_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_NotEnoughRoomInStaticResultArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -1903,7 +1903,7 @@ Public Sub CopyArraySubSetToArray_NotEnoughRoomInStaticResultArray_ReturnsFalse(
    
    'Act:
    'Assert:
-   Assert.IsTrue modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsTrue modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -1919,7 +1919,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_TooSmallDestinationElementInStaticResultArray_ReturnsFalse()
+Public Sub CopyVectorSubSetToVector_TooSmallDestinationElementInStaticResultArray_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray(0 To 1) As LongPtr
@@ -1942,7 +1942,7 @@ Public Sub CopyArraySubSetToArray_TooSmallDestinationElementInStaticResultArray_
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArraySubSetToArray( _
+   Assert.IsFalse modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -1958,7 +1958,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_UnallocatedResultArrayDestinationElementLargerBase_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_UnallocatedResultArrayDestinationElementLargerBase_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 11) As LongPtr
@@ -1983,7 +1983,7 @@ Public Sub CopyArraySubSetToArray_UnallocatedResultArrayDestinationElementLarger
    InputArray(11) = 20
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2003,7 +2003,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_UnallocatedResultArrayLastDestinationElementSmallerBase_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_UnallocatedResultArrayLastDestinationElementSmallerBase_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 11) As LongPtr
@@ -2030,7 +2030,7 @@ Public Sub CopyArraySubSetToArray_UnallocatedResultArrayLastDestinationElementSm
    InputArray(11) = 20
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2050,7 +2050,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_UnallocatedResultArrayFromNegToPos_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_UnallocatedResultArrayFromNegToPos_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 13) As LongPtr
@@ -2076,7 +2076,7 @@ Public Sub CopyArraySubSetToArray_UnallocatedResultArrayFromNegToPos_ReturnsTrue
    InputArray(13) = 40
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2096,7 +2096,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_UnallocatedResultArray_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_UnallocatedResultArray_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 11) As LongPtr
@@ -2117,7 +2117,7 @@ Public Sub CopyArraySubSetToArray_UnallocatedResultArray_ReturnsTrueAndResultArr
    InputArray(11) = 1
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2137,7 +2137,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_SubArrayLargerThanAllocatedResultArray1_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_SubArrayLargerThanAllocatedResultArray1_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 13) As LongPtr
@@ -2167,7 +2167,7 @@ Public Sub CopyArraySubSetToArray_SubArrayLargerThanAllocatedResultArray1_Return
    ResultArray(1) = 20
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2187,7 +2187,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_SubArrayLargerThanAllocatedResultArray2_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_SubArrayLargerThanAllocatedResultArray2_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 12) As LongPtr
@@ -2215,7 +2215,7 @@ Public Sub CopyArraySubSetToArray_SubArrayLargerThanAllocatedResultArray2_Return
    ResultArray(1) = 20
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2235,7 +2235,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_SubArrayLargerThanAllocatedResultArray3_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_SubArrayLargerThanAllocatedResultArray3_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 12) As LongPtr
@@ -2263,7 +2263,7 @@ Public Sub CopyArraySubSetToArray_SubArrayLargerThanAllocatedResultArray3_Return
    ResultArray(2) = 20
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2283,7 +2283,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_TooSmallFirstDestinationElementInDynamicAllocatedResultArray_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_TooSmallFirstDestinationElementInDynamicAllocatedResultArray_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 11) As LongPtr
@@ -2310,7 +2310,7 @@ Public Sub CopyArraySubSetToArray_TooSmallFirstDestinationElementInDynamicAlloca
    ResultArray(1) = 20
 
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2330,7 +2330,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_TooLargeLastDestinationElementInDynamicAllocatedResultArray_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_TooLargeLastDestinationElementInDynamicAllocatedResultArray_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 11) As LongPtr
@@ -2357,7 +2357,7 @@ Public Sub CopyArraySubSetToArray_TooLargeLastDestinationElementInDynamicAllocat
    ResultArray(1) = 20
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2377,7 +2377,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_DestinationElementEvenLargerThanUboundInDynamicAllocatedResultArray_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_DestinationElementEvenLargerThanUboundInDynamicAllocatedResultArray_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 11) As LongPtr
@@ -2408,7 +2408,7 @@ Public Sub CopyArraySubSetToArray_DestinationElementEvenLargerThanUboundInDynami
    ResultArray(1) = 20
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2428,7 +2428,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyArraySubSetToArray_TestWithObjects_ReturnsTrueAndResultArray()
+Public Sub CopyVectorSubSetToVector_TestWithObjects_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim InputArray(10 To 11) As Object
@@ -2460,7 +2460,7 @@ Public Sub CopyArraySubSetToArray_TestWithObjects_ReturnsTrueAndResultArray()
    End With
    
    'Act:
-   If Not modArraySupport.CopyArraySubSetToArray( _
+   If Not modArraySupport.CopyVectorSubSetToVector( _
          InputArray, _
          ResultArray, _
          FirstElementToCopy, _
@@ -2486,11 +2486,11 @@ End Sub
 
 
 '==============================================================================
-'unit tests for 'CopyNonNothingObjectsToArray'
+'unit tests for 'CopyNonNothingObjectsToVector'
 '==============================================================================
 
 '@TestMethod
-Public Sub CopyNonNothingObjectsToArray_ScalarResultArray_ReturnsFalse()
+Public Sub CopyNonNothingObjectsToVector_ScalarResultArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -2500,7 +2500,7 @@ Public Sub CopyNonNothingObjectsToArray_ScalarResultArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToArray( _
+   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
          SourceArray, _
          ScalarResult _
    )
@@ -2513,7 +2513,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyNonNothingObjectsToArray_StaticResultArray_ReturnsFalse()
+Public Sub CopyNonNothingObjectsToVector_StaticResultArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -2523,7 +2523,7 @@ Public Sub CopyNonNothingObjectsToArray_StaticResultArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToArray( _
+   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
          SourceArray, _
          ResultArray _
    )
@@ -2536,7 +2536,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyNonNothingObjectsToArray_2DResultArray_ReturnsFalse()
+Public Sub CopyNonNothingObjectsToVector_2DResultArray_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim SourceArray() As Object
@@ -2548,7 +2548,7 @@ Public Sub CopyNonNothingObjectsToArray_2DResultArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToArray( _
+   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
          SourceArray, _
          ResultArray _
    )
@@ -2561,7 +2561,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyNonNothingObjectsToArray_NonObjectOnlySourceArray_ReturnsFalse()
+Public Sub CopyNonNothingObjectsToVector_NonObjectOnlySourceArray_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim SourceArray(5 To 6) As Variant
@@ -2574,7 +2574,7 @@ Public Sub CopyNonNothingObjectsToArray_NonObjectOnlySourceArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToArray( _
+   Assert.IsFalse modArraySupport.CopyNonNothingObjectsToVector( _
          SourceArray, _
          ResultArray _
    )
@@ -2587,7 +2587,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyNonNothingObjectsToArray_ValidNonNothingOnlySourceArray_ReturnsTrueAndResultArray()
+Public Sub CopyNonNothingObjectsToVector_ValidNonNothingOnlySourceArray_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
    Dim SourceArray(5 To 6) As Variant
@@ -2600,7 +2600,7 @@ Public Sub CopyNonNothingObjectsToArray_ValidNonNothingOnlySourceArray_ReturnsTr
    Set SourceArray(6) = ThisWorkbook.Worksheets(1).Range("B2")
    
    'Act:
-   If Not modArraySupport.CopyNonNothingObjectsToArray( _
+   If Not modArraySupport.CopyNonNothingObjectsToVector( _
          SourceArray, _
          ResultArray _
    ) Then _
@@ -2619,7 +2619,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub CopyNonNothingObjectsToArray_NothingOnlySourceArray_ReturnsFalse()
+Public Sub CopyNonNothingObjectsToVector_NothingOnlySourceArray_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim SourceArray(5 To 6) As Variant
@@ -2632,7 +2632,7 @@ Public Sub CopyNonNothingObjectsToArray_NothingOnlySourceArray_ReturnsFalse()
    Set SourceArray(6) = Nothing
    
    'Act:
-   If Not modArraySupport.CopyNonNothingObjectsToArray( _
+   If Not modArraySupport.CopyNonNothingObjectsToVector( _
          SourceArray, _
          ResultArray _
    ) Then _
@@ -2786,11 +2786,11 @@ End Sub
 
 
 '==============================================================================
-'unit tests for 'DeleteArrayElement'
+'unit tests for 'DeleteVectorElement'
 '==============================================================================
 
 '@TestMethod
-Public Sub DeleteArrayElement_NoArray_ReturnsFalse()
+Public Sub DeleteVectorElement_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -2804,7 +2804,7 @@ Public Sub DeleteArrayElement_NoArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.DeleteArrayElement( _
+   Assert.IsFalse modArraySupport.DeleteVectorElement( _
          Scalar, _
          ElementNumer, _
          ResizeDynamic _
@@ -2818,7 +2818,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_UnallocatedArray_ReturnsFalse()
+Public Sub DeleteVectorElement_UnallocatedArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -2832,7 +2832,7 @@ Public Sub DeleteArrayElement_UnallocatedArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.DeleteArrayElement( _
+   Assert.IsFalse modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -2846,7 +2846,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_2DArray_ReturnsFalse()
+Public Sub DeleteVectorElement_2DArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -2860,7 +2860,7 @@ Public Sub DeleteArrayElement_2DArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.DeleteArrayElement( _
+   Assert.IsFalse modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -2874,7 +2874,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_TooLowElementNumber_ReturnsFalse()
+Public Sub DeleteVectorElement_TooLowElementNumber_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -2888,7 +2888,7 @@ Public Sub DeleteArrayElement_TooLowElementNumber_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.DeleteArrayElement( _
+   Assert.IsFalse modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -2902,7 +2902,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_TooHighElementNumber_ReturnsFalse()
+Public Sub DeleteVectorElement_TooHighElementNumber_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -2916,7 +2916,7 @@ Public Sub DeleteArrayElement_TooHighElementNumber_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.DeleteArrayElement( _
+   Assert.IsFalse modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -2930,7 +2930,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_RemoveElementOfStaticArray_ReturnsTrueAndModifiedInputArray()
+Public Sub DeleteVectorElement_RemoveElementOfStaticArray_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As LongPtr
@@ -2952,7 +2952,7 @@ Public Sub DeleteArrayElement_RemoveElementOfStaticArray_ReturnsTrueAndModifiedI
    InputArray(7) = 30
    
    'Act:
-   If Not modArraySupport.DeleteArrayElement( _
+   If Not modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -2970,7 +2970,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_RemoveElementOfStaticObjectArray_ReturnsTrueAndModifiedInputArray()
+Public Sub DeleteVectorElement_RemoveElementOfStaticObjectArray_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As Object
@@ -2997,7 +2997,7 @@ Public Sub DeleteArrayElement_RemoveElementOfStaticObjectArray_ReturnsTrueAndMod
    End With
    
    'Act:
-   If Not modArraySupport.DeleteArrayElement( _
+   If Not modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -3021,7 +3021,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_RemoveElementOfDynamicArrayDontResize_ReturnsTrueAndModifiedInputArray()
+Public Sub DeleteVectorElement_RemoveElementOfDynamicArrayDontResize_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -3044,7 +3044,7 @@ Public Sub DeleteArrayElement_RemoveElementOfDynamicArrayDontResize_ReturnsTrueA
    InputArray(7) = 30
    
    'Act:
-   If Not modArraySupport.DeleteArrayElement( _
+   If Not modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -3063,7 +3063,7 @@ End Sub
 
 '2do: why does this test fail?
 ''@TestMethod
-'Public Sub DeleteArrayElement_RemoveElementOfDynamicArrayDontResize2_ReturnsTrueAndModifiedInputArray()
+'Public Sub DeleteVectorElement_RemoveElementOfDynamicArrayDontResize2_ReturnsTrueAndModifiedInputArray()
 '   On Error GoTo TestFail
 '
 '   Dim InputArray() As Variant
@@ -3086,7 +3086,7 @@ End Sub
 '   InputArray(7) = "ABC"
 '
 '   'Act:
-'   If Not modArraySupport.DeleteArrayElement( _
+'   If Not modArraySupport.DeleteVectorElement( _
 '         InputArray, _
 '         ElementNumer, _
 '         ResizeDynamic _
@@ -3104,7 +3104,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_RemoveElementOfDynamicObjectArrayDontResize_ReturnsTrueAndModifiedInputArray()
+Public Sub DeleteVectorElement_RemoveElementOfDynamicObjectArrayDontResize_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray() As Object
@@ -3132,7 +3132,7 @@ Public Sub DeleteArrayElement_RemoveElementOfDynamicObjectArrayDontResize_Return
    End With
    
    'Act:
-   If Not modArraySupport.DeleteArrayElement( _
+   If Not modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -3156,7 +3156,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_RemoveElementOfDynamicArrayResize_ReturnsTrueAndModifiedInputArray()
+Public Sub DeleteVectorElement_RemoveElementOfDynamicArrayResize_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -3178,7 +3178,7 @@ Public Sub DeleteArrayElement_RemoveElementOfDynamicArrayResize_ReturnsTrueAndMo
    InputArray(7) = 30
    
    'Act:
-   If Not modArraySupport.DeleteArrayElement( _
+   If Not modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -3196,7 +3196,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_RemoveElementOfDynamicObjectArrayResize_ReturnsTrueAndModifiedInputArray()
+Public Sub DeleteVectorElement_RemoveElementOfDynamicObjectArrayResize_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray() As Object
@@ -3223,7 +3223,7 @@ Public Sub DeleteArrayElement_RemoveElementOfDynamicObjectArrayResize_ReturnsTru
    End With
    
    'Act:
-   If Not modArraySupport.DeleteArrayElement( _
+   If Not modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -3247,7 +3247,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub DeleteArrayElement_RemoveOnlyElementOfDynamicObjectArrayResize_ReturnsTrueAndModifiedInputArray()
+Public Sub DeleteVectorElement_RemoveOnlyElementOfDynamicObjectArrayResize_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray() As String
@@ -3266,7 +3266,7 @@ Public Sub DeleteArrayElement_RemoveOnlyElementOfDynamicObjectArrayResize_Return
    InputArray(5) = "abc"
    
    'Act:
-   If Not modArraySupport.DeleteArrayElement( _
+   If Not modArraySupport.DeleteVectorElement( _
          InputArray, _
          ElementNumer, _
          ResizeDynamic _
@@ -3673,11 +3673,11 @@ End Sub
 
 
 '==============================================================================
-'unit tests for 'FirstNonEmptyStringIndexInArray'
+'unit tests for 'FirstNonEmptyStringIndexInVector'
 '==============================================================================
 
 '@TestMethod
-Public Sub FirstNonEmptyStringIndexInArray_NoArray_ReturnsMinusOne()
+Public Sub FirstNonEmptyStringIndexInVector_NoArray_ReturnsMinusOne()
    On Error GoTo TestFail
 
    'Arrange:
@@ -3690,7 +3690,7 @@ Public Sub FirstNonEmptyStringIndexInArray_NoArray_ReturnsMinusOne()
 
 
    'Act:
-   aActual = modArraySupport.FirstNonEmptyStringIndexInArray(Scalar)
+   aActual = modArraySupport.FirstNonEmptyStringIndexInVector(Scalar)
 
    'Assert:
    Assert.AreEqual aExpected, aActual
@@ -3703,7 +3703,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub FirstNonEmptyStringIndexInArray_UnallocatedArray_ReturnsMinusOne()
+Public Sub FirstNonEmptyStringIndexInVector_UnallocatedArray_ReturnsMinusOne()
    On Error GoTo TestFail
 
    'Arrange:
@@ -3716,7 +3716,7 @@ Public Sub FirstNonEmptyStringIndexInArray_UnallocatedArray_ReturnsMinusOne()
 
 
    'Act:
-   aActual = modArraySupport.FirstNonEmptyStringIndexInArray(InputArray)
+   aActual = modArraySupport.FirstNonEmptyStringIndexInVector(InputArray)
 
    'Assert:
    Assert.AreEqual aExpected, aActual
@@ -3729,7 +3729,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub FirstNonEmptyStringIndexInArray_2DArray_ReturnsMinusOne()
+Public Sub FirstNonEmptyStringIndexInVector_2DArray_ReturnsMinusOne()
    On Error GoTo TestFail
 
    'Arrange:
@@ -3742,7 +3742,7 @@ Public Sub FirstNonEmptyStringIndexInArray_2DArray_ReturnsMinusOne()
 
 
    'Act:
-   aActual = modArraySupport.FirstNonEmptyStringIndexInArray(InputArray)
+   aActual = modArraySupport.FirstNonEmptyStringIndexInVector(InputArray)
 
    'Assert:
    Assert.AreEqual aExpected, aActual
@@ -3755,7 +3755,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub FirstNonEmptyStringIndexInArray_NoNonEmptyString_ReturnsMinusOne()
+Public Sub FirstNonEmptyStringIndexInVector_NoNonEmptyString_ReturnsMinusOne()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As String
@@ -3772,7 +3772,7 @@ Public Sub FirstNonEmptyStringIndexInArray_NoNonEmptyString_ReturnsMinusOne()
    InputArray(7) = vbNullString
    
    'Act:
-   aActual = modArraySupport.FirstNonEmptyStringIndexInArray(InputArray)
+   aActual = modArraySupport.FirstNonEmptyStringIndexInVector(InputArray)
 
    'Assert:
    Assert.AreEqual aExpected, aActual
@@ -3785,7 +3785,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub FirstNonEmptyStringIndexInArray_WithNonEmptyStringEntry_ReturnsSeven()
+Public Sub FirstNonEmptyStringIndexInVector_WithNonEmptyStringEntry_ReturnsSeven()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As String
@@ -3802,7 +3802,7 @@ Public Sub FirstNonEmptyStringIndexInArray_WithNonEmptyStringEntry_ReturnsSeven(
    InputArray(7) = "ghi"
    
    'Act:
-   aActual = modArraySupport.FirstNonEmptyStringIndexInArray(InputArray)
+   aActual = modArraySupport.FirstNonEmptyStringIndexInVector(InputArray)
 
    'Assert:
    Assert.AreEqual aExpected, aActual
@@ -4349,11 +4349,11 @@ End Sub
 
 
 '==============================================================================
-'unit tests for 'InsertElementIntoArray'
+'unit tests for 'InsertElementIntoVector'
 '==============================================================================
 
 '@TestMethod
-Public Sub InsertElementIntoArray_StaticInputArray_ReturnsFalse()
+Public Sub InsertElementIntoVector_StaticInputArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -4367,7 +4367,7 @@ Public Sub InsertElementIntoArray_StaticInputArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.InsertElementIntoArray( _
+   Assert.IsFalse modArraySupport.InsertElementIntoVector( _
          InputArray, _
          Index, _
          Value _
@@ -4381,7 +4381,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub InsertElementIntoArray_2DInputArray_ReturnsFalse()
+Public Sub InsertElementIntoVector_2DInputArray_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -4397,7 +4397,7 @@ Public Sub InsertElementIntoArray_2DInputArray_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.InsertElementIntoArray( _
+   Assert.IsFalse modArraySupport.InsertElementIntoVector( _
          InputArray, _
          Index, _
          Value _
@@ -4411,7 +4411,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub InsertElementIntoArray_TooSmallIndex_ReturnsFalse()
+Public Sub InsertElementIntoVector_TooSmallIndex_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -4427,7 +4427,7 @@ Public Sub InsertElementIntoArray_TooSmallIndex_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.InsertElementIntoArray( _
+   Assert.IsFalse modArraySupport.InsertElementIntoVector( _
          InputArray, _
          Index, _
          Value _
@@ -4441,7 +4441,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub InsertElementIntoArray_TooLargeIndex_ReturnsFalse()
+Public Sub InsertElementIntoVector_TooLargeIndex_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -4457,7 +4457,7 @@ Public Sub InsertElementIntoArray_TooLargeIndex_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.InsertElementIntoArray( _
+   Assert.IsFalse modArraySupport.InsertElementIntoVector( _
          InputArray, _
          Index, _
          Value _
@@ -4471,7 +4471,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub InsertElementIntoArray_WrongValueType_ReturnsFalseAndUnchangedInputArray()
+Public Sub InsertElementIntoVector_WrongValueType_ReturnsFalseAndUnchangedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -4493,7 +4493,7 @@ Public Sub InsertElementIntoArray_WrongValueType_ReturnsFalseAndUnchangedInputAr
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.InsertElementIntoArray( _
+   Assert.IsFalse modArraySupport.InsertElementIntoVector( _
          InputArray, _
          Index, _
          Value _
@@ -4508,7 +4508,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub InsertElementIntoArray_ValidTestWithLongs_ReturnsTrueAndChangedInputArray()
+Public Sub InsertElementIntoVector_ValidTestWithLongs_ReturnsTrueAndChangedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray() As LongPtr
@@ -4530,7 +4530,7 @@ Public Sub InsertElementIntoArray_ValidTestWithLongs_ReturnsTrueAndChangedInputA
    InputArray(6) = 11
    
    'Act:
-   If Not modArraySupport.InsertElementIntoArray( _
+   If Not modArraySupport.InsertElementIntoVector( _
          InputArray, _
          Index, _
          Value _
@@ -4548,7 +4548,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub InsertElementIntoArray_ValidTestWithStrings_ReturnsTrueAndChangedInputArray()
+Public Sub InsertElementIntoVector_ValidTestWithStrings_ReturnsTrueAndChangedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray() As String
@@ -4571,7 +4571,7 @@ Public Sub InsertElementIntoArray_ValidTestWithStrings_ReturnsTrueAndChangedInpu
    InputArray(6) = vbNullString
    
    'Act:
-   If Not modArraySupport.InsertElementIntoArray( _
+   If Not modArraySupport.InsertElementIntoVector( _
          InputArray, _
          Index, _
          Value _
@@ -4593,7 +4593,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub InsertElementIntoArray_ValidTestWithObjects_ReturnsTrueAndChangedInputArray()
+Public Sub InsertElementIntoVector_ValidTestWithObjects_ReturnsTrueAndChangedInputArray()
    On Error GoTo TestFail
 
    Dim InputArray() As Object
@@ -4622,7 +4622,7 @@ Public Sub InsertElementIntoArray_ValidTestWithObjects_ReturnsTrueAndChangedInpu
       Set InputArray(6) = Nothing
       
       'Act:
-      If Not modArraySupport.InsertElementIntoArray( _
+      If Not modArraySupport.InsertElementIntoVector( _
             InputArray, _
             Index, _
             Value _
@@ -5688,11 +5688,11 @@ End Sub
 
 
 '==============================================================================
-'unit tests for 'IsArraySorted'
+'unit tests for 'IsVectorSorted'
 '==============================================================================
 
 '@TestMethod
-Public Sub IsArraySorted_NoArray_ReturnsNull()
+Public Sub IsVectorSorted_NoArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
@@ -5705,7 +5705,7 @@ Public Sub IsArraySorted_NoArray_ReturnsNull()
 
 
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          Scalar, _
          Descending _
    )
@@ -5721,7 +5721,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_UnallocatedArray_ReturnsNull()
+Public Sub IsVectorSorted_UnallocatedArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
@@ -5734,7 +5734,7 @@ Public Sub IsArraySorted_UnallocatedArray_ReturnsNull()
 
 
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -5750,7 +5750,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_2DArray_ReturnsNull()
+Public Sub IsVectorSorted_2DArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
@@ -5763,7 +5763,7 @@ Public Sub IsArraySorted_2DArray_ReturnsNull()
 
 
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -5779,7 +5779,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_ObjectArray_ReturnsNull()
+Public Sub IsVectorSorted_ObjectArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
@@ -5792,7 +5792,7 @@ Public Sub IsArraySorted_ObjectArray_ReturnsNull()
 
 
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -5808,7 +5808,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_StringArrayDescendingFalse_ReturnsTrue()
+Public Sub IsVectorSorted_StringArrayDescendingFalse_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As String
@@ -5824,7 +5824,7 @@ Public Sub IsArraySorted_StringArrayDescendingFalse_ReturnsTrue()
    InputArray(6) = "abc"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -5840,7 +5840,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayContainingObjectDescendingFalse_ReturnsFalse()
+Public Sub IsVectorSorted_VariantArrayContainingObjectDescendingFalse_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -5856,7 +5856,7 @@ Public Sub IsArraySorted_VariantArrayContainingObjectDescendingFalse_ReturnsFals
    InputArray(6) = vbNullString
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -5872,7 +5872,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArraySmallNumericStringPlusLargerNumberDescendingFalse_ReturnsFalse()
+Public Sub IsVectorSorted_VariantArraySmallNumericStringPlusLargerNumberDescendingFalse_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -5888,7 +5888,7 @@ Public Sub IsArraySorted_VariantArraySmallNumericStringPlusLargerNumberDescendin
    InputArray(6) = 123
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -5904,7 +5904,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArraySmallNumberPlusLargerNumericStringDescendingFalse_ReturnsTrue()
+Public Sub IsVectorSorted_VariantArraySmallNumberPlusLargerNumericStringDescendingFalse_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -5920,7 +5920,7 @@ Public Sub IsArraySorted_VariantArraySmallNumberPlusLargerNumericStringDescendin
    InputArray(6) = "123"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -5936,7 +5936,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayLargeNumberPlusSmallNumericStringDescendingFalse_ReturnsTrue()
+Public Sub IsVectorSorted_VariantArrayLargeNumberPlusSmallNumericStringDescendingFalse_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -5953,7 +5953,7 @@ Public Sub IsArraySorted_VariantArrayLargeNumberPlusSmallNumericStringDescending
    InputArray(6) = ""
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -5969,7 +5969,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayNumberPlusStringDescendingFalse_ReturnsTrue()
+Public Sub IsVectorSorted_VariantArrayNumberPlusStringDescendingFalse_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -5985,7 +5985,7 @@ Public Sub IsArraySorted_VariantArrayNumberPlusStringDescendingFalse_ReturnsTrue
    InputArray(6) = "abc"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6001,7 +6001,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayNumberPlusStringsDescendingFalse_ReturnsTrue()
+Public Sub IsVectorSorted_VariantArrayNumberPlusStringsDescendingFalse_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 8) As Variant
@@ -6020,7 +6020,7 @@ Public Sub IsArraySorted_VariantArrayNumberPlusStringsDescendingFalse_ReturnsTru
    InputArray(8) = "defg"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6036,7 +6036,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayNumberPlusStrings2DescendingFalse_ReturnsFalse()
+Public Sub IsVectorSorted_VariantArrayNumberPlusStrings2DescendingFalse_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 8) As Variant
@@ -6053,7 +6053,7 @@ Public Sub IsArraySorted_VariantArrayNumberPlusStrings2DescendingFalse_ReturnsFa
    InputArray(7) = "defg"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6069,7 +6069,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_StringArrayDescendingTrue_ReturnsTrue()
+Public Sub IsVectorSorted_StringArrayDescendingTrue_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As String
@@ -6085,7 +6085,7 @@ Public Sub IsArraySorted_StringArrayDescendingTrue_ReturnsTrue()
    InputArray(6) = "abc"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6101,7 +6101,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayContainingObjectDescendingTrue_ReturnsTrue()
+Public Sub IsVectorSorted_VariantArrayContainingObjectDescendingTrue_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -6117,7 +6117,7 @@ Public Sub IsArraySorted_VariantArrayContainingObjectDescendingTrue_ReturnsTrue(
    InputArray(6) = vbNullString
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6133,7 +6133,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArraySmallNumericStringPlusLargerNumberDescendingTrue_ReturnsTrue()
+Public Sub IsVectorSorted_VariantArraySmallNumericStringPlusLargerNumberDescendingTrue_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -6149,7 +6149,7 @@ Public Sub IsArraySorted_VariantArraySmallNumericStringPlusLargerNumberDescendin
    InputArray(6) = 123
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6165,7 +6165,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArraySmallNumberPlusLargerNumericStringDescendingTrue_ReturnsFalse()
+Public Sub IsVectorSorted_VariantArraySmallNumberPlusLargerNumericStringDescendingTrue_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -6181,7 +6181,7 @@ Public Sub IsArraySorted_VariantArraySmallNumberPlusLargerNumericStringDescendin
    InputArray(6) = "123"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6197,7 +6197,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayLargeNumberPlusSmallNumericStringDescendingTrue_ReturnsFalse()
+Public Sub IsVectorSorted_VariantArrayLargeNumberPlusSmallNumericStringDescendingTrue_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -6214,7 +6214,7 @@ Public Sub IsArraySorted_VariantArrayLargeNumberPlusSmallNumericStringDescending
    InputArray(6) = ""
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6230,7 +6230,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayNumberPlusStringDescendingTrue_ReturnsFalse()
+Public Sub IsVectorSorted_VariantArrayNumberPlusStringDescendingTrue_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 6) As Variant
@@ -6246,7 +6246,7 @@ Public Sub IsArraySorted_VariantArrayNumberPlusStringDescendingTrue_ReturnsFalse
    InputArray(6) = "abc"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6262,7 +6262,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayNumberPlusStringsDescendingTrue_ReturnsFalse()
+Public Sub IsVectorSorted_VariantArrayNumberPlusStringsDescendingTrue_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 8) As Variant
@@ -6281,7 +6281,7 @@ Public Sub IsArraySorted_VariantArrayNumberPlusStringsDescendingTrue_ReturnsFals
    InputArray(8) = "defg"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6297,7 +6297,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub IsArraySorted_VariantArrayNumberPlusStrings2DescendingTrue_ReturnsFalse()
+Public Sub IsVectorSorted_VariantArrayNumberPlusStrings2DescendingTrue_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 8) As Variant
@@ -6314,7 +6314,7 @@ Public Sub IsArraySorted_VariantArrayNumberPlusStrings2DescendingTrue_ReturnsFal
    InputArray(7) = "defg"
    
    'Act:
-   aResult = modArraySupport.IsArraySorted( _
+   aResult = modArraySupport.IsVectorSorted( _
          InputArray, _
          Descending _
    )
@@ -6878,7 +6878,7 @@ End Sub
 '==============================================================================
 
 '@TestMethod
-Public Sub MoveEmptyStringsToEndOfArray_NoArray_ReturnsFalse()
+Public Sub MoveEmptyStringsToEndOfVector_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -6887,7 +6887,7 @@ Public Sub MoveEmptyStringsToEndOfArray_NoArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.MoveEmptyStringsToEndOfArray(Scalar)
+   Assert.IsFalse modArraySupport.MoveEmptyStringsToEndOfVector(Scalar)
 
 TestExit:
    Exit Sub
@@ -6897,7 +6897,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub MoveEmptyStringsToEndOfArray_UnallocatedArray_ReturnsFalse()
+Public Sub MoveEmptyStringsToEndOfVector_UnallocatedArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -6906,7 +6906,7 @@ Public Sub MoveEmptyStringsToEndOfArray_UnallocatedArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.MoveEmptyStringsToEndOfArray(InputArray)
+   Assert.IsFalse modArraySupport.MoveEmptyStringsToEndOfVector(InputArray)
 
 TestExit:
    Exit Sub
@@ -6916,7 +6916,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub MoveEmptyStringsToEndOfArray_2DArray_ReturnsFalse()
+Public Sub MoveEmptyStringsToEndOfVector_2DArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -6925,7 +6925,7 @@ Public Sub MoveEmptyStringsToEndOfArray_2DArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.MoveEmptyStringsToEndOfArray(InputArray)
+   Assert.IsFalse modArraySupport.MoveEmptyStringsToEndOfVector(InputArray)
 
 TestExit:
    Exit Sub
@@ -6935,7 +6935,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub MoveEmptyStringsToEndOfArray_vbNullStringArrayOnly_ReturnsTrue()
+Public Sub MoveEmptyStringsToEndOfVector_vbNullStringArrayOnly_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As String
@@ -6948,7 +6948,7 @@ Public Sub MoveEmptyStringsToEndOfArray_vbNullStringArrayOnly_ReturnsTrue()
    
    'Act:
    'Assert:
-   Assert.IsTrue modArraySupport.MoveEmptyStringsToEndOfArray(InputArray)
+   Assert.IsTrue modArraySupport.MoveEmptyStringsToEndOfVector(InputArray)
 
 TestExit:
    Exit Sub
@@ -6958,7 +6958,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub MoveEmptyStringsToEndOfArray_NonvbNullStringArrayOnly_ReturnsTrue()
+Public Sub MoveEmptyStringsToEndOfVector_NonvbNullStringArrayOnly_ReturnsTrue()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As String
@@ -6971,7 +6971,7 @@ Public Sub MoveEmptyStringsToEndOfArray_NonvbNullStringArrayOnly_ReturnsTrue()
    
    'Act:
    'Assert:
-   Assert.IsTrue modArraySupport.MoveEmptyStringsToEndOfArray(InputArray)
+   Assert.IsTrue modArraySupport.MoveEmptyStringsToEndOfVector(InputArray)
 
 TestExit:
    Exit Sub
@@ -6981,7 +6981,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub MoveEmptyStringsToEndOfArray_StringArray_ReturnsTrueAndModifiedArr()
+Public Sub MoveEmptyStringsToEndOfVector_StringArray_ReturnsTrueAndModifiedArr()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As String
@@ -7001,7 +7001,7 @@ Public Sub MoveEmptyStringsToEndOfArray_StringArray_ReturnsTrueAndModifiedArr()
    InputArray(7) = "abc"
    
    'Act:
-   If Not modArraySupport.MoveEmptyStringsToEndOfArray(InputArray) Then _
+   If Not modArraySupport.MoveEmptyStringsToEndOfVector(InputArray) Then _
          GoTo TestFail
    
    'Assert:
@@ -7018,7 +7018,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub MoveEmptyStringsToEndOfArray_VariantArray_ReturnsTrueAndModifiedArr()
+Public Sub MoveEmptyStringsToEndOfVector_VariantArray_ReturnsTrueAndModifiedArr()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As Variant
@@ -7038,7 +7038,7 @@ Public Sub MoveEmptyStringsToEndOfArray_VariantArray_ReturnsTrueAndModifiedArr()
    InputArray(7) = "def"
    
    'Act:
-   If Not modArraySupport.MoveEmptyStringsToEndOfArray(InputArray) Then _
+   If Not modArraySupport.MoveEmptyStringsToEndOfVector(InputArray) Then _
          GoTo TestFail
    
    'Assert:
@@ -7055,7 +7055,7 @@ End Sub
 
 
 ''@TestMethod
-'Public Sub MoveEmptyStringsToEndOfArray_StringArray2_ReturnsTrueAndModifiedArr()
+'Public Sub MoveEmptyStringsToEndOfVector_StringArray2_ReturnsTrueAndModifiedArr()
 '   On Error GoTo TestFail
 '
 '   Dim Arr As Variant
@@ -7073,7 +7073,7 @@ End Sub
 '
 '   'Act:
 '    If Not modArraySupport.GetColumn(Arr, InputArray, 1) Then GoTo TestFail
-'   If Not modArraySupport.MoveEmptyStringsToEndOfArray(InputArray) Then _
+'   If Not modArraySupport.MoveEmptyStringsToEndOfVector(InputArray) Then _
 '         GoTo TestFail
 '   Arr = ThisWorkbook.Worksheets(1).Range("B35:B47")
 '   If Not modArraySupport.GetColumn(Arr, aExpected, 1) Then GoTo TestFail
@@ -7727,7 +7727,7 @@ End Sub
 '==============================================================================
 
 '@TestMethod
-Public Sub ReverseArrayInPlace_NoArray_ReturnsFalse()
+Public Sub ReverseVectorInPlace_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -7736,7 +7736,7 @@ Public Sub ReverseArrayInPlace_NoArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ReverseArrayInPlace(Scalar)
+   Assert.IsFalse modArraySupport.ReverseVectorInPlace(Scalar)
 
 TestExit:
    Exit Sub
@@ -7746,7 +7746,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayInPlace_UnallocatedArray_ReturnsFalse()
+Public Sub ReverseVectorInPlace_UnallocatedArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -7755,7 +7755,7 @@ Public Sub ReverseArrayInPlace_UnallocatedArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ReverseArrayInPlace(Arr)
+   Assert.IsFalse modArraySupport.ReverseVectorInPlace(Arr)
 
 TestExit:
    Exit Sub
@@ -7765,7 +7765,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayInPlace_2DArr_ReturnsFalse()
+Public Sub ReverseVectorInPlace_2DArr_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -7774,7 +7774,7 @@ Public Sub ReverseArrayInPlace_2DArr_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ReverseArrayInPlace(Arr)
+   Assert.IsFalse modArraySupport.ReverseVectorInPlace(Arr)
 
 TestExit:
    Exit Sub
@@ -7784,7 +7784,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayInPlace_ValidEven1DArr_ReturnsTrueAndReversedArr()
+Public Sub ReverseVectorInPlace_ValidEven1DArr_ReturnsTrueAndReversedArr()
    On Error GoTo TestFail
 
    Dim Arr(5 To 8) As LongPtr
@@ -7805,7 +7805,7 @@ Public Sub ReverseArrayInPlace_ValidEven1DArr_ReturnsTrueAndReversedArr()
    Arr(8) = 8
    
    'Act:
-   If Not modArraySupport.ReverseArrayInPlace(Arr) Then _
+   If Not modArraySupport.ReverseVectorInPlace(Arr) Then _
          GoTo TestFail
    
    'Assert:
@@ -7819,7 +7819,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayInPlace_ValidEven1DVariantArr_ReturnsTrueAndReversedArr()
+Public Sub ReverseVectorInPlace_ValidEven1DVariantArr_ReturnsTrueAndReversedArr()
    On Error GoTo TestFail
 
    Dim Arr(5 To 8) As Variant
@@ -7840,7 +7840,7 @@ Public Sub ReverseArrayInPlace_ValidEven1DVariantArr_ReturnsTrueAndReversedArr()
    Arr(8) = 8
    
    'Act:
-   If Not modArraySupport.ReverseArrayInPlace(Arr) Then _
+   If Not modArraySupport.ReverseVectorInPlace(Arr) Then _
          GoTo TestFail
    
    'Assert:
@@ -7854,7 +7854,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayInPlace_1DVariantArrWithObject_ReturnsTrueAndReversedArr()
+Public Sub ReverseVectorInPlace_1DVariantArrWithObject_ReturnsTrueAndReversedArr()
    On Error GoTo TestFail
 
    Dim Arr(5 To 6) As Variant
@@ -7871,7 +7871,7 @@ Public Sub ReverseArrayInPlace_1DVariantArrWithObject_ReturnsTrueAndReversedArr(
    Set Arr(6) = ThisWorkbook.Worksheets(1).Range("B5")
    
    'Act:
-   If Not modArraySupport.ReverseArrayInPlace(Arr) Then _
+   If Not modArraySupport.ReverseVectorInPlace(Arr) Then _
          GoTo TestFail
    
    'Assert:
@@ -7885,7 +7885,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayInPlace_ValidOdd1DArr_ReturnsTrueAndReversedArr()
+Public Sub ReverseVectorInPlace_ValidOdd1DArr_ReturnsTrueAndReversedArr()
    On Error GoTo TestFail
 
    Dim Arr(5 To 9) As LongPtr
@@ -7908,7 +7908,7 @@ Public Sub ReverseArrayInPlace_ValidOdd1DArr_ReturnsTrueAndReversedArr()
    Arr(9) = 9
    
    'Act:
-   If Not modArraySupport.ReverseArrayInPlace(Arr) Then _
+   If Not modArraySupport.ReverseVectorInPlace(Arr) Then _
          GoTo TestFail
    
    'Assert:
@@ -7922,11 +7922,11 @@ End Sub
 
 
 '==============================================================================
-'unit tests for 'ReverseArrayOfObjectsInPlace'
+'unit tests for 'ReverseVectorOfObjectsInPlace'
 '==============================================================================
 
 '@TestMethod
-Public Sub ReverseArrayOfObjectsInPlace_NoArray_ReturnsFalse()
+Public Sub ReverseVectorOfObjectsInPlace_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -7935,7 +7935,7 @@ Public Sub ReverseArrayOfObjectsInPlace_NoArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ReverseArrayOfObjectsInPlace(Scalar)
+   Assert.IsFalse modArraySupport.ReverseVectorOfObjectsInPlace(Scalar)
 
 TestExit:
    Exit Sub
@@ -7945,7 +7945,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayOfObjectsInPlace_UnallocatedObjectArray_ReturnsFalse()
+Public Sub ReverseVectorOfObjectsInPlace_UnallocatedObjectArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -7954,7 +7954,7 @@ Public Sub ReverseArrayOfObjectsInPlace_UnallocatedObjectArray_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ReverseArrayOfObjectsInPlace(Arr)
+   Assert.IsFalse modArraySupport.ReverseVectorOfObjectsInPlace(Arr)
 
 TestExit:
    Exit Sub
@@ -7964,7 +7964,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayOfObjectsInPlace_2DObjectArr_ReturnsFalse()
+Public Sub ReverseVectorOfObjectsInPlace_2DObjectArr_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
@@ -7973,7 +7973,7 @@ Public Sub ReverseArrayOfObjectsInPlace_2DObjectArr_ReturnsFalse()
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ReverseArrayOfObjectsInPlace(Arr)
+   Assert.IsFalse modArraySupport.ReverseVectorOfObjectsInPlace(Arr)
 
 TestExit:
    Exit Sub
@@ -7983,7 +7983,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayOfObjectsInPlace_ValidEven1DObjectArr_ReturnsTrueAndReversedArr()
+Public Sub ReverseVectorOfObjectsInPlace_ValidEven1DObjectArr_ReturnsTrueAndReversedArr()
    On Error GoTo TestFail
 
    Dim Arr(5 To 8) As Object
@@ -8009,7 +8009,7 @@ Public Sub ReverseArrayOfObjectsInPlace_ValidEven1DObjectArr_ReturnsTrueAndRever
    End With
    
    'Act:
-   If Not modArraySupport.ReverseArrayOfObjectsInPlace(Arr) Then _
+   If Not modArraySupport.ReverseVectorOfObjectsInPlace(Arr) Then _
          GoTo TestFail
    
    'Assert:
@@ -8029,7 +8029,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayOfObjectsInPlace_ValidEven1DVariantArr_ReturnsTrueAndReversedArr()
+Public Sub ReverseVectorOfObjectsInPlace_ValidEven1DVariantArr_ReturnsTrueAndReversedArr()
    On Error GoTo TestFail
 
    Dim Arr(5 To 8) As Variant
@@ -8055,7 +8055,7 @@ Public Sub ReverseArrayOfObjectsInPlace_ValidEven1DVariantArr_ReturnsTrueAndReve
    End With
    
    'Act:
-   If Not modArraySupport.ReverseArrayOfObjectsInPlace(Arr) Then _
+   If Not modArraySupport.ReverseVectorOfObjectsInPlace(Arr) Then _
          GoTo TestFail
    
    'Assert:
@@ -8075,7 +8075,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayOfObjectsInPlace_1DVariantArrWithNonObject_ReturnsFalse()
+Public Sub ReverseVectorOfObjectsInPlace_1DVariantArrWithNonObject_ReturnsFalse()
    On Error GoTo TestFail
 
    Dim Arr(5 To 6) As Variant
@@ -8087,7 +8087,7 @@ Public Sub ReverseArrayOfObjectsInPlace_1DVariantArrWithNonObject_ReturnsFalse()
    
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ReverseArrayOfObjectsInPlace(Arr)
+   Assert.IsFalse modArraySupport.ReverseVectorOfObjectsInPlace(Arr)
 
 TestExit:
    Exit Sub
@@ -8097,7 +8097,7 @@ End Sub
 
 
 '@TestMethod
-Public Sub ReverseArrayOfObjectsInPlace_ValidOdd1DObjectArr_ReturnsTrueAndReversedArr()
+Public Sub ReverseVectorOfObjectsInPlace_ValidOdd1DObjectArr_ReturnsTrueAndReversedArr()
    On Error GoTo TestFail
 
    Dim Arr(5 To 9) As Object
@@ -8125,7 +8125,7 @@ Public Sub ReverseArrayOfObjectsInPlace_ValidOdd1DObjectArr_ReturnsTrueAndRevers
    End With
    
    'Act:
-   If Not modArraySupport.ReverseArrayOfObjectsInPlace(Arr) Then _
+   If Not modArraySupport.ReverseVectorOfObjectsInPlace(Arr) Then _
          GoTo TestFail
    
    'Assert:
