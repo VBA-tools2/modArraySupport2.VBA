@@ -1277,17 +1277,25 @@ End Sub
 Public Sub ConcatenateArrays_StaticResultArray_ResultsFalse()
    On Error GoTo TestFail
 
-   'Arrange:
-   Dim ResultArray(1) As LongPtr       'MUST be dynamic
+   Dim ResultArray(1) As LongPtr
    Dim ArrayToAppend(1) As LongPtr
 
+   '===========================================================================
+   Const CompatabilityCheck As Boolean = True
+   '===========================================================================
 
+
+   'Arrange:
    ResultArray(1) = 8
    ArrayToAppend(1) = 111
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.ConcatenateArrays(ResultArray, ArrayToAppend)
+   Assert.IsFalse modArraySupport.ConcatenateArrays( _
+         ResultArray, _
+         ArrayToAppend, _
+         CompatabilityCheck _
+   )
 
 TestExit:
    Exit Sub
@@ -1301,12 +1309,20 @@ Public Sub ConcatenateArrays_BothArraysUnallocated_ResultsTrueAndUnallocatedArra
    On Error GoTo TestFail
 
    'Arrange:
-   Dim ResultArray() As LongPtr        'MUST be dynamic
+   Dim ResultArray() As LongPtr
    Dim ArrayToAppend() As LongPtr
+
+   '===========================================================================
+   Const CompatabilityCheck As Boolean = True
+   '===========================================================================
 
 
    'Act:
-   If Not modArraySupport.ConcatenateArrays(ResultArray, ArrayToAppend) Then _
+   If Not modArraySupport.ConcatenateArrays( _
+         ResultArray, _
+         ArrayToAppend, _
+         CompatabilityCheck _
+   ) Then _
          GoTo TestFail
 
    'Assert:
@@ -1320,26 +1336,32 @@ End Sub
 
 
 '@TestMethod
-Public Sub ConcatenateArrays_ArrayToAppendUnallocated_ResultsTrueAndUnchangedResultArray()
+Public Sub ConcatenateArrays_UnallocatedArrayToAppend_ResultsTrueAndUnchangedResultArray()
    On Error GoTo TestFail
 
-   'Arrange:
-   Dim ResultArray() As LongPtr        'MUST be dynamic
+   Dim ResultArray() As LongPtr
    Dim ArrayToAppend() As LongPtr
 
    '===========================================================================
+   Const CompatabilityCheck As Boolean = True
+   
    Dim aExpected(1 To 2) As LongPtr
       aExpected(1) = 8
       aExpected(2) = 9
    '===========================================================================
 
 
+   'Arrange:
    ReDim ResultArray(1 To 2)
    ResultArray(1) = 8
    ResultArray(2) = 9
 
    'Act:
-   If Not modArraySupport.ConcatenateArrays(ResultArray, ArrayToAppend) Then _
+   If Not modArraySupport.ConcatenateArrays( _
+         ResultArray, _
+         ArrayToAppend, _
+         CompatabilityCheck _
+   ) Then _
          GoTo TestFail
 
    'Assert:
@@ -1353,13 +1375,15 @@ End Sub
 
 
 '@TestMethod
-Public Sub ConcatenateArrays_LegalLong_ResultsTrueAndResultArray()
+Public Sub ConcatenateArrays_IntegerArrayToAppendLongResultArray_ResultsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim ResultArray() As LongPtr        'MUST be dynamic
+   Dim ResultArray() As LongPtr
    Dim ArrayToAppend(1 To 3) As Integer
 
    '===========================================================================
+   Const CompatabilityCheck As Boolean = True
+   
    Dim aExpected(1 To 6) As LongPtr
       aExpected(1) = 8
       aExpected(2) = 9
@@ -1381,7 +1405,11 @@ Public Sub ConcatenateArrays_LegalLong_ResultsTrueAndResultArray()
    ArrayToAppend(3) = 113
 
    'Act:
-   If Not modArraySupport.ConcatenateArrays(ResultArray, ArrayToAppend) Then _
+   If Not modArraySupport.ConcatenateArrays( _
+         ResultArray, _
+         ArrayToAppend, _
+         CompatabilityCheck _
+   ) Then _
          GoTo TestFail
 
    'Assert:
@@ -1391,6 +1419,138 @@ TestExit:
    Exit Sub
 TestFail:
    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub ConcatenateArrays_LongArrayToAppendIntegerResultArray_ResultsFalse()
+   On Error GoTo TestFail
+
+   Dim ResultArray() As Integer
+   Dim ArrayToAppend(1 To 3) As LongPtr
+
+   '===========================================================================
+   Const CompatabilityCheck As Boolean = True
+   '===========================================================================
+
+
+   'Arrange:
+   ReDim ResultArray(1 To 3)
+   ResultArray(1) = 8
+   ResultArray(2) = 9
+   ResultArray(3) = 10
+
+   ArrayToAppend(1) = 111
+   ArrayToAppend(2) = 112
+   ArrayToAppend(3) = 113
+
+   'Assert:
+   'Act:
+   Assert.IsFalse modArraySupport.ConcatenateArrays( _
+         ResultArray, _
+         ArrayToAppend, _
+         CompatabilityCheck _
+   )
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub ConcatenateArrays_LongArrayToAppendIntegerResultArrayFalseCompatabilityCheck_ResultsTrueAndResultArray()
+   On Error GoTo TestFail
+
+   Dim ResultArray() As Integer
+   Dim ArrayToAppend(1 To 3) As LongPtr
+
+   '===========================================================================
+   Const CompatabilityCheck As Boolean = False
+   
+   Dim aExpected(1 To 6) As Integer
+      aExpected(1) = 8
+      aExpected(2) = 9
+      aExpected(3) = 10
+      aExpected(4) = 111
+      aExpected(5) = 112
+      aExpected(6) = 113
+   '===========================================================================
+
+
+   'Arrange:
+   ReDim ResultArray(1 To 3)
+   ResultArray(1) = 8
+   ResultArray(2) = 9
+   ResultArray(3) = 10
+
+   ArrayToAppend(1) = 111
+   ArrayToAppend(2) = 112
+   ArrayToAppend(3) = 113
+
+   'Act:
+   If Not modArraySupport.ConcatenateArrays( _
+         ResultArray, _
+         ArrayToAppend, _
+         CompatabilityCheck _
+   ) Then _
+         GoTo TestFail
+
+   'Assert:
+   Assert.SequenceEquals aExpected, ResultArray
+
+TestExit:
+   Exit Sub
+TestFail:
+   Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod
+Public Sub ConcatenateArrays_LongArrayToAppendWithLongNumberIntegerResultArrayFalseCompatabilityCheck_ResultsFalse()
+   On Error GoTo TestFail
+    
+   Dim ResultArray() As Integer
+   Dim ArrayToAppend(1 To 3) As LongPtr
+   Dim Success As Boolean
+
+   '===========================================================================
+   Const CompatabilityCheck As Boolean = False
+   
+   Const ExpectedError As LongPtr = 6
+   '===========================================================================
+
+    
+   'Arrange:
+   ReDim ResultArray(1 To 3)
+   ResultArray(1) = 8
+   ResultArray(2) = 9
+   ResultArray(3) = 10
+
+   ArrayToAppend(1) = 111
+   ArrayToAppend(2) = 32768   'no valid Integer
+   ArrayToAppend(3) = 113
+
+   'Act:
+   Success = modArraySupport.ConcatenateArrays( _
+         ResultArray, _
+         ArrayToAppend, _
+         CompatabilityCheck _
+   )
+   
+   'Assert:
+Assert:
+    Assert.Fail "Expected error was not raised."
+
+TestExit:
+    Exit Sub
+TestFail:
+    If Err.Number = ExpectedError Then
+        Resume TestExit
+    Else
+        Resume Assert
+    End If
 End Sub
 
 
@@ -1405,6 +1565,8 @@ End Sub
 '   Dim i As LongPtr
 '
 '   '===========================================================================
+'   Const CompatabilityCheck As Boolean = True
+'
 '   Dim wks As Worksheet
 '   Set wks = tblFunctions
 '   Dim aExpected(1 To 2) As Range
@@ -1423,7 +1585,11 @@ End Sub
 '   End With
 '
 '   'Act:
-'   If Not modArraySupport.ConcatenateArrays(ResultArray, ArrayToAppend) Then _
+'   If Not modArraySupport.ConcatenateArrays( _
+'         ResultArray, _
+'         ArrayToAppend, _
+'         CompatibilityCheck _
+'   ) Then _
 '         GoTo TestFail
 '
 '   'Assert:
@@ -1467,6 +1633,8 @@ Public Sub CopyArray_UnallocatedSrc_ResultsTrueAndUnchangedDest()
    Dim Dest(0) As Integer
 
    '===========================================================================
+   Const CompatabilityCheck As Boolean = True
+   
    Dim aExpected(0) As Integer
       aExpected(0) = 50
    '===========================================================================
@@ -1476,7 +1644,11 @@ Public Sub CopyArray_UnallocatedSrc_ResultsTrueAndUnchangedDest()
    Dest(0) = 50
 
    'Act:
-   If Not modArraySupport.CopyArray(Src, Dest) Then _
+   If Not modArraySupport.CopyArray( _
+         Src, _
+         Dest, _
+         CompatabilityCheck _
+   ) Then _
          GoTo TestFail
 
    'Assert:
@@ -1497,10 +1669,18 @@ Public Sub CopyArray_IncompatibleDest_ResultsFalse()
    Dim Src(1 To 2) As LongPtr
    Dim Dest(1 To 2) As Integer
 
+   '===========================================================================
+   Const CompatabilityCheck As Boolean = True
+   '===========================================================================
+
 
    'Act:
    'Assert:
-   Assert.IsFalse modArraySupport.CopyArray(Src, Dest)
+   Assert.IsFalse modArraySupport.CopyArray( _
+         Src, _
+         Dest, _
+         CompatabilityCheck _
+   )
 
 TestExit:
    Exit Sub
@@ -1517,6 +1697,8 @@ Public Sub CopyArray_AllocatedDestLessElementsThenSrc_ResultsTrueAndDestArray()
    Dim Dest(10 To 11) As LongPtr
 
    '===========================================================================
+   Const CompatabilityCheck As Boolean = True
+   
    Dim aExpected(10 To 11) As LongPtr
       aExpected(10) = 1
       aExpected(11) = 2
@@ -1529,7 +1711,11 @@ Public Sub CopyArray_AllocatedDestLessElementsThenSrc_ResultsTrueAndDestArray()
    Src(3) = 3
 
    'Act:
-   If Not modArraySupport.CopyArray(Src, Dest) Then _
+   If Not modArraySupport.CopyArray( _
+         Src, _
+         Dest, _
+         CompatabilityCheck _
+   ) Then _
          GoTo TestFail
 
    'Assert:
@@ -1550,6 +1736,8 @@ Public Sub CopyArray_AllocatedDestMoreElementsThenSrc_ResultsTrueAndDestArray()
    Dim Dest(10 To 13) As LongPtr
 
    '===========================================================================
+   Const CompatabilityCheck As Boolean = True
+   
    Dim aExpected(10 To 13) As LongPtr
       aExpected(10) = 1
       aExpected(11) = 2
@@ -1564,7 +1752,11 @@ Public Sub CopyArray_AllocatedDestMoreElementsThenSrc_ResultsTrueAndDestArray()
    Src(3) = 3
 
    'Act:
-   If Not modArraySupport.CopyArray(Src, Dest) Then _
+   If Not modArraySupport.CopyArray( _
+         Src, _
+         Dest, _
+         CompatabilityCheck _
+   ) Then _
          GoTo TestFail
 
    'Assert:
@@ -1585,6 +1777,8 @@ Public Sub CopyArray_NoCompatibilityCheck_ResultsTrueAndDestArrayWithOverflow()
    Dim Dest(1 To 2) As Integer
 
    '===========================================================================
+   Const CompatabilityCheck As Boolean = False
+   
    Dim aExpected(1 To 2) As Integer
       aExpected(1) = 1234
       aExpected(2) = 0
@@ -1593,10 +1787,14 @@ Public Sub CopyArray_NoCompatibilityCheck_ResultsTrueAndDestArrayWithOverflow()
 
    'Arrange:
    Src(1) = 1234
-   Src(2) = Rows.Count * 10
+   Src(2) = 32768       'no valid Integer
 
    'Act:
-   If Not modArraySupport.CopyArray(Src, Dest, True) Then _
+   If Not modArraySupport.CopyArray( _
+         Src, _
+         Dest, _
+         CompatabilityCheck _
+   ) Then _
          GoTo TestFail
 
    'Assert:
@@ -9504,5 +9702,3 @@ TestExit:
 TestFail:
    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
 End Sub
-
-
