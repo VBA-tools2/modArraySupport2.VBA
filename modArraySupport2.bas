@@ -1,4 +1,4 @@
-Attribute VB_Name = "modArraySupport"
+Attribute VB_Name = "modArraySupport2"
 
 '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 '2do:
@@ -21,8 +21,10 @@ Option Explicit
 Option Compare Text
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'modArraySupport
+'(modArraySupport) --> modArraySupport2
 'By Chip Pearson, chip@cpearson.com, www.cpearson.com
+'Heavily refactored by Stefan Pinnow and because of alle the changes I decided
+'to rename it.
 '
 'This module contains procedures that provide information about and manipulate
 'VB/VBA arrays. NOTE: These functions call one another. It is strongly
