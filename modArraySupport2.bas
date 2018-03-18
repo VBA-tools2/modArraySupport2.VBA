@@ -1663,59 +1663,30 @@ Public Function IsArrayAllNumeric( _
    Optional ByVal AllowNumericStrings As Boolean = False, _
    Optional ByVal AllowArrayElements As Boolean = False _
       ) As Boolean
-Attribute IsArrayAllNumeric.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim Element As Variant
-   
+
    'Set the default return value
    IsArrayAllNumeric = False
-   
+
    If Not IsArray(Arr) Then Exit Function
    If Not IsArrayAllocated(Arr) Then Exit Function
-   
-   'Loop through the array
+
    For Each Element In Arr
-      If IsObject(Element) Then Exit Function
-      
-      Select Case VarType(Element)
-         Case vbEmpty
-            'is (also) allowed
-         Case vbString
-            'For strings, check the 'AllowNumericStrings' parameter.
-            'If True and the element is a numeric string, allow it.
-            'If it is a non-numeric string, exit with 'False'.
-            'If 'AllowNumericStrings' is 'False', all strings, even
-            'numeric strings, will cause a result of 'False'.
-            If AllowNumericStrings = True Then
-               If Not IsNumeric(Element) Then Exit Function
-            Else
-               Exit Function
-            End If
-         Case Is >= vbVariant
-            'For Variants, disallow Objects.
-            If IsObject(Element) Then Exit Function
-            'If the element is an array ...
-            If IsArray(Element) Then
-               '... only test the elements, if (numeric) array elements are
-               'allowed
-               If AllowArrayElements Then
-                  'Test the elements (recursively) with the same rules as the
-                  'main array
-                  If Not IsArrayAllNumeric( _
-                        Element, AllowNumericStrings, AllowArrayElements) Then _
-                              Exit Function
-               Else
+      If IsObject(Element) Then
+         Exit Function
+      ElseIf VarType(Element) = vbString And Not AllowNumericStrings Then
+         Exit Function
+      ElseIf IsArray(Element) Then
+         If Not AllowArrayElements Then Exit Function
+         If Not IsArrayAllNumeric( _
+               Element, AllowNumericStrings, AllowArrayElements) Then _
                   Exit Function
-               End If
-            'If the element is not an array, test, if it is of numeric type.
-            Else
-               If Not IsNumeric(Element) Then Exit Function
-            End If
-         Case Else
-            If Not IsNumeric(Element) Then Exit Function
-      End Select
+      Else
+         If Not IsNumeric(Element) Then Exit Function
+      End If
    Next
-   
+
    IsArrayAllNumeric = True
 
 End Function
