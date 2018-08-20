@@ -23,7 +23,7 @@ Option Compare Text
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '(modArraySupport) --> modArraySupport2
 'By Chip Pearson, chip@cpearson.com, www.cpearson.com
-'Heavily refactored by Stefan Pinnow and because of alle the changes I decided
+'Heavily refactored by Stefan Pinnow and because of all the changes I decided
 'to rename it.
 '
 'This module contains procedures that provide information about and manipulate
@@ -131,7 +131,7 @@ End Sub
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'AreDataTypesCompatible
-'This function determines if 'SourceVar' is compatiable with 'DestVar'. If the
+'This function determines if 'SourceVar' is compatible with 'DestVar'. If the
 'two data types are the same, they are compatible. If the value of 'SourceVar'
 'can be stored in 'DestVar' with no loss of precision or an overflow, they are
 'compatible.
@@ -626,7 +626,7 @@ End Function
 'This function appends 'ArrayToAppend' to the end of 'ResultArray', increasing
 'the size of 'ResultArray' as needed. 'ResultArray' must be a dynamic array,
 'but it need not be allocated. 'ArrayToAppend' may be either static or dynamic,
-'and if dynamic it may be unallocted. If 'ArrayToAppend' is unallocated,
+'and if dynamic it may be unallocated. If 'ArrayToAppend' is unallocated,
 ''ResultArray' is left unchanged.
 '
 'The data types of 'ResultArray' and 'ArrayToAppend' must be either the same
@@ -636,7 +636,7 @@ End Function
 'but not 'Single' or 'Double' because information might be lost when converting
 'from 'Double' to 'Long' (the decimal portion would be lost).
 '
-'To skip the compatability check and allow any variable type in 'ResultArray'
+'To skip the compatibility check and allow any variable type in 'ResultArray'
 'and 'ArrayToAppend', set the 'CompatabilityCheck' parameter to 'False'. If you
 'do this, be aware that you may loose precision and you may will get an
 'overflow error which will cause a result of 0 in that element of 'ResultArray'.
@@ -775,7 +775,7 @@ End Function
 '
 'The function tests to ensure that the data types of the arrays are the same or
 'are compatible. See the function 'AreDataTypesCompatible' for information
-'about compatible data types. To skip this compability checking, set the
+'about compatible data types. To skip this compatibility checking, set the
 ''CompatabilityCheck' parameter to 'False'. Note that you may lose information
 'during data conversion (e.g., losing decimal places when converting a 'Double'
 'to a 'Long') or you may get an overflow (storing a 'Long' in an 'Integer')
@@ -952,7 +952,7 @@ End Function
 'elements from 'FirstElementToCopy' to 'LastElementToCopy' (inclusive) from
 ''SourceArray' and copies them to 'ResultArray', starting at
 ''DestinationElement'.
-'Existing data in 'ResultArray' will be overwrittten. If 'ResultArray' is a
+'Existing data in 'ResultArray' will be overwritten. If 'ResultArray' is a
 'dynamic array, it will be resized if needed. If 'ResultArray' is a static
 'array and it is not large enough to copy all the elements, no elements are
 'copied and the function returns 'False'.
@@ -1157,7 +1157,7 @@ End Function
 'set to the default value appropriate to the data type of the array
 '(0, vbNullString, Empty, or Nothing). If the array is an array of 'Variant'
 'types, the default data type is the data type of the last element in the
-'array. The function returns 'True' if the elememt was successfully deleted and
+'array. The function returns 'True' if the element was successfully deleted and
 ''False' otherwise. This procedure works only on single-dimensional arrays.
 '(In case the only element is deleted, 'InputArray' is dynamic and
 ''ResizeDynamic' is 'True' 'InputArray' will be erased.)
@@ -1469,7 +1469,7 @@ End Function
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'GetRow
-'This populates 'ResultArrÄ with a one-dimensional array that is the specified
+'This populates 'ResultArr' with a one-dimensional array that is the specified
 'row of 'Arr'. The existing contents of 'ResultArr' are erased. 'ResultArr'
 'must be a dynamic array. Returns 'True' or 'False' indicating success.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -1512,7 +1512,7 @@ End Function
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'InsertElementIntoVector
 'This function inserts an element with a value of 'Value' into 'InputArray' at
-'locatation 'Index'.
+'location 'Index'.
 ''InputArray' must be a dynamic array. The 'Value' is stored in location 'Index',
 'and everything to the right of 'Index' is shifted to the right. The array is
 'resized to make room for the new element. The value of 'Index' must be greater
@@ -1547,7 +1547,7 @@ Attribute InsertElementIntoVector.VB_ProcData.VB_Invoke_Func = " \n19"
    
 '---
 '2do:
-'can't this be handeled with the function 'AreDataTypesCompatible' of this module?
+'can't this be handled with the function 'AreDataTypesCompatible' of this module?
 '---
    'First, we set the newly created last element of 'InputArray' to 'Value'.
    'This is done to trap an "error 13, type mismatch". This last entry will be
@@ -1663,6 +1663,7 @@ Public Function IsArrayAllNumeric( _
    Optional ByVal AllowNumericStrings As Boolean = False, _
    Optional ByVal AllowArrayElements As Boolean = False _
       ) As Boolean
+Attribute IsArrayAllNumeric.VB_ProcData.VB_Invoke_Func = " \n19"
 
    Dim Element As Variant
 
@@ -1738,7 +1739,7 @@ Attribute IsArrayAllocated.VB_ProcData.VB_Invoke_Func = " \n19"
    N = UBound(Arr, 1)
    If err.Number = 0 Then
       'Under some circumstances, if an array is not allocated, Err.Number
-      'will be 0. To acccomodate this case, we test whether LBound <= Ubound.
+      'will be 0. To accommodate this case, we test whether LBound <= UBound.
       'If this is True, the array is allocated. Otherwise, the array is not
       'allocated.
       IsArrayAllocated = (LBound(Arr) <= UBound(Arr))
@@ -1921,7 +1922,7 @@ End Function
 '      'Arr' is not an array,
 '      'Arr' is an array but is unallocated,
 '      'Arr' is a multi-dimensional array,
-'      'Arr' is allocated but does not contain consistant data types.
+'      'Arr' is allocated but does not contain consistent data types.
 'If 'Arr' is an array of objects, objects that are 'Nothing' are ignored. As
 'long as all non-'Nothing' objects are the same object type, the function
 'returns 'True'.
@@ -2236,7 +2237,7 @@ End Function
 'appropriate default values. The elements of the array may be of mixed types
 '(e.g., some 'Long's, some 'Object's, some 'String's, etc.). Each data type
 'will be set to the appropriate default value ('0', 'vbNullString', 'Empty', or
-''Nothing'). It returns 'True' if the array was set to defautls, or 'False' if
+''Nothing'). It returns 'True' if the array was set to defaults, or 'False' if
 'an error occurred. 'InputArray' must be an allocated single-dimensional array.
 'This function differs from the 'Erase' function in that it preserves the
 'original data types, while 'Erase' sets every element to 'Empty'.
@@ -2517,7 +2518,7 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n19"
             'Each element must be explicitly set to its default value. No
             'assignment takes place in this procedure.
          Case vbVariant
-            'This case is included for constistancy, but we will never get
+            'This case is included for consistency, but we will never get
             'here. If the 'Variant' contains data, 'VarType' returns the type
             'of that data. An empty 'Variant' is type 'vbEmpty'.
             Variable = Empty
