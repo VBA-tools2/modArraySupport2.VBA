@@ -1554,13 +1554,13 @@ Attribute InsertElementIntoVector.VB_ProcData.VB_Invoke_Func = " \n22"
    'overwritten when we shift elements to the right, and the 'Value' will be
    'inserted at 'Index'.
    On Error Resume Next
-   err.Clear
+   Err.Clear
    If IsObject(Value) Then
       Set InputArray(UBound(InputArray)) = Value
    Else
       InputArray(UBound(InputArray)) = Value
    End If
-   If err.Number <> 0 Then
+   If Err.Number <> 0 Then
       'An error occurred, most likely an error 13, type mismatch.
       'Redim the array back to its original size and exit the function.
       ReDim Preserve InputArray(LBound(InputArray) To UBound(InputArray) - 1)
@@ -1738,7 +1738,7 @@ Attribute IsArrayAllocated.VB_ProcData.VB_Invoke_Func = " \n22"
    'Attempt to get the UBound of the array. If the array has not been allocated,
    'an error will occur. Test Err.Number to see if an error occurred.
    N = UBound(Arr, 1)
-   If err.Number = 0 Then
+   If Err.Number = 0 Then
       'Under some circumstances, if an array is not allocated, Err.Number
       'will be 0. To accommodate this case, we test whether LBound <= UBound.
       'If this is True, the array is allocated. Otherwise, the array is not
@@ -1785,7 +1785,7 @@ Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n22"
    ArrUBound = UBound(Arr)
    
    On Error Resume Next
-   err.Clear
+   Err.Clear
    
    'Attempt to increase the 'UBound' of 'Arr' and test the value of
    ''Err.Number'. If 'Arr' is a static array, either single- or
@@ -1796,7 +1796,7 @@ Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n22"
    'If 'Arr' is a multi-dimensional dynamic array, we'll get a
    ''C_ERR_SUBSCRIPT_OUT_OF_RANGE' error.
    ReDim Preserve Arr(LBound(Arr) To ArrUBound + 1)
-   Select Case err.Number
+   Select Case Err.Number
       Case C_ERR_NO_ERROR
          'We successfully increased the 'UBound' of 'Arr'.
          'Do a 'ReDim Preserve' to restore the original 'UBound'.
@@ -2190,7 +2190,7 @@ Attribute NumberOfArrayDimensions.VB_ProcData.VB_Invoke_Func = " \n22"
    Do
       i = i + 1
       Res = UBound(Arr, i)
-   Loop Until err.Number <> 0
+   Loop Until Err.Number <> 0
    On Error GoTo 0
    
    NumberOfArrayDimensions = i - 1
