@@ -11,4 +11,4 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Public Name As String
-Public Value As LongPtr
+Public Value As Long

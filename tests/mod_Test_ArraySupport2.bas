@@ -1,11 +1,11 @@
-Attribute VB_Name = "mod_Test_Array"
+Attribute VB_Name = "mod_Test_ArraySupport2"
 
 Option Explicit
 Option Compare Text
 Option Private Module
 
 '@TestModule
-'@Folder("Tests.modArraySupport2")
+'@Folder("Tests")
 
 Private Assert As Rubberduck.PermissiveAssertClass
 Private Fakes As Rubberduck.FakesProvider
@@ -45,8 +45,8 @@ Public Sub AreDataTypesCompatible_ScalarSourceArrayDest_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Source As LongPtr
-   Dim Dest() As LongPtr
+   Dim Source As Long
+   Dim Dest() As Long
    
    
    'Act:
@@ -105,7 +105,7 @@ Public Sub AreDataTypesCompatible_LongSourceIntegerDest_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Source As LongPtr
+   Dim Source As Long
    Dim Dest As Integer
    
    
@@ -126,7 +126,7 @@ Public Sub AreDataTypesCompatible_IntegerSourceLongDest_ReturnsTrue()
 
    'Arrange:
    Dim Source As Integer
-   Dim Dest As LongPtr
+   Dim Dest As Long
    
    
    'Act:
@@ -146,7 +146,7 @@ Public Sub AreDataTypesCompatible_DoubleSourceLongDest_ReturnsFalse()
 
    'Arrange:
    Dim Source As Double
-   Dim Dest As LongPtr
+   Dim Dest As Long
    
    
    'Act:
@@ -237,11 +237,11 @@ Public Sub ChangeBoundsOfVector_LBGreaterUB_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(2 To 4) As LongPtr
+   Dim Arr(2 To 4) As Long
    
    '===========================================================================
-   Const NewLB As LongPtr = 5
-   Const NewUB As LongPtr = 3
+   Const NewLB As Long = 5
+   Const NewUB As Long = 3
    '===========================================================================
 
 
@@ -261,11 +261,11 @@ Public Sub ChangeBoundsOfVector_ScalarInput_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Const Scalar As LongPtr = 1
+   Const Scalar As Long = 1
    
    '===========================================================================
-   Const NewLB As LongPtr = 3
-   Const NewUB As LongPtr = 5
+   Const NewLB As Long = 3
+   Const NewUB As Long = 5
    '===========================================================================
 
 
@@ -285,11 +285,11 @@ Public Sub ChangeBoundsOfVector_StaticArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(2 To 4) As LongPtr
+   Dim Arr(2 To 4) As Long
    
    '===========================================================================
-   Const NewLB As LongPtr = 3
-   Const NewUB As LongPtr = 5
+   Const NewLB As Long = 3
+   Const NewUB As Long = 5
    '===========================================================================
 
 
@@ -309,11 +309,11 @@ Public Sub ChangeBoundsOfVector_UnallocatedArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
    
    '===========================================================================
-   Const NewLB As LongPtr = 3
-   Const NewUB As LongPtr = 5
+   Const NewLB As Long = 3
+   Const NewUB As Long = 5
    '===========================================================================
 
 
@@ -333,11 +333,11 @@ Public Sub ChangeBoundsOfVector_2DArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(2 To 5, 1 To 1) As LongPtr
+   Dim Arr(2 To 5, 1 To 1) As Long
    
    '===========================================================================
-   Const NewLB As LongPtr = 3
-   Const NewUB As LongPtr = 5
+   Const NewLB As Long = 3
+   Const NewUB As Long = 5
    '===========================================================================
 
 
@@ -356,13 +356,13 @@ End Sub
 Public Sub ChangeBoundsOfVector_LongInputArr_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
    '===========================================================================
-   Const NewLB As LongPtr = 20
-   Const NewUB As LongPtr = 25
+   Const NewLB As Long = 20
+   Const NewUB As Long = 25
    '===========================================================================
-   Dim aExpected(NewLB To NewUB) As LongPtr
+   Dim aExpected(NewLB To NewUB) As Long
       aExpected(20) = 11
       aExpected(21) = 22
       aExpected(22) = 33
@@ -396,13 +396,13 @@ End Sub
 Public Sub ChangeBoundsOfVector_SmallerUBDiffThanSource_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
    '===========================================================================
-   Const NewLB As LongPtr = 20
-   Const NewUB As LongPtr = 21
+   Const NewLB As Long = 20
+   Const NewUB As Long = 21
    '===========================================================================
-   Dim aExpected(NewLB To NewUB) As LongPtr
+   Dim aExpected(NewLB To NewUB) As Long
       aExpected(20) = 11
       aExpected(21) = 22
    '===========================================================================
@@ -433,11 +433,11 @@ Public Sub ChangeBoundsOfVector_VariantArr_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
    Dim Arr() As Variant
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
-   Const NewLB As LongPtr = 20
-   Const NewUB As LongPtr = 25
+   Const NewLB As Long = 20
+   Const NewUB As Long = 25
    '===========================================================================
    Dim aExpected(NewLB To NewUB) As Variant
       aExpected(20) = Array(1, 2, 3)
@@ -479,14 +479,14 @@ End Sub
 Public Sub ChangeBoundsOfVector_LongInputArrNoUpperBound_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
-   Dim Arr() As LongPtr
-'   Dim i As LongPtr
+   Dim Arr() As Long
+'   Dim i As Long
 
    '===========================================================================
-   Const NewLB As LongPtr = 20
-   Const NewUB As LongPtr = 22
+   Const NewLB As Long = 20
+   Const NewUB As Long = 22
    '===========================================================================
-   Dim aExpected(NewLB To NewUB) As LongPtr
+   Dim aExpected(NewLB To NewUB) As Long
       aExpected(20) = 11
       aExpected(21) = 22
       aExpected(22) = 33
@@ -520,11 +520,11 @@ Public Sub ChangeBoundsOfVector_RangeArr_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
    Dim Arr() As Range
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
-   Const NewLB As LongPtr = 20
-   Const NewUB As LongPtr = 25
+   Const NewLB As Long = 20
+   Const NewUB As Long = 25
    '===========================================================================
    Dim aExpected(NewLB To NewUB) As Range
    With ThisWorkbook.Worksheets(1)
@@ -570,11 +570,11 @@ Public Sub ChangeBoundsOfVector_CustomClass_ReturnsTrueAndChangedArr()
    On Error GoTo TestFail
 
    Dim Arr() As cls_4Test_modArraySupport2
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
-   Const NewLB As LongPtr = 20
-   Const NewUB As LongPtr = 25
+   Const NewLB As Long = 20
+   Const NewUB As Long = 25
    '===========================================================================
    Dim aExpected(NewLB To NewUB) As cls_4Test_modArraySupport2
    Set aExpected(20) = New cls_4Test_modArraySupport2
@@ -632,8 +632,8 @@ Public Sub CombineTwoDArrays_ScalarArr1_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar1 As LongPtr
-   Dim Arr2(1 To 2, 2 To 3) As LongPtr
+   Dim Scalar1 As Long
+   Dim Arr2(1 To 2, 2 To 3) As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -659,8 +659,8 @@ Public Sub CombineTwoDArrays_ScalarArr2_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr1(1 To 3, 1 To 2) As LongPtr
-   Dim Scalar2 As LongPtr
+   Dim Arr1(1 To 3, 1 To 2) As Long
+   Dim Scalar2 As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -686,8 +686,8 @@ Public Sub CombineTwoDArrays_1DArr1_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr1(1 To 3) As LongPtr
-   Dim Arr2(1 To 3, 1 To 2) As LongPtr
+   Dim Arr1(1 To 3) As Long
+   Dim Arr2(1 To 3, 1 To 2) As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -713,8 +713,8 @@ Public Sub CombineTwoDArrays_3DArr1_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr1(1 To 3, 1 To 2, 1 To 4) As LongPtr
-   Dim Arr2(1 To 3, 1 To 2) As LongPtr
+   Dim Arr1(1 To 3, 1 To 2, 1 To 4) As Long
+   Dim Arr2(1 To 3, 1 To 2) As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -740,8 +740,8 @@ Public Sub CombineTwoDArrays_1DArr2_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr1(1 To 3, 1 To 2) As LongPtr
-   Dim Arr2(1 To 3) As LongPtr
+   Dim Arr1(1 To 3, 1 To 2) As Long
+   Dim Arr2(1 To 3) As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -767,8 +767,8 @@ Public Sub CombineTwoDArrays_3DArr2_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr1(1 To 3, 1 To 2) As LongPtr
-   Dim Arr2(1 To 3, 1 To 2, 1 To 4) As LongPtr
+   Dim Arr1(1 To 3, 1 To 2) As Long
+   Dim Arr2(1 To 3, 1 To 2, 1 To 4) As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -794,8 +794,8 @@ Public Sub CombineTwoDArrays_DifferentColNumbers_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr1(1 To 3, 1 To 2) As LongPtr
-   Dim Arr2(1 To 3, 1 To 3) As LongPtr
+   Dim Arr1(1 To 3, 1 To 2) As Long
+   Dim Arr2(1 To 3, 1 To 3) As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -821,8 +821,8 @@ Public Sub CombineTwoDArrays_DifferentLBoundRows_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr1(1 To 3, 1 To 2) As LongPtr
-   Dim Arr2(2 To 3, 1 To 2) As LongPtr
+   Dim Arr1(1 To 3, 1 To 2) As Long
+   Dim Arr2(2 To 3, 1 To 2) As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -848,8 +848,8 @@ Public Sub CombineTwoDArrays_DifferentLBoundCol1_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr1(1 To 3, 2 To 3) As LongPtr
-   Dim Arr2(1 To 3, 1 To 2) As LongPtr
+   Dim Arr1(1 To 3, 2 To 3) As Long
+   Dim Arr2(1 To 3, 1 To 2) As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -875,8 +875,8 @@ Public Sub CombineTwoDArrays_DifferentLBoundCol2_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr1(1 To 3, 1 To 2) As LongPtr
-   Dim Arr2(1 To 3, 2 To 3) As LongPtr
+   Dim Arr1(1 To 3, 1 To 2) As Long
+   Dim Arr2(1 To 3, 2 To 3) As Long
    Dim ResArr As Variant
    
    '===========================================================================
@@ -1165,7 +1165,7 @@ Public Sub CompareVectors_UnallocatedArrays_ReturnsFalse()
    'Arrange:
    Dim Arr1() As String
    Dim Arr2() As String
-   Dim ResArr() As LongPtr
+   Dim ResArr() As Long
 
 
    'Act:
@@ -1185,10 +1185,10 @@ Public Sub CompareVectors_LegalAndTextCompare_ReturnsTrueAndResArr()
 
    Dim Arr1(1 To 5) As String
    Dim Arr2(1 To 5) As String
-   Dim ResArr() As LongPtr
+   Dim ResArr() As Long
 
    '===========================================================================
-   Dim aExpected(1 To 5) As LongPtr
+   Dim aExpected(1 To 5) As Long
       aExpected(1) = -1
       aExpected(2) = 1
       aExpected(3) = -1
@@ -1230,10 +1230,10 @@ Public Sub CompareVectors_LegalAndBinaryCompare_ReturnsTrueAndResArr()
 
    Dim Arr1(1 To 5) As String
    Dim Arr2(1 To 5) As String
-   Dim ResArr() As LongPtr
+   Dim ResArr() As Long
 
    '===========================================================================
-   Dim aExpected(1 To 5) As LongPtr
+   Dim aExpected(1 To 5) As Long
       aExpected(1) = -1
       aExpected(2) = 1
       aExpected(3) = -1
@@ -1277,8 +1277,8 @@ End Sub
 Public Sub ConcatenateArrays_StaticResultArray_ResultsFalse()
    On Error GoTo TestFail
 
-   Dim ResultArray(1) As LongPtr
-   Dim ArrayToAppend(1) As LongPtr
+   Dim ResultArray(1) As Long
+   Dim ArrayToAppend(1) As Long
 
    '===========================================================================
    Const CompatabilityCheck As Boolean = True
@@ -1309,8 +1309,8 @@ Public Sub ConcatenateArrays_BothArraysUnallocated_ResultsTrueAndUnallocatedArra
    On Error GoTo TestFail
 
    'Arrange:
-   Dim ResultArray() As LongPtr
-   Dim ArrayToAppend() As LongPtr
+   Dim ResultArray() As Long
+   Dim ArrayToAppend() As Long
 
    '===========================================================================
    Const CompatabilityCheck As Boolean = True
@@ -1339,13 +1339,13 @@ End Sub
 Public Sub ConcatenateArrays_UnallocatedArrayToAppend_ResultsTrueAndUnchangedResultArray()
    On Error GoTo TestFail
 
-   Dim ResultArray() As LongPtr
-   Dim ArrayToAppend() As LongPtr
+   Dim ResultArray() As Long
+   Dim ArrayToAppend() As Long
 
    '===========================================================================
    Const CompatabilityCheck As Boolean = True
    
-   Dim aExpected(1 To 2) As LongPtr
+   Dim aExpected(1 To 2) As Long
       aExpected(1) = 8
       aExpected(2) = 9
    '===========================================================================
@@ -1378,13 +1378,13 @@ End Sub
 Public Sub ConcatenateArrays_IntegerArrayToAppendLongResultArray_ResultsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim ResultArray() As LongPtr
+   Dim ResultArray() As Long
    Dim ArrayToAppend(1 To 3) As Integer
 
    '===========================================================================
    Const CompatabilityCheck As Boolean = True
    
-   Dim aExpected(1 To 6) As LongPtr
+   Dim aExpected(1 To 6) As Long
       aExpected(1) = 8
       aExpected(2) = 9
       aExpected(3) = 10
@@ -1427,7 +1427,7 @@ Public Sub ConcatenateArrays_LongArrayToAppendIntegerResultArray_ResultsFalse()
    On Error GoTo TestFail
 
    Dim ResultArray() As Integer
-   Dim ArrayToAppend(1 To 3) As LongPtr
+   Dim ArrayToAppend(1 To 3) As Long
 
    '===========================================================================
    Const CompatabilityCheck As Boolean = True
@@ -1464,7 +1464,7 @@ Public Sub ConcatenateArrays_LongArrayToAppendIntegerResultArrayFalseCompatabili
    On Error GoTo TestFail
 
    Dim ResultArray() As Integer
-   Dim ArrayToAppend(1 To 3) As LongPtr
+   Dim ArrayToAppend(1 To 3) As Long
 
    '===========================================================================
    Const CompatabilityCheck As Boolean = False
@@ -1512,13 +1512,13 @@ Public Sub ConcatenateArrays_LongArrayToAppendWithLongNumberIntegerResultArrayFa
    On Error GoTo TestFail
     
    Dim ResultArray() As Integer
-   Dim ArrayToAppend(1 To 3) As LongPtr
+   Dim ArrayToAppend(1 To 3) As Long
    Dim Success As Boolean
 
    '===========================================================================
    Const CompatabilityCheck As Boolean = False
    
-   Const ExpectedError As LongPtr = 6
+   Const ExpectedError As Long = 6
    '===========================================================================
 
     
@@ -1562,7 +1562,7 @@ End Sub
 '
 '   Dim ResultArray() As Range          'MUST be dynamic
 '   Dim ArrayToAppend(0 To 0) As Range
-'   Dim i As LongPtr
+'   Dim i As Long
 '
 '   '===========================================================================
 '   Const CompatabilityCheck As Boolean = True
@@ -1629,7 +1629,7 @@ End Sub
 Public Sub CopyArray_UnallocatedSrc_ResultsTrueAndUnchangedDest()
    On Error GoTo TestFail
 
-   Dim Src() As LongPtr
+   Dim Src() As Long
    Dim Dest(0) As Integer
 
    '===========================================================================
@@ -1666,7 +1666,7 @@ Public Sub CopyArray_IncompatibleDest_ResultsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Src(1 To 2) As LongPtr
+   Dim Src(1 To 2) As Long
    Dim Dest(1 To 2) As Integer
 
    '===========================================================================
@@ -1693,13 +1693,13 @@ End Sub
 Public Sub CopyArray_AllocatedDestLessElementsThenSrc_ResultsTrueAndDestArray()
    On Error GoTo TestFail
 
-   Dim Src(1 To 3) As LongPtr
-   Dim Dest(10 To 11) As LongPtr
+   Dim Src(1 To 3) As Long
+   Dim Dest(10 To 11) As Long
 
    '===========================================================================
    Const CompatabilityCheck As Boolean = True
    
-   Dim aExpected(10 To 11) As LongPtr
+   Dim aExpected(10 To 11) As Long
       aExpected(10) = 1
       aExpected(11) = 2
    '===========================================================================
@@ -1732,13 +1732,13 @@ End Sub
 Public Sub CopyArray_AllocatedDestMoreElementsThenSrc_ResultsTrueAndDestArray()
    On Error GoTo TestFail
 
-   Dim Src(1 To 3) As LongPtr
-   Dim Dest(10 To 13) As LongPtr
+   Dim Src(1 To 3) As Long
+   Dim Dest(10 To 13) As Long
 
    '===========================================================================
    Const CompatabilityCheck As Boolean = True
    
-   Dim aExpected(10 To 13) As LongPtr
+   Dim aExpected(10 To 13) As Long
       aExpected(10) = 1
       aExpected(11) = 2
       aExpected(12) = 3
@@ -1773,7 +1773,7 @@ End Sub
 Public Sub CopyArray_NoCompatibilityCheck_ResultsTrueAndDestArrayWithOverflow()
    On Error GoTo TestFail
 
-   Dim Src(1 To 2) As LongPtr
+   Dim Src(1 To 2) As Long
    Dim Dest(1 To 2) As Integer
 
    '===========================================================================
@@ -1917,7 +1917,7 @@ Public Sub CopyNonNothingObjectsToVector_ValidNonNothingOnlySourceArray_ReturnsT
 
    Dim SourceArray(5 To 6) As Variant
    Dim ResultArray() As Object
-   Dim i As LongPtr
+   Dim i As Long
    
    
    'Arrange:
@@ -1949,7 +1949,7 @@ Public Sub CopyNonNothingObjectsToVector_NothingOnlySourceArray_ReturnsFalse()
 
    Dim SourceArray(5 To 6) As Variant
    Dim ResultArray() As Object
-   Dim i As LongPtr
+   Dim i As Long
    
    
    'Arrange:
@@ -1982,13 +1982,13 @@ Public Sub CopyVectorSubSetToVector_ScalarInput_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim Scalar As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 1
-   Const LastElementToCopy As LongPtr = 1
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 1
+   Const LastElementToCopy As Long = 1
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2014,13 +2014,13 @@ Public Sub CopyVectorSubSetToVector_ScalarResult_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:("CopyVectorSubSetToVector")
-   Dim InputArray() As LongPtr
-   Dim ScalarResult As LongPtr
+   Dim InputArray() As Long
+   Dim ScalarResult As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 1
-   Const LastElementToCopy As LongPtr = 1
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 1
+   Const LastElementToCopy As Long = 1
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2046,13 +2046,13 @@ Public Sub CopyVectorSubSetToVector_UnallocatedInputArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray() As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray() As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 1
-   Const LastElementToCopy As LongPtr = 1
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 1
+   Const LastElementToCopy As Long = 1
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2077,13 +2077,13 @@ End Sub
 Public Sub CopyVectorSubSetToVector_2DInputArray_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray() As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 1
-   Const LastElementToCopy As LongPtr = 1
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 1
+   Const LastElementToCopy As Long = 1
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2111,13 +2111,13 @@ End Sub
 Public Sub CopyVectorSubSetToVector_2DResultArray_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray() As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 1
-   Const LastElementToCopy As LongPtr = 1
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 1
+   Const LastElementToCopy As Long = 1
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2146,13 +2146,13 @@ End Sub
 Public Sub CopyVectorSubSetToVector_TooSmallFirstElementToCopy_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray() As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = -1
-   Const LastElementToCopy As LongPtr = 1
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = -1
+   Const LastElementToCopy As Long = 1
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2181,13 +2181,13 @@ End Sub
 Public Sub CopyVectorSubSetToVector_TooLargeLastElementToCopy_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray() As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 1
-   Const LastElementToCopy As LongPtr = 2
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 1
+   Const LastElementToCopy As Long = 2
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2216,13 +2216,13 @@ End Sub
 Public Sub CopyVectorSubSetToVector_FirstElementLargerLastElement_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray() As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 1
-   Const LastElementToCopy As LongPtr = 0
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 1
+   Const LastElementToCopy As Long = 0
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2252,13 +2252,13 @@ Public Sub CopyVectorSubSetToVector_NotEnoughRoomInStaticResultArray_ReturnsFals
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray(0 To 1) As LongPtr
-   Dim ResultArray(0 To 1) As LongPtr
+   Dim InputArray(0 To 1) As Long
+   Dim ResultArray(0 To 1) As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 0
-   Const LastElementToCopy As LongPtr = 1
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 0
+   Const LastElementToCopy As Long = 1
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2283,13 +2283,13 @@ End Sub
 Public Sub CopyVectorSubSetToVector_TooSmallDestinationElementInStaticResultArray_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray(0 To 1) As LongPtr
-   Dim ResultArray(5 To 7) As LongPtr
+   Dim InputArray(0 To 1) As Long
+   Dim ResultArray(5 To 7) As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 0
-   Const LastElementToCopy As LongPtr = 1
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 0
+   Const LastElementToCopy As Long = 1
+   Const DestinationElement As Long = 1
    '===========================================================================
    
    
@@ -2322,15 +2322,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_UnallocatedResultArrayDestinationElementLargerBase_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 11) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 11) As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 10
-   Const DestinationElement As LongPtr = 5
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 10
+   Const DestinationElement As Long = 5
    
-   Dim aExpected(1 To 5) As LongPtr
+   Dim aExpected(1 To 5) As Long
       aExpected(1) = 0
       aExpected(2) = 0
       aExpected(3) = 0
@@ -2367,15 +2367,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_UnallocatedResultArrayLastDestinationElementSmallerBase_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 11) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 11) As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 10
-   Const DestinationElement As LongPtr = -5
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 10
+   Const DestinationElement As Long = -5
    
-   Dim aExpected(-5 To 1) As LongPtr
+   Dim aExpected(-5 To 1) As Long
       aExpected(-5) = 10
       aExpected(-4) = 0
       aExpected(-3) = 0
@@ -2414,15 +2414,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_UnallocatedResultArrayFromNegToPos_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 13) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 13) As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 13
-   Const DestinationElement As LongPtr = -1
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 13
+   Const DestinationElement As Long = -1
    
-   Dim aExpected(-1 To 2) As LongPtr
+   Dim aExpected(-1 To 2) As Long
       aExpected(-1) = 10
       aExpected(0) = 20
       aExpected(1) = 30
@@ -2460,15 +2460,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_UnallocatedResultArray_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 11) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 11) As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 10
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 10
+   Const DestinationElement As Long = 1
    
-   Dim aExpected(1 To 1) As LongPtr
+   Dim aExpected(1 To 1) As Long
       aExpected(1) = 0
    '===========================================================================
    
@@ -2501,15 +2501,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_SubArrayLargerThanAllocatedResultArray1_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 13) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 13) As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 13
-   Const DestinationElement As LongPtr = -1
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 13
+   Const DestinationElement As Long = -1
    
-   Dim aExpected(-1 To 2) As LongPtr
+   Dim aExpected(-1 To 2) As Long
       aExpected(-1) = 0
       aExpected(0) = 1
       aExpected(1) = 2
@@ -2551,15 +2551,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_SubArrayLargerThanAllocatedResultArray2_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 12) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 12) As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 12
-   Const DestinationElement As LongPtr = -1
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 12
+   Const DestinationElement As Long = -1
    
-   Dim aExpected(-1 To 1) As LongPtr
+   Dim aExpected(-1 To 1) As Long
       aExpected(-1) = 0
       aExpected(0) = 1
       aExpected(1) = 2
@@ -2599,15 +2599,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_SubArrayLargerThanAllocatedResultArray3_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 12) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 12) As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 12
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 12
+   Const DestinationElement As Long = 1
    
-   Dim aExpected(1 To 3) As LongPtr
+   Dim aExpected(1 To 3) As Long
       aExpected(1) = 0
       aExpected(2) = 1
       aExpected(3) = 2
@@ -2647,15 +2647,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_TooSmallFirstDestinationElementInDynamicAllocatedResultArray_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 11) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 11) As Long
+   Dim ResultArray() As Long
 
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 11
-   Const DestinationElement As LongPtr = -1
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 11
+   Const DestinationElement As Long = -1
    
-   Dim aExpected(-1 To 1) As LongPtr
+   Dim aExpected(-1 To 1) As Long
       aExpected(-1) = 0
       aExpected(0) = 1
       aExpected(1) = 20
@@ -2694,15 +2694,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_TooLargeLastDestinationElementInDynamicAllocatedResultArray_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 11) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 11) As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 11
-   Const DestinationElement As LongPtr = 1
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 11
+   Const DestinationElement As Long = 1
    
-   Dim aExpected(0 To 2) As LongPtr
+   Dim aExpected(0 To 2) As Long
       aExpected(0) = 10
       aExpected(1) = 0
       aExpected(2) = 1
@@ -2741,15 +2741,15 @@ End Sub
 Public Sub CopyVectorSubSetToVector_DestinationElementEvenLargerThanUboundInDynamicAllocatedResultArray_ReturnsTrueAndResultArray()
    On Error GoTo TestFail
 
-   Dim InputArray(10 To 11) As LongPtr
-   Dim ResultArray() As LongPtr
+   Dim InputArray(10 To 11) As Long
+   Dim ResultArray() As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 11
-   Const DestinationElement As LongPtr = 5
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 11
+   Const DestinationElement As Long = 5
    
-   Dim aExpected(0 To 6) As LongPtr
+   Dim aExpected(0 To 6) As Long
       aExpected(0) = 10
       aExpected(1) = 20
       aExpected(2) = 0
@@ -2794,12 +2794,12 @@ Public Sub CopyVectorSubSetToVector_TestWithObjects_ReturnsTrueAndResultArray()
 
    Dim InputArray(10 To 11) As Object
    Dim ResultArray() As Object
-   Dim i As LongPtr
+   Dim i As Long
    
    '===========================================================================
-   Const FirstElementToCopy As LongPtr = 10
-   Const LastElementToCopy As LongPtr = 11
-   Const DestinationElement As LongPtr = 6
+   Const FirstElementToCopy As Long = 10
+   Const LastElementToCopy As Long = 11
+   Const DestinationElement As Long = 6
    
    Dim aExpected(5 To 7) As Object
    With ThisWorkbook.Worksheets(1)
@@ -2859,7 +2859,7 @@ Public Sub DataTypeOfArray_NoArray_ReturnsMinusOne()
    Dim aActual As VbVarType
 
    '===========================================================================
-   Const aExpected As LongPtr = -1
+   Const aExpected As Long = -1
    '===========================================================================
 
 
@@ -2885,7 +2885,7 @@ Public Sub DataTypeOfArray_UnallocatedArray_ReturnsVbDouble()
    Dim aActual As VbVarType
 
    '===========================================================================
-   Const aExpected As LongPtr = vbDouble
+   Const aExpected As Long = vbDouble
    '===========================================================================
 
 
@@ -2911,7 +2911,7 @@ Public Sub DataTypeOfArray_Test1DStringArray_ReturnsVbString()
    Dim aActual As VbVarType
 
    '===========================================================================
-   Const aExpected As LongPtr = vbString
+   Const aExpected As Long = vbString
    '===========================================================================
 
 
@@ -2937,7 +2937,7 @@ Public Sub DataTypeOfArray_Test2DStringArray_ReturnsVbString()
    Dim aActual As VbVarType
 
    '===========================================================================
-   Const aExpected As LongPtr = vbString
+   Const aExpected As Long = vbString
    '===========================================================================
 
 
@@ -2963,7 +2963,7 @@ Public Sub DataTypeOfArray_Test3DStringArray_ReturnsVbString()
    Dim aActual As VbVarType
 
    '===========================================================================
-   Const aExpected As LongPtr = vbString
+   Const aExpected As Long = vbString
    '===========================================================================
 
 
@@ -2992,10 +2992,10 @@ Public Sub DeleteVectorElement_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 6
+   Const ElementNumer As Long = 6
    Const ResizeDynamic As Boolean = False
    '===========================================================================
    
@@ -3020,10 +3020,10 @@ Public Sub DeleteVectorElement_UnallocatedArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 6
+   Const ElementNumer As Long = 6
    Const ResizeDynamic As Boolean = False
    '===========================================================================
    
@@ -3048,10 +3048,10 @@ Public Sub DeleteVectorElement_2DArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray(5 To 7, 1 To 1) As LongPtr
+   Dim InputArray(5 To 7, 1 To 1) As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 6
+   Const ElementNumer As Long = 6
    Const ResizeDynamic As Boolean = False
    '===========================================================================
    
@@ -3076,10 +3076,10 @@ Public Sub DeleteVectorElement_TooLowElementNumber_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray(5 To 7) As LongPtr
+   Dim InputArray(5 To 7) As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 3
+   Const ElementNumer As Long = 3
    Const ResizeDynamic As Boolean = False
    '===========================================================================
    
@@ -3104,10 +3104,10 @@ Public Sub DeleteVectorElement_TooHighElementNumber_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray(5 To 7) As LongPtr
+   Dim InputArray(5 To 7) As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 9
+   Const ElementNumer As Long = 9
    Const ResizeDynamic As Boolean = False
    '===========================================================================
    
@@ -3131,13 +3131,13 @@ End Sub
 Public Sub DeleteVectorElement_RemoveElementOfStaticArray_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
-   Dim InputArray(5 To 7) As LongPtr
+   Dim InputArray(5 To 7) As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 6
+   Const ElementNumer As Long = 6
    Const ResizeDynamic As Boolean = False
    
-   Dim aExpected(5 To 7) As LongPtr
+   Dim aExpected(5 To 7) As Long
       aExpected(5) = 10
       aExpected(6) = 30
       aExpected(7) = 0
@@ -3172,10 +3172,10 @@ Public Sub DeleteVectorElement_RemoveElementOfStaticObjectArray_ReturnsTrueAndMo
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As Object
-   Dim i As LongPtr
+   Dim i As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 6
+   Const ElementNumer As Long = 6
    Const ResizeDynamic As Boolean = False
    
    Dim aExpected(5 To 7) As Object
@@ -3222,13 +3222,13 @@ End Sub
 Public Sub DeleteVectorElement_RemoveElementOfDynamicArrayDontResize_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 6
+   Const ElementNumer As Long = 6
    Const ResizeDynamic As Boolean = False
    
-   Dim aExpected(5 To 7) As LongPtr
+   Dim aExpected(5 To 7) As Long
       aExpected(5) = 10
       aExpected(6) = 30
       aExpected(7) = 0
@@ -3267,7 +3267,7 @@ End Sub
 '   Dim InputArray() As Variant
 '
 '   '===========================================================================
-'   Const ElementNumer As LongPtr = 6
+'   Const ElementNumer As Long = 6
 '   Const ResizeDynamic As Boolean = False
 '
 '   Dim aExpected(5 To 7) As Variant
@@ -3306,10 +3306,10 @@ Public Sub DeleteVectorElement_RemoveElementOfDynamicObjectArrayDontResize_Retur
    On Error GoTo TestFail
 
    Dim InputArray() As Object
-   Dim i As LongPtr
+   Dim i As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 6
+   Const ElementNumer As Long = 6
    Const ResizeDynamic As Boolean = False
    
    Dim aExpected(5 To 7) As Object
@@ -3357,13 +3357,13 @@ End Sub
 Public Sub DeleteVectorElement_RemoveElementOfDynamicArrayResize_ReturnsTrueAndModifiedInputArray()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 6
+   Const ElementNumer As Long = 6
    Const ResizeDynamic As Boolean = True
    
-   Dim aExpected(5 To 6) As LongPtr
+   Dim aExpected(5 To 6) As Long
       aExpected(5) = 10
       aExpected(6) = 30
    '===========================================================================
@@ -3398,10 +3398,10 @@ Public Sub DeleteVectorElement_RemoveElementOfDynamicObjectArrayResize_ReturnsTr
    On Error GoTo TestFail
 
    Dim InputArray() As Object
-   Dim i As LongPtr
+   Dim i As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 6
+   Const ElementNumer As Long = 6
    Const ResizeDynamic As Boolean = True
    
    Dim aExpected(5 To 6) As Object
@@ -3449,10 +3449,10 @@ Public Sub DeleteVectorElement_RemoveOnlyElementOfDynamicObjectArrayResize_Retur
    On Error GoTo TestFail
 
    Dim InputArray() As String
-   Dim i As LongPtr
+   Dim i As Long
    
    '===========================================================================
-   Const ElementNumer As LongPtr = 5
+   Const ElementNumer As Long = 5
    Const ResizeDynamic As Boolean = True
    
    Dim aExpected() As String
@@ -3490,13 +3490,13 @@ Public Sub ExpandArray_NoArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr As LongPtr
+   Dim Arr As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 1
-   Const AdditionalElements As LongPtr = 2
-   Const FillValue As LongPtr = 11
+   Const WhichDim As Long = 1
+   Const AdditionalElements As Long = 2
+   Const FillValue As Long = 11
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -3525,13 +3525,13 @@ Public Sub ExpandArray_UnallocatedArr_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 1
-   Const AdditionalElements As LongPtr = 2
-   Const FillValue As LongPtr = 11
+   Const WhichDim As Long = 1
+   Const AdditionalElements As Long = 2
+   Const FillValue As Long = 11
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -3560,13 +3560,13 @@ Public Sub ExpandArray_1DArr_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6) As LongPtr
+   Dim Arr(5 To 6) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 1
-   Const AdditionalElements As LongPtr = 2
-   Const FillValue As LongPtr = 11
+   Const WhichDim As Long = 1
+   Const AdditionalElements As Long = 2
+   Const FillValue As Long = 11
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -3595,13 +3595,13 @@ Public Sub ExpandArray_3DArr_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4, 2 To 3) As LongPtr
+   Dim Arr(5 To 6, 3 To 4, 2 To 3) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 1
-   Const AdditionalElements As LongPtr = 2
-   Const FillValue As LongPtr = 11
+   Const WhichDim As Long = 1
+   Const AdditionalElements As Long = 2
+   Const FillValue As Long = 11
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -3630,13 +3630,13 @@ Public Sub ExpandArray_WhichDimSmallerOne_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 0
-   Const AdditionalElements As LongPtr = 2
-   Const FillValue As LongPtr = 11
+   Const WhichDim As Long = 0
+   Const AdditionalElements As Long = 2
+   Const FillValue As Long = 11
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -3665,13 +3665,13 @@ Public Sub ExpandArray_WhichDimLargerTwo_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 3
-   Const AdditionalElements As LongPtr = 2
-   Const FillValue As LongPtr = 11
+   Const WhichDim As Long = 3
+   Const AdditionalElements As Long = 2
+   Const FillValue As Long = 11
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -3700,13 +3700,13 @@ Public Sub ExpandArray_AdditionalElementsSmallerZero_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 1
-   Const AdditionalElements As LongPtr = -1
-   Const FillValue As LongPtr = 11
+   Const WhichDim As Long = 1
+   Const AdditionalElements As Long = -1
+   Const FillValue As Long = 11
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -3734,15 +3734,15 @@ End Sub
 Public Sub ExpandArray_AdditionalElementsEqualsZero_ReturnsExpandedArray()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 1
-   Const AdditionalElements As LongPtr = 0
-   Const FillValue As LongPtr = 33
+   Const WhichDim As Long = 1
+   Const AdditionalElements As Long = 0
+   Const FillValue As Long = 33
    
-   Dim aExpected(5 To 6, 3 To 4) As LongPtr
+   Dim aExpected(5 To 6, 3 To 4) As Long
       aExpected(5, 3) = 10
       aExpected(6, 3) = 11
       aExpected(5, 4) = 20
@@ -3778,15 +3778,15 @@ End Sub
 Public Sub ExpandArray_AddTwoAdditionalRows_ReturnsExpandedArray()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 1
-   Const AdditionalElements As LongPtr = 2
-   Const FillValue As LongPtr = 33
+   Const WhichDim As Long = 1
+   Const AdditionalElements As Long = 2
+   Const FillValue As Long = 33
    
-   Dim aExpected(5 To 8, 3 To 4) As LongPtr
+   Dim aExpected(5 To 8, 3 To 4) As Long
       aExpected(5, 3) = 10
       aExpected(6, 3) = 11
       aExpected(5, 4) = 20
@@ -3826,15 +3826,15 @@ End Sub
 Public Sub ExpandArray_AddTwoAdditionalCols_ReturnsExpandedArray()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const WhichDim As LongPtr = 2
-   Const AdditionalElements As LongPtr = 2
-   Const FillValue As LongPtr = 33
+   Const WhichDim As Long = 2
+   Const AdditionalElements As Long = 2
+   Const FillValue As Long = 33
    
-   Dim aExpected(5 To 6, 3 To 6) As LongPtr
+   Dim aExpected(5 To 6, 3 To 6) As Long
       aExpected(5, 3) = 10
       aExpected(6, 3) = 11
       aExpected(5, 4) = 20
@@ -3880,10 +3880,10 @@ Public Sub FirstNonEmptyStringIndexInVector_NoArray_ReturnsMinusOne()
 
    'Arrange:
    Dim Scalar As String
-   Dim aActual As LongPtr
+   Dim aActual As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = -1
+   Const aExpected As Long = -1
    '===========================================================================
 
 
@@ -3906,10 +3906,10 @@ Public Sub FirstNonEmptyStringIndexInVector_UnallocatedArray_ReturnsMinusOne()
 
    'Arrange:
    Dim InputArray() As String
-   Dim aActual As LongPtr
+   Dim aActual As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = -1
+   Const aExpected As Long = -1
    '===========================================================================
 
 
@@ -3932,10 +3932,10 @@ Public Sub FirstNonEmptyStringIndexInVector_2DArray_ReturnsMinusOne()
 
    'Arrange:
    Dim InputArray(5 To 6, 3 To 4) As String
-   Dim aActual As LongPtr
+   Dim aActual As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = -1
+   Const aExpected As Long = -1
    '===========================================================================
 
 
@@ -3957,10 +3957,10 @@ Public Sub FirstNonEmptyStringIndexInVector_NoNonEmptyString_ReturnsMinusOne()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As String
-   Dim aActual As LongPtr
+   Dim aActual As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = -1
+   Const aExpected As Long = -1
    '===========================================================================
 
 
@@ -3987,10 +3987,10 @@ Public Sub FirstNonEmptyStringIndexInVector_WithNonEmptyStringEntry_ReturnsSeven
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As String
-   Dim aActual As LongPtr
+   Dim aActual As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = 7
+   Const aExpected As Long = 7
    '===========================================================================
 
 
@@ -4021,11 +4021,11 @@ Public Sub GetColumn_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Scalar As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const ColumnNumber As LongPtr = 4
+   Const ColumnNumber As Long = 4
    '===========================================================================
 
 
@@ -4049,11 +4049,11 @@ Public Sub GetColumn_1DArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const ColumnNumber As LongPtr = 4
+   Const ColumnNumber As Long = 4
    '===========================================================================
 
 
@@ -4077,11 +4077,11 @@ Public Sub GetColumn_3DArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4, -1 To 0) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6, 3 To 4, -1 To 0) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const ColumnNumber As LongPtr = 4
+   Const ColumnNumber As Long = 4
    '===========================================================================
 
 
@@ -4105,11 +4105,11 @@ Public Sub GetColumn_StaticResultArr_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
-   Dim ResultArr(-5 To -4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
+   Dim ResultArr(-5 To -4) As Long
 
    '===========================================================================
-   Const ColumnNumber As LongPtr = 4
+   Const ColumnNumber As Long = 4
    '===========================================================================
 
 
@@ -4133,11 +4133,11 @@ Public Sub GetColumn_TooSmallColumnNumber_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const ColumnNumber As LongPtr = 2
+   Const ColumnNumber As Long = 2
    '===========================================================================
 
 
@@ -4161,11 +4161,11 @@ Public Sub GetColumn_TooLargeColumnNumber_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const ColumnNumber As LongPtr = 5
+   Const ColumnNumber As Long = 5
    '===========================================================================
 
 
@@ -4188,13 +4188,13 @@ End Sub
 Public Sub GetColumn_LegalEntries_ReturnsTrueAndResultArr()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const ColumnNumber As LongPtr = 4
+   Const ColumnNumber As Long = 4
    
-   Dim aExpected(5 To 6) As LongPtr
+   Dim aExpected(5 To 6) As Long
       aExpected(5) = 20
       aExpected(6) = 21
    '===========================================================================
@@ -4230,10 +4230,10 @@ Public Sub GetColumn_LegalEntriesWithObjects_ReturnsTrueAndResultArr()
 
    Dim Arr(5 To 6, 3 To 4) As Variant
    Dim ResultArr() As Variant
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
-   Const ColumnNumber As LongPtr = 4
+   Const ColumnNumber As Long = 4
    
    Dim aExpected(5 To 6) As Variant
    With ThisWorkbook.Worksheets(1)
@@ -4288,11 +4288,11 @@ Public Sub GetRow_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Scalar As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const RowNumber As LongPtr = 6
+   Const RowNumber As Long = 6
    '===========================================================================
 
 
@@ -4316,11 +4316,11 @@ Public Sub GetRow_1DArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const RowNumber As LongPtr = 6
+   Const RowNumber As Long = 6
    '===========================================================================
 
 
@@ -4344,11 +4344,11 @@ Public Sub GetRow_3DArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4, -1 To 0) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6, 3 To 4, -1 To 0) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const RowNumber As LongPtr = 6
+   Const RowNumber As Long = 6
    '===========================================================================
 
 
@@ -4372,11 +4372,11 @@ Public Sub GetRow_StaticResultArr_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
-   Dim ResultArr(-5 To -4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
+   Dim ResultArr(-5 To -4) As Long
 
    '===========================================================================
-   Const RowNumber As LongPtr = 6
+   Const RowNumber As Long = 6
    '===========================================================================
 
 
@@ -4400,11 +4400,11 @@ Public Sub GetRow_TooSmallRowNumber_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const RowNumber As LongPtr = 4
+   Const RowNumber As Long = 4
    '===========================================================================
 
 
@@ -4428,11 +4428,11 @@ Public Sub GetRow_TooLargeRowNumber_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const RowNumber As LongPtr = 7
+   Const RowNumber As Long = 7
    '===========================================================================
 
 
@@ -4455,13 +4455,13 @@ End Sub
 Public Sub GetRow_LegalEntries_ReturnsTrueAndResultArr()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
-   Dim ResultArr() As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
+   Dim ResultArr() As Long
 
    '===========================================================================
-   Const RowNumber As LongPtr = 6
+   Const RowNumber As Long = 6
    
-   Dim aExpected(3 To 4) As LongPtr
+   Dim aExpected(3 To 4) As Long
       aExpected(3) = 11
       aExpected(4) = 21
    '===========================================================================
@@ -4497,10 +4497,10 @@ Public Sub GetRow_LegalEntriesWithObjects_ReturnsTrueAndResultArr()
 
    Dim Arr(5 To 6, 3 To 4) As Variant
    Dim ResultArr() As Variant
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
-   Const RowNumber As LongPtr = 6
+   Const RowNumber As Long = 6
    
    Dim aExpected(3 To 4) As Variant
    With ThisWorkbook.Worksheets(1)
@@ -4555,11 +4555,11 @@ Public Sub InsertElementIntoVector_StaticInputArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray(5 To 6) As LongPtr
+   Dim InputArray(5 To 6) As Long
 
    '===========================================================================
-   Const Index As LongPtr = 6
-   Const Value As LongPtr = 33
+   Const Index As Long = 6
+   Const Value As Long = 33
    '===========================================================================
 
 
@@ -4582,11 +4582,11 @@ End Sub
 Public Sub InsertElementIntoVector_2DInputArray_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
 
    '===========================================================================
-   Const Index As LongPtr = 6
-   Const Value As LongPtr = 33
+   Const Index As Long = 6
+   Const Value As Long = 33
    '===========================================================================
 
 
@@ -4612,11 +4612,11 @@ End Sub
 Public Sub InsertElementIntoVector_TooSmallIndex_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
 
    '===========================================================================
-   Const Index As LongPtr = 4
-   Const Value As LongPtr = 33
+   Const Index As Long = 4
+   Const Value As Long = 33
    '===========================================================================
 
 
@@ -4642,11 +4642,11 @@ End Sub
 Public Sub InsertElementIntoVector_TooLargeIndex_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
 
    '===========================================================================
-   Const Index As LongPtr = 8
-   Const Value As LongPtr = 33
+   Const Index As Long = 8
+   Const Value As Long = 33
    '===========================================================================
 
 
@@ -4672,13 +4672,13 @@ End Sub
 Public Sub InsertElementIntoVector_WrongValueType_ReturnsFalseAndUnchangedInputArray()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
 
    '===========================================================================
-   Const Index As LongPtr = 6
+   Const Index As Long = 6
    Const Value As String = "abc"
    
-   Dim aExpected(5 To 6) As LongPtr
+   Dim aExpected(5 To 6) As Long
       aExpected(5) = 10
       aExpected(6) = 11
    '===========================================================================
@@ -4709,13 +4709,13 @@ End Sub
 Public Sub InsertElementIntoVector_ValidTestWithLongs_ReturnsTrueAndChangedInputArray()
    On Error GoTo TestFail
 
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
 
    '===========================================================================
-   Const Index As LongPtr = 6
-   Const Value As LongPtr = 33
+   Const Index As Long = 6
+   Const Value As Long = 33
    
-   Dim aExpected(5 To 7) As LongPtr
+   Dim aExpected(5 To 7) As Long
       aExpected(5) = 10
       aExpected(6) = 33
       aExpected(7) = 11
@@ -4750,10 +4750,10 @@ Public Sub InsertElementIntoVector_ValidTestWithStrings_ReturnsTrueAndChangedInp
    On Error GoTo TestFail
 
    Dim InputArray() As String
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
-   Const Index As LongPtr = 7
+   Const Index As Long = 7
    Const Value As String = "XYZ"
    
    Dim aExpected(5 To 7) As String
@@ -4797,13 +4797,13 @@ Public Sub InsertElementIntoVector_ValidTestWithObjects_ReturnsTrueAndChangedInp
    Dim InputArray() As Object
    Dim wks As Worksheet
       Set wks = ThisWorkbook.Worksheets(1)
-   Dim i As LongPtr
+   Dim i As Long
    
    
    With wks
 
       '========================================================================
-      Const Index As LongPtr = 6
+      Const Index As Long = 6
       Dim Value As Object
          Set Value = .Range("B2")
       
@@ -4853,7 +4853,7 @@ Public Sub IsArrayAllDefault_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
 
 
    'Act:
@@ -4872,7 +4872,7 @@ Public Sub IsArrayAllDefault_UnallocatedArray_ReturnsTrue()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
 
 
    'Act:
@@ -4974,7 +4974,7 @@ End Sub
 Public Sub IsArrayAllDefault_DefaultNumericArray_ReturnsTrue()
    On Error GoTo TestFail
 
-   Dim InputArray(5 To 6) As LongPtr
+   Dim InputArray(5 To 6) As Long
 
 
    'Arrange:
@@ -4995,7 +4995,7 @@ End Sub
 Public Sub IsArrayAllDefault_NonDefaultNumericArray_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray(5 To 5) As LongPtr
+   Dim InputArray(5 To 5) As Long
 
 
    'Arrange:
@@ -5016,7 +5016,7 @@ End Sub
 Public Sub IsArrayAllDefault_Default3DNumericArray_ReturnsTrue()
    On Error GoTo TestFail
 
-   Dim InputArray(5 To 6, 3 To 4, -2 To -1) As LongPtr
+   Dim InputArray(5 To 6, 3 To 4, -2 To -1) As Long
 
 
    'Arrange:
@@ -5037,7 +5037,7 @@ End Sub
 Public Sub IsArrayAllDefault_NonDefault3DNumericArray_ReturnsFalse()
    On Error GoTo TestFail
 
-   Dim InputArray(5 To 6, 3 To 4, -2 To -1) As LongPtr
+   Dim InputArray(5 To 6, 3 To 4, -2 To -1) As Long
 
 
    'Arrange:
@@ -5596,7 +5596,7 @@ Public Sub IsArrayDynamic_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
 
 
    'Act:
@@ -5615,7 +5615,7 @@ Public Sub IsArrayDynamic_UnallocatedArray_ReturnsTrue()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
 
    'Act:
@@ -5633,7 +5633,7 @@ End Sub
 Public Sub IsArrayDynamic_1DDynamicArray_ReturnsTrue()
    On Error GoTo TestFail
 
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
 
    'Arrange:
@@ -5655,7 +5655,7 @@ Public Sub IsArrayDynamic_1DStaticArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6) As LongPtr
+   Dim Arr(5 To 6) As Long
 
 
    'Act:
@@ -5673,7 +5673,7 @@ End Sub
 Public Sub IsArrayDynamic_2DDynamicArray_ReturnsTrue()
    On Error GoTo TestFail
 
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
 
    'Arrange:
@@ -5695,7 +5695,7 @@ Public Sub IsArrayDynamic_2DStaticArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
 
 
    'Act:
@@ -5718,7 +5718,7 @@ Public Sub IsArrayObjects_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
 
    '===========================================================================
    Const AllowNothing As Boolean = True
@@ -5741,7 +5741,7 @@ Public Sub IsArrayObjects_LongPtrInputArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray(5 To 6) As LongPtr
+   Dim InputArray(5 To 6) As Long
 
    '===========================================================================
    Const AllowNothing As Boolean = True
@@ -6020,7 +6020,7 @@ Public Sub IsNumericDataType_LongPtrScalar_ReturnsTrue()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
 
 
    'Act:
@@ -6157,7 +6157,7 @@ Public Sub IsNumericDataType_LongPtrArrayUnallocated_ReturnsTrue()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
 
    'Act:
@@ -6176,7 +6176,7 @@ Public Sub IsNumericDataType_LongPtrStaticArray_ReturnsTrue()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6) As LongPtr
+   Dim Arr(5 To 6) As Long
 
 
    'Act:
@@ -6341,7 +6341,7 @@ Public Sub IsVariantArrayConsistent_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
 
 
    'Act:
@@ -6360,7 +6360,7 @@ Public Sub IsVariantArrayConsistent_UnallocatedArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
 
    'Act:
@@ -6379,7 +6379,7 @@ Public Sub IsVariantArrayConsistent_AllocatedLongTypeArray_ReturnsTrue()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6) As LongPtr
+   Dim Arr(5 To 6) As Long
 
 
    'Act:
@@ -6564,7 +6564,7 @@ Public Sub IsVectorSorted_NoArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
    Dim aResult As Variant
 
    '===========================================================================
@@ -6593,7 +6593,7 @@ Public Sub IsVectorSorted_UnallocatedArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray() As LongPtr
+   Dim InputArray() As Long
    Dim aResult As Variant
 
    '===========================================================================
@@ -6622,7 +6622,7 @@ Public Sub IsVectorSorted_2DArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim InputArray(5 To 6, 3 To 4) As LongPtr
+   Dim InputArray(5 To 6, 3 To 4) As Long
    Dim aResult As Variant
 
    '===========================================================================
@@ -7309,7 +7309,7 @@ Public Sub MoveEmptyStringsToEndOfVector_StringArray_ReturnsTrueAndModifiedArr()
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As String
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
    Dim aExpected(5 To 7) As String
@@ -7346,7 +7346,7 @@ Public Sub MoveEmptyStringsToEndOfVector_VariantArray_ReturnsTrueAndModifiedArr(
    On Error GoTo TestFail
 
    Dim InputArray(5 To 7) As Variant
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
    Dim aExpected(5 To 7) As Variant
@@ -7384,7 +7384,7 @@ End Sub
 '
 '   Dim Arr As Variant
 '   Dim InputArray() As String
-'   Dim i As LongPtr
+'   Dim i As Long
 '
 '   '===========================================================================
 '   Dim aExpected() As String
@@ -7424,11 +7424,11 @@ Public Sub NumberOfArrayDimensions_UnallocatedLongArray_ReturnsZero()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
-   Dim iNoOfArrDimensions As LongPtr
+   Dim Arr() As Long
+   Dim iNoOfArrDimensions As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = 0
+   Const aExpected As Long = 0
    '===========================================================================
 
 
@@ -7451,10 +7451,10 @@ Public Sub NumberOfArrayDimensions_UnallocatedVariantArray_ReturnsZero()
 
    'Arrange:
    Dim Arr() As Variant
-   Dim iNoOfArrDimensions As LongPtr
+   Dim iNoOfArrDimensions As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = 0
+   Const aExpected As Long = 0
    '===========================================================================
 
 
@@ -7477,10 +7477,10 @@ Public Sub NumberOfArrayDimensions_UnallocatedObjectArray_ReturnsZero()
 
    'Arrange:
    Dim Arr() As Object
-   Dim iNoOfArrDimensions As LongPtr
+   Dim iNoOfArrDimensions As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = 0
+   Const aExpected As Long = 0
    '===========================================================================
 
 
@@ -7502,11 +7502,11 @@ Public Sub NumberOfArrayDimensions_1DArray_ReturnsOne()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(1 To 3) As LongPtr
-   Dim iNoOfArrDimensions As LongPtr
+   Dim Arr(1 To 3) As Long
+   Dim iNoOfArrDimensions As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = 1
+   Const aExpected As Long = 1
    '===========================================================================
 
 
@@ -7529,10 +7529,10 @@ Public Sub NumberOfArrayDimensions_3DArray_ReturnsThree()
 
    'Arrange:
    Dim Arr(1 To 3, 1 To 2, 1 To 1)
-   Dim iNoOfArrDimensions As LongPtr
+   Dim iNoOfArrDimensions As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = 3
+   Const aExpected As Long = 3
    '===========================================================================
 
 
@@ -7558,13 +7558,13 @@ Public Sub NumElements_NoArray_ReturnsZero()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
-   Dim iNoOfElements As LongPtr
+   Dim Scalar As Long
+   Dim iNoOfElements As Long
 
    '===========================================================================
-   Const Dimension As LongPtr = 1
+   Const Dimension As Long = 1
    
-   Const aExpected As LongPtr = 0
+   Const aExpected As Long = 0
    '===========================================================================
 
 
@@ -7586,13 +7586,13 @@ Public Sub NumElements_UnallocatedArray_ReturnsZero()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
-   Dim iNoOfElements As LongPtr
+   Dim Arr() As Long
+   Dim iNoOfElements As Long
 
    '===========================================================================
-   Const Dimension As LongPtr = 1
+   Const Dimension As Long = 1
    
-   Const aExpected As LongPtr = 0
+   Const aExpected As Long = 0
    '===========================================================================
 
 
@@ -7614,13 +7614,13 @@ Public Sub NumElements_DimensionLowerOne_ReturnsZero()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 7, 3 To 4, 1 To 1) As LongPtr
-   Dim iNoOfElements As LongPtr
+   Dim Arr(5 To 7, 3 To 4, 1 To 1) As Long
+   Dim iNoOfElements As Long
 
    '===========================================================================
-   Const Dimension As LongPtr = 0
+   Const Dimension As Long = 0
    
-   Const aExpected As LongPtr = 0
+   Const aExpected As Long = 0
    '===========================================================================
 
 
@@ -7642,13 +7642,13 @@ Public Sub NumElements_DimensionHigherNoOfArrDimensions_ReturnsZero()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 7, 3 To 4, 1 To 1) As LongPtr
-   Dim iNoOfElements As LongPtr
+   Dim Arr(5 To 7, 3 To 4, 1 To 1) As Long
+   Dim iNoOfElements As Long
 
    '===========================================================================
-   Const Dimension As LongPtr = 4
+   Const Dimension As Long = 4
    
-   Const aExpected As LongPtr = 0
+   Const aExpected As Long = 0
    '===========================================================================
 
 
@@ -7670,13 +7670,13 @@ Public Sub NumElements_DimensionOne_ReturnsThree()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 7, 3 To 4, 1 To 1) As LongPtr
-   Dim iNoOfElements As LongPtr
+   Dim Arr(5 To 7, 3 To 4, 1 To 1) As Long
+   Dim iNoOfElements As Long
 
    '===========================================================================
-   Const Dimension As LongPtr = 1
+   Const Dimension As Long = 1
    
-   Const aExpected As LongPtr = 3
+   Const aExpected As Long = 3
    '===========================================================================
 
 
@@ -7698,13 +7698,13 @@ Public Sub NumElements_DimensionTwo_ReturnsTwo()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 7, 3 To 4, 1 To 1) As LongPtr
-   Dim iNoOfElements As LongPtr
+   Dim Arr(5 To 7, 3 To 4, 1 To 1) As Long
+   Dim iNoOfElements As Long
 
    '===========================================================================
-   Const Dimension As LongPtr = 2
+   Const Dimension As Long = 2
    
-   Const aExpected As LongPtr = 2
+   Const aExpected As Long = 2
    '===========================================================================
 
 
@@ -7726,13 +7726,13 @@ Public Sub NumElements_DimensionThree_ReturnsOne()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 7, 3 To 4, 1 To 1) As LongPtr
-   Dim iNoOfElements As LongPtr
+   Dim Arr(5 To 7, 3 To 4, 1 To 1) As Long
+   Dim iNoOfElements As Long
 
    '===========================================================================
-   Const Dimension As LongPtr = 3
+   Const Dimension As Long = 3
    
-   Const aExpected As LongPtr = 1
+   Const aExpected As Long = 1
    '===========================================================================
 
 
@@ -7754,11 +7754,11 @@ Public Sub NumElements_DefaultDimension_ReturnsThree()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 7, 3 To 4, 1 To 1) As LongPtr
-   Dim iNoOfElements As LongPtr
+   Dim Arr(5 To 7, 3 To 4, 1 To 1) As Long
+   Dim iNoOfElements As Long
 
    '===========================================================================
-   Const aExpected As LongPtr = 3
+   Const aExpected As Long = 3
    '===========================================================================
 
 
@@ -7784,7 +7784,7 @@ Public Sub ResetVariantArrayToDefaults_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
 
 
    'Act:
@@ -7803,7 +7803,7 @@ Public Sub ResetVariantArrayToDefaults_UnallocatedArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
 
    'Act:
@@ -7841,7 +7841,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn1DArr_Re
    On Error GoTo TestFail
 
    Dim Arr(1 To 15) As Variant
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
    Dim aExpected(1 To 15) As Variant
@@ -7857,7 +7857,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn1DArr_Re
       aExpected(9) = Empty
       aExpected(10) = Empty
       aExpected(11) = CInt(0)
-      aExpected(12) = CLngPtr(0)
+      aExpected(12) = CLng(0)
       aExpected(13) = Null
       aExpected(14) = CSng(0)
       aExpected(15) = vbNullString
@@ -7876,7 +7876,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn1DArr_Re
    Arr(9) = Empty
    Arr(10) = CVErr(xlErrNA)
    Arr(11) = CInt(2345.5678)
-   Arr(12) = CLngPtr(123456789)
+   Arr(12) = CLng(123456789)
    Arr(13) = Null
    Arr(14) = CSng(654.321)
    Arr(15) = "abc"
@@ -7906,8 +7906,8 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn2DArr_Re
    On Error GoTo TestFail
 
    Dim Arr(1 To 8, 4 To 5) As Variant
-   Dim i As LongPtr
-   Dim j As LongPtr
+   Dim i As Long
+   Dim j As Long
 
    '===========================================================================
    Dim aExpected(1 To 8, 4 To 5) As Variant
@@ -7924,7 +7924,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn2DArr_Re
       aExpected(1, 5) = Empty
       aExpected(2, 5) = Empty
       aExpected(3, 5) = CInt(0)
-      aExpected(4, 5) = CLngPtr(0)
+      aExpected(4, 5) = CLng(0)
       aExpected(5, 5) = Null
       aExpected(6, 5) = CSng(0)
       aExpected(7, 5) = vbNullString
@@ -7945,7 +7945,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn2DArr_Re
    Arr(1, 5) = Empty
    Arr(2, 5) = CVErr(xlErrNA)
    Arr(3, 5) = CInt(2345.5678)
-   Arr(4, 5) = CLngPtr(123456789)
+   Arr(4, 5) = CLng(123456789)
    Arr(5, 5) = Null
    Arr(6, 5) = CSng(654.321)
    Arr(7, 5) = "abc"
@@ -7977,9 +7977,9 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn3DArr_Re
    On Error GoTo TestFail
 
    Dim Arr(1 To 8, 4 To 5, 3 To 3) As Variant
-   Dim i As LongPtr
-   Dim j As LongPtr
-   Dim k As LongPtr
+   Dim i As Long
+   Dim j As Long
+   Dim k As Long
 
    '===========================================================================
    Dim aExpected(1 To 8, 4 To 5, 3 To 3) As Variant
@@ -7996,7 +7996,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn3DArr_Re
       aExpected(1, 5, 3) = Empty
       aExpected(2, 5, 3) = Empty
       aExpected(3, 5, 3) = CInt(0)
-      aExpected(4, 5, 3) = CLngPtr(0)
+      aExpected(4, 5, 3) = CLng(0)
       aExpected(5, 5, 3) = Null
       aExpected(6, 5, 3) = CSng(0)
       aExpected(7, 5, 3) = vbNullString
@@ -8017,7 +8017,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn3DArr_Re
    Arr(1, 5, 3) = Empty
    Arr(2, 5, 3) = CVErr(xlErrNA)
    Arr(3, 5, 3) = CInt(2345.5678)
-   Arr(4, 5, 3) = CLngPtr(123456789)
+   Arr(4, 5, 3) = CLng(123456789)
    Arr(5, 5, 3) = Null
    Arr(6, 5, 3) = CSng(654.321)
    Arr(7, 5, 3) = "abc"
@@ -8055,7 +8055,7 @@ Public Sub ReverseVectorInPlace_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
 
 
    'Act:
@@ -8074,7 +8074,7 @@ Public Sub ReverseVectorInPlace_UnallocatedArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
 
    'Act:
@@ -8093,7 +8093,7 @@ Public Sub ReverseVectorInPlace_2DArr_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 7, 3 To 4) As LongPtr
+   Dim Arr(5 To 7, 3 To 4) As Long
 
 
    'Act:
@@ -8111,10 +8111,10 @@ End Sub
 Public Sub ReverseVectorInPlace_ValidEven1DArr_ReturnsTrueAndReversedArr()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 8) As LongPtr
+   Dim Arr(5 To 8) As Long
 
    '===========================================================================
-   Dim aExpected(5 To 8) As LongPtr
+   Dim aExpected(5 To 8) As Long
       aExpected(5) = 8
       aExpected(6) = 7
       aExpected(7) = 6
@@ -8212,10 +8212,10 @@ End Sub
 Public Sub ReverseVectorInPlace_ValidOdd1DArr_ReturnsTrueAndReversedArr()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 9) As LongPtr
+   Dim Arr(5 To 9) As Long
 
    '===========================================================================
-   Dim aExpected(5 To 9) As LongPtr
+   Dim aExpected(5 To 9) As Long
       aExpected(5) = 9
       aExpected(6) = 8
       aExpected(7) = 7
@@ -8311,7 +8311,7 @@ Public Sub ReverseVectorOfObjectsInPlace_ValidEven1DObjectArr_ReturnsTrueAndReve
    On Error GoTo TestFail
 
    Dim Arr(5 To 8) As Object
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
    Dim aExpected(5 To 8) As Object
@@ -8357,7 +8357,7 @@ Public Sub ReverseVectorOfObjectsInPlace_ValidEven1DVariantArr_ReturnsTrueAndRev
    On Error GoTo TestFail
 
    Dim Arr(5 To 8) As Variant
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
    Dim aExpected(5 To 8) As Variant
@@ -8425,7 +8425,7 @@ Public Sub ReverseVectorOfObjectsInPlace_ValidOdd1DObjectArr_ReturnsTrueAndRever
    On Error GoTo TestFail
 
    Dim Arr(5 To 9) As Object
-   Dim i As LongPtr
+   Dim i As Long
 
    '===========================================================================
    Dim aExpected(5 To 9) As Object
@@ -8496,7 +8496,7 @@ Public Sub SetObjectArrayToNothing_UnallocatedLongArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
 
 
    'Act:
@@ -8553,7 +8553,7 @@ Public Sub SetObjectArrayToNothing_1DLongArr_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 7) As LongPtr
+   Dim Arr(5 To 7) As Long
 
 
    'Act:
@@ -8759,12 +8759,12 @@ Public Sub SwapArrayColumns_NoArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 3
-   Const Col2 As LongPtr = 4
+   Const Col1 As Long = 3
+   Const Col2 As Long = 4
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -8792,12 +8792,12 @@ Public Sub SwapArrayColumns_UnallocatedArr_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 3
-   Const Col2 As LongPtr = 4
+   Const Col1 As Long = 3
+   Const Col2 As Long = 4
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -8825,12 +8825,12 @@ Public Sub SwapArrayColumns_1DArr_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6) As LongPtr
+   Dim Arr(5 To 6) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 3
-   Const Col2 As LongPtr = 4
+   Const Col1 As Long = 3
+   Const Col2 As Long = 4
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -8858,12 +8858,12 @@ Public Sub SwapArrayColumns_3DArr_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4, 2 To 2) As LongPtr
+   Dim Arr(5 To 6, 3 To 4, 2 To 2) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 3
-   Const Col2 As LongPtr = 4
+   Const Col1 As Long = 3
+   Const Col2 As Long = 4
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -8891,12 +8891,12 @@ Public Sub SwapArrayColumns_TooSmallCol1_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 2
-   Const Col2 As LongPtr = 4
+   Const Col1 As Long = 2
+   Const Col2 As Long = 4
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -8924,12 +8924,12 @@ Public Sub SwapArrayColumns_TooSmallCol2_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 3
-   Const Col2 As LongPtr = 2
+   Const Col1 As Long = 3
+   Const Col2 As Long = 2
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -8957,12 +8957,12 @@ Public Sub SwapArrayColumns_TooLargeCol1_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 5
-   Const Col2 As LongPtr = 4
+   Const Col1 As Long = 5
+   Const Col2 As Long = 4
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -8990,12 +8990,12 @@ Public Sub SwapArrayColumns_TooLargeCol2_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 3
-   Const Col2 As LongPtr = 5
+   Const Col1 As Long = 3
+   Const Col2 As Long = 5
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -9022,14 +9022,14 @@ End Sub
 Public Sub SwapArrayColumns_EqualColNumbers_ReturnsResultArrEqualToArr()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 3
-   Const Col2 As LongPtr = 3
+   Const Col1 As Long = 3
+   Const Col2 As Long = 3
    
-   Dim aExpected(5 To 6, 3 To 4) As LongPtr
+   Dim aExpected(5 To 6, 3 To 4) As Long
       aExpected(5, 3) = 10
       aExpected(6, 3) = 11
       aExpected(5, 4) = 20
@@ -9064,14 +9064,14 @@ End Sub
 Public Sub SwapArrayColumns_UnequalColNumbers_ReturnsResultArrWithSwappedColumns()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Col1 As LongPtr = 3
-   Const Col2 As LongPtr = 4
+   Const Col1 As Long = 3
+   Const Col2 As Long = 4
    
-   Dim aExpected(5 To 6, 3 To 4) As LongPtr
+   Dim aExpected(5 To 6, 3 To 4) As Long
       aExpected(5, 3) = 20
       aExpected(6, 3) = 21
       aExpected(5, 4) = 10
@@ -9111,12 +9111,12 @@ Public Sub SwapArrayRows_NoArray_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
+   Dim Scalar As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 5
-   Const Row2 As LongPtr = 6
+   Const Row1 As Long = 5
+   Const Row2 As Long = 6
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -9144,12 +9144,12 @@ Public Sub SwapArrayRows_UnallocatedArr_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr() As LongPtr
+   Dim Arr() As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 5
-   Const Row2 As LongPtr = 6
+   Const Row1 As Long = 5
+   Const Row2 As Long = 6
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -9177,12 +9177,12 @@ Public Sub SwapArrayRows_1DArr_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6) As LongPtr
+   Dim Arr(5 To 6) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 5
-   Const Row2 As LongPtr = 6
+   Const Row1 As Long = 5
+   Const Row2 As Long = 6
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -9210,12 +9210,12 @@ Public Sub SwapArrayRows_3DArr_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4, 2 To 2) As LongPtr
+   Dim Arr(5 To 6, 3 To 4, 2 To 2) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 5
-   Const Row2 As LongPtr = 6
+   Const Row1 As Long = 5
+   Const Row2 As Long = 6
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -9243,12 +9243,12 @@ Public Sub SwapArrayRows_TooSmallRow1_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 4
-   Const Row2 As LongPtr = 6
+   Const Row1 As Long = 4
+   Const Row2 As Long = 6
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -9276,12 +9276,12 @@ Public Sub SwapArrayRows_TooSmallRow2_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 5
-   Const Row2 As LongPtr = 4
+   Const Row1 As Long = 5
+   Const Row2 As Long = 4
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -9309,12 +9309,12 @@ Public Sub SwapArrayRows_TooLargeRow1_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 7
-   Const Row2 As LongPtr = 6
+   Const Row1 As Long = 7
+   Const Row2 As Long = 6
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -9342,12 +9342,12 @@ Public Sub SwapArrayRows_TooLargeRow2_ReturnsNull()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 5
-   Const Row2 As LongPtr = 7
+   Const Row1 As Long = 5
+   Const Row2 As Long = 7
    
    Const aExpected As Variant = Null
    '===========================================================================
@@ -9374,14 +9374,14 @@ End Sub
 Public Sub SwapArrayRows_EqualRowNumbers_ReturnsResultArrEqualToArr()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 5
-   Const Row2 As LongPtr = 5
+   Const Row1 As Long = 5
+   Const Row2 As Long = 5
    
-   Dim aExpected(5 To 6, 3 To 4) As LongPtr
+   Dim aExpected(5 To 6, 3 To 4) As Long
       aExpected(5, 3) = 10
       aExpected(6, 3) = 11
       aExpected(5, 4) = 20
@@ -9416,14 +9416,14 @@ End Sub
 Public Sub SwapArrayRows_UnequalRowNumbers_ReturnsResultArrWithSwappedRows()
    On Error GoTo TestFail
 
-   Dim Arr(5 To 6, 3 To 4) As LongPtr
+   Dim Arr(5 To 6, 3 To 4) As Long
    Dim ResultArr As Variant
    
    '===========================================================================
-   Const Row1 As LongPtr = 5
-   Const Row2 As LongPtr = 6
+   Const Row1 As Long = 5
+   Const Row2 As Long = 6
    
-   Dim aExpected(5 To 6, 3 To 4) As LongPtr
+   Dim aExpected(5 To 6, 3 To 4) As Long
       aExpected(5, 3) = 11
       aExpected(6, 3) = 10
       aExpected(5, 4) = 21
@@ -9463,8 +9463,8 @@ Public Sub TransposeArray_ScalarInput_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Const Scalar As LongPtr = 5
-   Dim TransposedArr() As LongPtr
+   Const Scalar As Long = 5
+   Dim TransposedArr() As Long
 
 
    'Act:
@@ -9483,8 +9483,8 @@ Public Sub TransposeArray_1DInputArr_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(2) As LongPtr
-   Dim TransposedArr() As LongPtr
+   Dim Arr(2) As Long
+   Dim TransposedArr() As Long
 
 
    'Act:
@@ -9503,8 +9503,8 @@ Public Sub TransposeArray_ScalarOutput_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(1 To 3, 2 To 5) As LongPtr
-   Dim Scalar As LongPtr
+   Dim Arr(1 To 3, 2 To 5) As Long
+   Dim Scalar As Long
 
 
    'Act:
@@ -9523,8 +9523,8 @@ Public Sub TransposeArray_StaticOutputArr_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Arr(1 To 3, 2 To 5) As LongPtr
-   Dim TransposedArr(2 To 5, 1 To 3) As LongPtr
+   Dim Arr(1 To 3, 2 To 5) As Long
+   Dim TransposedArr(2 To 5, 1 To 3) As Long
 
 
    'Act:
@@ -9542,10 +9542,10 @@ End Sub
 Public Sub TransposeArray_Valid2DArr_ReturnsTrueAndTransposedArr()
    On Error GoTo TestFail
 
-   Dim Arr() As LongPtr
-   Dim TransposedArr() As LongPtr
-   Dim i As LongPtr
-   Dim j As LongPtr
+   Dim Arr() As Long
+   Dim TransposedArr() As Long
+   Dim i As Long
+   Dim j As Long
 
 
    'Arrange:
@@ -9590,9 +9590,9 @@ Public Sub VectorsToArray_NoArray_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim Scalar As LongPtr
-   Dim VectorA(5 To 7) As LongPtr
-   Dim VectorB(4 To 6) As LongPtr
+   Dim Scalar As Long
+   Dim VectorA(5 To 7) As Long
+   Dim VectorB(4 To 6) As Long
 
 
    'Act:
@@ -9615,9 +9615,9 @@ Public Sub VectorsToArray_StaticArr_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim ResultArr(0 To 2) As LongPtr
-   Dim VectorA(5 To 7) As LongPtr
-   Dim VectorB(4 To 6) As LongPtr
+   Dim ResultArr(0 To 2) As Long
+   Dim VectorA(5 To 7) As Long
+   Dim VectorB(4 To 6) As Long
 
 
    'Act:
@@ -9640,7 +9640,7 @@ Public Sub VectorsToArray_MissingVectors_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim ResultArr() As LongPtr
+   Dim ResultArr() As Long
 
 
    'Act:
@@ -9661,9 +9661,9 @@ Public Sub VectorsToArray_ScalarVector_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim ResultArr() As LongPtr
-   Dim ScalarA As LongPtr
-   Dim VectorB(4 To 6) As LongPtr
+   Dim ResultArr() As Long
+   Dim ScalarA As Long
+   Dim VectorB(4 To 6) As Long
 
 
    'Act:
@@ -9686,9 +9686,9 @@ Public Sub VectorsToArray_UninitiallizedVector_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim ResultArr() As LongPtr
-   Dim ArrayA() As LongPtr
-   Dim VectorB(4 To 6) As LongPtr
+   Dim ResultArr() As Long
+   Dim ArrayA() As Long
+   Dim VectorB(4 To 6) As Long
 
 
    'Act:
@@ -9711,9 +9711,9 @@ Public Sub VectorsToArray_2DVector_ReturnsFalse()
    On Error GoTo TestFail
 
    'Arrange:
-   Dim ResultArr() As LongPtr
-   Dim ArrayA(5 To 7, 3 To 4) As LongPtr
-   Dim VectorB(4 To 6) As LongPtr
+   Dim ResultArr() As Long
+   Dim ArrayA(5 To 7, 3 To 4) As Long
+   Dim VectorB(4 To 6) As Long
 
 
    'Act:
@@ -9737,7 +9737,7 @@ Public Sub VectorsToArray_ArrayInVector_ReturnsFalse()
 
    Dim ResultArr() As Variant
    Dim VectorA(5 To 7) As Variant
-   Dim VectorB(4 To 6) As LongPtr
+   Dim VectorB(4 To 6) As Long
 
 
    'Arrange:
@@ -9764,7 +9764,7 @@ Public Sub VectorsToArray_ObjectInVector_ReturnsFalse()
 
    Dim ResultArr() As Variant
    Dim VectorA(5 To 7) As Variant
-   Dim VectorB(4 To 6) As LongPtr
+   Dim VectorB(4 To 6) As Long
 
 
    'Arrange:
@@ -9789,12 +9789,12 @@ End Sub
 Public Sub VectorsToArray_ValidLongVectors_ReturnsTrueAndResultArr()
    On Error GoTo TestFail
 
-   Dim ResultArr() As LongPtr
-   Dim VectorA(5 To 7) As LongPtr
-   Dim VectorB(4 To 6) As LongPtr
+   Dim ResultArr() As Long
+   Dim VectorA(5 To 7) As Long
+   Dim VectorB(4 To 6) As Long
 
    '===========================================================================
-   Dim aExpected(0 To 2, 0 To 1) As LongPtr
+   Dim aExpected(0 To 2, 0 To 1) As Long
       aExpected(0, 0) = 10
       aExpected(1, 0) = 11
       aExpected(2, 0) = 12

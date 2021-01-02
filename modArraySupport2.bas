@@ -76,9 +76,9 @@ Option Compare Text
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 'Error Number Constants
-Private Const C_ERR_NO_ERROR As LongPtr = 0
-Private Const C_ERR_SUBSCRIPT_OUT_OF_RANGE As LongPtr = 9
-Private Const C_ERR_ARRAY_IS_FIXED_OR_LOCKED As LongPtr = 10
+Private Const C_ERR_NO_ERROR As Long = 0
+Private Const C_ERR_SUBSCRIPT_OUT_OF_RANGE As Long = 9
+Private Const C_ERR_ARRAY_IS_FIXED_OR_LOCKED As Long = 10
 
 
 '------------------------------------------------------------------------------
@@ -155,8 +155,8 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n22"
    Dim SVType As VbVarType
    Dim DVType As VbVarType
    
-   Dim LongLong As LongPtr
-   LongLong = DeclareLongLong
+   Dim LongLongType As Byte
+   LongLongType = DeclareLongLong
    
    
    'Set the default return value
@@ -196,19 +196,19 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n22"
          Case vbInteger
             'there is no compatible match for that
             '(that isn't already catched above)
-         Case vbLong, LongLong
+         Case vbLong, LongLongType
             Select Case SVType
-               Case vbInteger, vbLong, LongLong
+               Case vbInteger, vbLong, LongLongType
                   AreDataTypesCompatible = True
             End Select
          Case vbSingle
             Select Case SVType
-               Case vbInteger, vbLong, LongLong, vbSingle
+               Case vbInteger, vbLong, LongLongType, vbSingle
                   AreDataTypesCompatible = True
             End Select
          Case vbDouble
             Select Case SVType
-               Case vbInteger, vbLong, LongLong, vbSingle, vbDouble
+               Case vbInteger, vbLong, LongLongType, vbSingle, vbDouble
                   AreDataTypesCompatible = True
             End Select
 '         'this is already covered above
@@ -236,17 +236,17 @@ Attribute AreDataTypesCompatible.VB_ProcData.VB_Invoke_Func = " \n22"
 '            End Select
          Case vbCurrency
             Select Case SVType
-               Case vbInteger, vbLong, LongLong, vbSingle, vbDouble
+               Case vbInteger, vbLong, LongLongType, vbSingle, vbDouble
                   AreDataTypesCompatible = True
             End Select
          Case vbDecimal
             Select Case SVType
-               Case vbInteger, vbLong, LongLong, vbSingle, vbDouble
+               Case vbInteger, vbLong, LongLongType, vbSingle, vbDouble
                   AreDataTypesCompatible = True
             End Select
          Case vbDate
             Select Case SVType
-               Case vbLong, LongLong, vbSingle, vbDouble
+               Case vbLong, LongLongType, vbSingle, vbDouble
                   AreDataTypesCompatible = True
             End Select
          Case vbEmpty
@@ -286,15 +286,15 @@ End Function
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function ChangeBoundsOfVector( _
    ByRef InputArr As Variant, _
-   ByVal NewLowerBound As LongPtr, _
+   ByVal NewLowerBound As Long, _
    Optional ByVal NewUpperBound As Variant _
       ) As Boolean
 Attribute ChangeBoundsOfVector.VB_ProcData.VB_Invoke_Func = " \n22"
 
    Dim TempArr() As Variant
-   Dim InNdx As LongPtr
-   Dim OutNdx As LongPtr
-   Dim TempNdx As LongPtr
+   Dim InNdx As Long
+   Dim OutNdx As Long
+   Dim TempNdx As Long
    Dim FirstIsObject As Boolean
    
    
@@ -305,7 +305,7 @@ Attribute ChangeBoundsOfVector.VB_ProcData.VB_Invoke_Func = " \n22"
       NewUpperBound = NewLowerBound + UBound(InputArr) - LBound(InputArr)
    ElseIf Not IsNumeric(NewUpperBound) Then
       Exit Function
-   ElseIf NewUpperBound <> CLngPtr(NewUpperBound) Then
+   ElseIf NewUpperBound <> CLng(NewUpperBound) Then
       Exit Function
    End If
    
@@ -404,35 +404,35 @@ Public Function CombineTwoDArrays( _
 Attribute CombineTwoDArrays.VB_ProcData.VB_Invoke_Func = " \n22"
 
    'Upper and lower bounds of 'Arr1'
-   Dim LBoundRow1 As LongPtr
-   Dim UBoundRow1 As LongPtr
-   Dim LBoundCol1 As LongPtr
-   Dim UBoundCol1 As LongPtr
+   Dim LBoundRow1 As Long
+   Dim UBoundRow1 As Long
+   Dim LBoundCol1 As Long
+   Dim UBoundCol1 As Long
    
    'Upper and lower bounds of 'Arr2'
-   Dim LBoundRow2 As LongPtr
-   Dim UBoundRow2 As LongPtr
-   Dim LBoundCol2 As LongPtr
-   Dim UBoundCol2 As LongPtr
+   Dim LBoundRow2 As Long
+   Dim UBoundRow2 As Long
+   Dim LBoundCol2 As Long
+   Dim UBoundCol2 As Long
    
    'Upper and lower bounds of Result
-   Dim UBoundRowResult As LongPtr
-   Dim LBoundColResult As LongPtr
-   Dim UBoundColResult As LongPtr
+   Dim UBoundRowResult As Long
+   Dim LBoundColResult As Long
+   Dim UBoundColResult As Long
    
    'Index Variables
-   Dim RowNdx1 As LongPtr
-   Dim ColNdx1 As LongPtr
-   Dim RowNdx2 As LongPtr
-   Dim ColNdx2 As LongPtr
-   Dim RowNdxResult As LongPtr
+   Dim RowNdx1 As Long
+   Dim ColNdx1 As Long
+   Dim RowNdx2 As Long
+   Dim ColNdx2 As Long
+   Dim RowNdxResult As Long
    
    'Array Sizes
-   Dim NumRows1 As LongPtr
-   Dim NumCols1 As LongPtr
+   Dim NumRows1 As Long
+   Dim NumCols1 As Long
    
-   Dim NumRows2 As LongPtr
-   Dim NumCols2 As LongPtr
+   Dim NumRows2 As Long
+   Dim NumCols2 As Long
    
    Dim Done As Boolean
    Dim Result() As Variant
@@ -552,7 +552,7 @@ Public Function CompareVectors( _
       ) As Boolean
 Attribute CompareVectors.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim i As LongPtr
+   Dim i As Long
    Dim S1 As String
    Dim S2 As String
    Dim D1 As Double
@@ -650,11 +650,11 @@ Public Function ConcatenateArrays( _
       ) As Boolean
 Attribute ConcatenateArrays.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim i As LongPtr
-   Dim NumElementsToAdd As LongPtr
-   Dim AppendNdx As LongPtr
-   Dim ResultLB As LongPtr
-   Dim ResultUB As LongPtr
+   Dim i As Long
+   Dim NumElementsToAdd As Long
+   Dim AppendNdx As Long
+   Dim ResultLB As Long
+   Dim ResultUB As Long
    Dim ResultWasAllocated As Boolean
    
    
@@ -789,8 +789,8 @@ Public Function CopyArray( _
       ) As Boolean
 Attribute CopyArray.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim SrcNdx As LongPtr
-   Dim ResNdx As LongPtr
+   Dim SrcNdx As Long
+   Dim ResNdx As Long
    
    
    'Set the default return value
@@ -895,8 +895,8 @@ Public Function CopyNonNothingObjectsToVector( _
       ) As Boolean
 Attribute CopyNonNothingObjectsToVector.VB_ProcData.VB_Invoke_Func = " \n22"
    
-   Dim SrcNdx  As LongPtr
-   Dim ResNdx As LongPtr
+   Dim SrcNdx  As Long
+   Dim ResNdx As Long
    
    
    'Set the default return value
@@ -961,18 +961,18 @@ End Function
 Public Function CopyVectorSubSetToVector( _
    ByVal SourceArray As Variant, _
    ByRef ResultArray As Variant, _
-   ByVal FirstElementToCopy As LongPtr, _
-   ByVal LastElementToCopy As LongPtr, _
-   ByVal DestinationElement As LongPtr _
+   ByVal FirstElementToCopy As Long, _
+   ByVal LastElementToCopy As Long, _
+   ByVal DestinationElement As Long _
       ) As Boolean
 Attribute CopyVectorSubSetToVector.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim SrcNdx As LongPtr
-   Dim ResNdx As LongPtr
-   Dim LBoundOrgResultArray As LongPtr
-   Dim UBoundOrgResultArray As LongPtr
-   Dim NumElementsToCopy As LongPtr
-   Dim FinalIndexToCopyInResultArray As LongPtr
+   Dim SrcNdx As Long
+   Dim ResNdx As Long
+   Dim LBoundOrgResultArray As Long
+   Dim UBoundOrgResultArray As Long
+   Dim NumElementsToCopy As Long
+   Dim FinalIndexToCopyInResultArray As Long
    Dim TempArray() As Variant
    
    
@@ -1164,16 +1164,16 @@ End Function
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function DeleteVectorElement( _
    ByRef InputArray As Variant, _
-   ByVal ElementNumber As LongPtr, _
+   ByVal ElementNumber As Long, _
    Optional ByVal ResizeDynamic As Boolean = False _
       ) As Boolean
 Attribute DeleteVectorElement.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim i As LongPtr
+   Dim i As Long
    Dim VType As VbVarType
    
-   Dim LongLong As LongPtr
-   LongLong = DeclareLongLong
+   Dim LongLongType As Byte
+   LongLongType = DeclareLongLong
    
    
    'Set the default return value
@@ -1212,7 +1212,7 @@ Attribute DeleteVectorElement.VB_ProcData.VB_Invoke_Func = " \n22"
    Else
       'Set the last element of the 'InputArray' to the proper default value
       Select Case VType
-         Case vbByte, vbInteger, vbLong, LongLong, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
+         Case vbByte, vbInteger, vbLong, LongLongType, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
             InputArray(UBound(InputArray)) = 0
          Case vbString
             InputArray(UBound(InputArray)) = vbNullString
@@ -1311,18 +1311,18 @@ End Function
 '- should this work for objects as well?
 Public Function ExpandArray( _
    ByVal Arr As Variant, _
-   ByVal WhichDim As LongPtr, _
-   ByVal AdditionalElements As LongPtr, _
+   ByVal WhichDim As Long, _
+   ByVal AdditionalElements As Long, _
    ByVal FillValue As Variant _
       ) As Variant
 Attribute ExpandArray.VB_ProcData.VB_Invoke_Func = " \n22"
 
    Dim Result As Variant
-   Dim RowNdx As LongPtr
-   Dim ColNdx As LongPtr
+   Dim RowNdx As Long
+   Dim ColNdx As Long
    
    '===========================================================================
-   Const ROWS_ As LongPtr = 1
+   Const ROWS_ As Long = 1
    '===========================================================================
    
    
@@ -1400,10 +1400,10 @@ End Function
 '---
 Public Function FirstNonEmptyStringIndexInVector( _
    ByVal InputArray As Variant _
-      ) As LongPtr
+      ) As Long
 Attribute FirstNonEmptyStringIndexInVector.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim i As LongPtr
+   Dim i As Long
    
    
    'Set the default return value
@@ -1434,11 +1434,11 @@ End Function
 Public Function GetColumn( _
    ByVal Arr As Variant, _
    ByRef ResultArr As Variant, _
-   ByVal ColumnNumber As LongPtr _
+   ByVal ColumnNumber As Long _
       ) As Boolean
 Attribute GetColumn.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim RowNdx As LongPtr
+   Dim RowNdx As Long
    
    
    'Set the default return value
@@ -1476,11 +1476,11 @@ End Function
 Public Function GetRow( _
    ByVal Arr As Variant, _
    ByRef ResultArr As Variant, _
-   ByVal RowNumber As LongPtr _
+   ByVal RowNumber As Long _
       ) As Boolean
 Attribute GetRow.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim ColNdx As LongPtr
+   Dim ColNdx As Long
    
    
    'Set the default return value
@@ -1521,12 +1521,12 @@ End Function
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function InsertElementIntoVector( _
    ByRef InputArray As Variant, _
-   ByVal Index As LongPtr, _
+   ByVal Index As Long, _
    ByVal Value As Variant _
       ) As Boolean
 Attribute InsertElementIntoVector.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim i As LongPtr
+   Dim i As Long
    
    
    'Set the default return value
@@ -1725,7 +1725,7 @@ Public Function IsArrayAllocated( _
       ) As Boolean
 Attribute IsArrayAllocated.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim N As LongPtr
+   Dim N As Long
    
    
    'Set the default return value
@@ -1764,7 +1764,7 @@ Public Function IsArrayDynamic( _
       ) As Boolean
 Attribute IsArrayDynamic.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim ArrUBound As LongPtr
+   Dim ArrUBound As Long
    
    
    'Set the default return value
@@ -1891,8 +1891,8 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n22"
    
    Dim Element As Variant
    
-   Dim LongLong As LongPtr
-   LongLong = DeclareLongLong
+   Dim LongLongType As Byte
+   LongLongType = DeclareLongLong
    
    
    'Set the default return value
@@ -1900,13 +1900,13 @@ Attribute IsNumericDataType.VB_ProcData.VB_Invoke_Func = " \n22"
    
    If Not IsArray(TestVar) Then
       Select Case VarType(TestVar)
-         Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLong, vbSingle
+         Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLongType, vbSingle
             IsNumericDataType = True
       End Select
    Else
       If Not IsArrayAllocated(TestVar) Then
          Select Case VarType(TestVar) - vbArray
-            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLong, vbSingle
+            Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, LongLongType, vbSingle
                IsNumericDataType = True
          End Select
       Else
@@ -1931,7 +1931,7 @@ End Function
 'returns 'True'.
 'It returns 'True' if all the elements of the array have the same data type.
 'If 'Arr' is an array of a specific data types, not 'Variant's, e.g.
-'    Dim V(1 To 3) As LongPtr
+'    Dim V(1 To 3) As Long
 'the function will return 'True'. If an array of variants contains an
 'uninitialized element ('VarType = vbEmpty') that element is skipped and not
 'used in the comparison. The reasoning behind this is that an empty variable
@@ -2007,11 +2007,11 @@ Public Function IsVectorSorted( _
       ) As Variant
 Attribute IsVectorSorted.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim StrCompResultFail As LongPtr
+   Dim StrCompResultFail As Long
    Dim NumericResultFail As Boolean
-   Dim i As LongPtr
+   Dim i As Long
    Dim NumCompareResult As Boolean
-   Dim StrCompResult As LongPtr
+   Dim StrCompResult As Long
    
    Dim IsString As Boolean
    Dim VType As VbVarType
@@ -2088,12 +2088,12 @@ Public Function MoveEmptyStringsToEndOfVector( _
       ) As Boolean
 Attribute MoveEmptyStringsToEndOfVector.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim Ndx As LongPtr
-   Dim NonEmptyNdx As LongPtr
-   Dim LBoundArr As LongPtr
-   Dim UBoundArr As LongPtr
-   Dim FirstNonEmptyNdx As LongPtr
-   Dim LastNewNonEmptyNdx As LongPtr
+   Dim Ndx As Long
+   Dim NonEmptyNdx As Long
+   Dim LBoundArr As Long
+   Dim UBoundArr As Long
+   Dim FirstNonEmptyNdx As Long
+   Dim LastNewNonEmptyNdx As Long
    
    
    'Set the default return value
@@ -2167,11 +2167,11 @@ End Function
 '  - VectrosToArray
 Public Function NumberOfArrayDimensions( _
    ByVal Arr As Variant _
-      ) As LongPtr
+      ) As Long
 Attribute NumberOfArrayDimensions.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim i As LongPtr
-   Dim Res As LongPtr
+   Dim i As Long
+   Dim Res As Long
    
    
    'it seems that an unallocated 'Object' array returns 1, so it is needed a
@@ -2211,11 +2211,11 @@ End Function
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function NumElements( _
    ByVal Arr As Variant, _
-   Optional ByVal Dimension As LongPtr = 1 _
-      ) As LongPtr
+   Optional ByVal Dimension As Long = 1 _
+      ) As Long
 Attribute NumElements.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim NumDimensions As LongPtr
+   Dim NumDimensions As Long
    
    
    'Set the default return value
@@ -2251,9 +2251,9 @@ Public Function ResetVariantArrayToDefaults( _
       ) As Boolean
 Attribute ResetVariantArrayToDefaults.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim i As LongPtr
-   Dim j As LongPtr
-   Dim k As LongPtr
+   Dim i As Long
+   Dim j As Long
+   Dim k As Long
    
    
    'Set the default return value
@@ -2305,12 +2305,12 @@ Public Function ReverseVectorInPlace( _
 Attribute ReverseVectorInPlace.VB_ProcData.VB_Invoke_Func = " \n22"
 
    Dim Temp As Variant
-   Dim Ndx As LongPtr
-   Dim Ndx2 As LongPtr
-   Dim LBoundArr As LongPtr
-   Dim UBoundArr As LongPtr
-   Dim NoOfElements As LongPtr
-   Dim MidPoint As LongPtr
+   Dim Ndx As Long
+   Dim Ndx2 As Long
+   Dim LBoundArr As Long
+   Dim UBoundArr As Long
+   Dim NoOfElements As Long
+   Dim MidPoint As Long
    
    
    'Set the default return value
@@ -2357,12 +2357,12 @@ Public Function ReverseVectorOfObjectsInPlace( _
 Attribute ReverseVectorOfObjectsInPlace.VB_ProcData.VB_Invoke_Func = " \n22"
 
    Dim Temp As Variant
-   Dim Ndx As LongPtr
-   Dim Ndx2 As LongPtr
-   Dim LBoundArr As LongPtr
-   Dim UBoundArr As LongPtr
-   Dim NoOfElements As LongPtr
-   Dim MidPoint As LongPtr
+   Dim Ndx As Long
+   Dim Ndx2 As Long
+   Dim LBoundArr As Long
+   Dim UBoundArr As Long
+   Dim NoOfElements As Long
+   Dim MidPoint As Long
    
    
    'Set the default return value
@@ -2408,10 +2408,10 @@ Public Function SetObjectArrayToNothing( _
       ) As Boolean
 Attribute SetObjectArrayToNothing.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim NoOfArrayDimensions As LongPtr
-   Dim i As LongPtr
-   Dim j As LongPtr
-   Dim k As LongPtr
+   Dim NoOfArrayDimensions As Long
+   Dim i As Long
+   Dim j As Long
+   Dim k As Long
    
    
    'Set the default return value
@@ -2466,8 +2466,8 @@ Public Sub SetVariableToDefault( _
 )
 Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim LongLong As LongPtr
-   LongLong = DeclareLongLong
+   Dim LongLongType As Byte
+   LongLongType = DeclareLongLong
    
    
    'We test with 'IsObject' here so that the object itself, not the default
@@ -2504,8 +2504,8 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n22"
             Variable = Empty
          Case vbInteger
             Variable = CInt(0)
-         Case vbLong, LongLong
-            Variable = CLngPtr(0)
+         Case vbLong, LongLongType
+            Variable = CLng(0)
          Case vbNull
             Variable = Empty
          Case vbObject
@@ -2539,14 +2539,14 @@ End Sub
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function SwapArrayColumns( _
    ByRef Arr As Variant, _
-   ByVal Col1 As LongPtr, _
-   ByVal Col2 As LongPtr _
+   ByVal Col1 As Long, _
+   ByVal Col2 As Long _
       ) As Variant
 Attribute SwapArrayColumns.VB_ProcData.VB_Invoke_Func = " \n22"
 
    Dim Temp As Variant
    Dim Result As Variant
-   Dim RowNdx As LongPtr
+   Dim RowNdx As Long
    
    
    'Set the default return value
@@ -2590,14 +2590,14 @@ End Function
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 Public Function SwapArrayRows( _
    ByRef Arr As Variant, _
-   ByVal Row1 As LongPtr, _
-   ByVal Row2 As LongPtr _
+   ByVal Row1 As Long, _
+   ByVal Row2 As Long _
       ) As Variant
 Attribute SwapArrayRows.VB_ProcData.VB_Invoke_Func = " \n22"
 
    Dim Temp As Variant
    Dim Result As Variant
-   Dim ColNdx As LongPtr
+   Dim ColNdx As Long
    
    
    'Set the default return value
@@ -2647,12 +2647,12 @@ Public Function TransposeArray( _
       ) As Boolean
 Attribute TransposeArray.VB_ProcData.VB_Invoke_Func = " \n22"
 
-   Dim RowNdx As LongPtr
-   Dim ColNdx As LongPtr
-   Dim LB1 As LongPtr
-   Dim LB2 As LongPtr
-   Dim UB1 As LongPtr
-   Dim UB2 As LongPtr
+   Dim RowNdx As Long
+   Dim ColNdx As Long
+   Dim LB1 As Long
+   Dim LB2 As Long
+   Dim UB1 As Long
+   Dim UB2 As Long
    
    
    'Set the default return value
@@ -2714,16 +2714,16 @@ Public Function VectorsToArray( _
 Attribute VectorsToArray.VB_ProcData.VB_Invoke_Func = " \n22"
 
    Dim Vector As Variant
-   Dim NumRows As LongPtr
-   Dim NumCols As LongPtr
-   Dim NoOfElements As LongPtr
-   Dim LBoundVector As LongPtr
-   Dim RowNdx As LongPtr
-   Dim ColNdx As LongPtr
+   Dim NumRows As Long
+   Dim NumCols As Long
+   Dim NoOfElements As Long
+   Dim LBoundVector As Long
+   Dim RowNdx As Long
+   Dim ColNdx As Long
    Dim VType As VbVarType
    
-   Dim LongLong As LongPtr
-   LongLong = DeclareLongLong
+   Dim LongLongType As Byte
+   LongLongType = DeclareLongLong
    
    
    'Set the default return value
@@ -2772,7 +2772,7 @@ Attribute VectorsToArray.VB_ProcData.VB_Invoke_Func = " \n22"
          VType = VarType(Vector(LBoundVector + RowNdx))
          'define allowed data types and exit function for all others
          Select Case VType
-            Case vbByte, vbInteger, vbLong, LongLong, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
+            Case vbByte, vbInteger, vbLong, LongLongType, vbSingle, vbDouble, vbDate, vbCurrency, vbDecimal
             Case vbString
 '            Case vbArray, vbVariant, vbEmpty, vbError, vbNull, vbUserDefinedType
 '               Exit Function
@@ -2800,11 +2800,11 @@ End Function
 '- add some parameter checking
 Public Function VectorTo1DArray( _
    ByVal InputVector As Variant, _
-   Optional ByVal LowerBoundOfSecondDimension As LongPtr = 0 _
+   Optional ByVal LowerBoundOfSecondDimension As Long = 0 _
       ) As Variant
    
    Dim ResultArray() As Variant
-   Dim i As LongPtr
+   Dim i As Long
    
    
    ReDim ResultArray(LBound(InputVector) To UBound(InputVector), LowerBoundOfSecondDimension To LowerBoundOfSecondDimension)
