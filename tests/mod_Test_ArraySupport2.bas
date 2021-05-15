@@ -200,7 +200,7 @@ TestFail:
 End Sub
 
 
-''2do: How to do this test?
+''TODO: How to do this test?
 ''     --> in 'ChangeBoundsOfVector_VariantArr_ReturnsTrueAndChangedArr' are
 ''         'Empty' entries added at the end of the array
 ''@TestMethod("AreDataTypesCompatible")
@@ -513,7 +513,7 @@ TestFail:
 End Sub
 
 
-'2do: not sure if the test is done right
+'TODO: not sure if the test is done right
 '     --> is testing for 'Is(Not)Nothing sufficient?
 '@TestMethod("ChangeBoundsOfVector")
 Public Sub ChangeBoundsOfVector_RangeArr_ReturnsTrueAndChangedArr()
@@ -1554,7 +1554,7 @@ TestFail:
 End Sub
 
 
-''2do: add a test that involves objects
+''TODO: add a test that involves objects
 ''     (have a look at <https://stackoverflow.com/a/11254505>
 ''@TestMethod("ConcatenateArrays")
 'Public Sub ConcatenateArrays_LegalVariant_ResultsTrueAndResultArray()
@@ -1564,8 +1564,8 @@ End Sub
 '    Dim ArrayToAppend(0 To 0) As Range
 '    Dim i As Long
 '    
-'   '===========================================================================
-'   Const CompatibilityCheck As Boolean = True
+'    '=========================================================================
+'    Const CompatibilityCheck As Boolean = True
 '    
 '    Dim wks As Worksheet
 '    Set wks = tblFunctions
@@ -1574,7 +1574,7 @@ End Sub
 '        Set aExpected(1) = .Cells(1, 1)
 '        Set aExpected(2) = .Cells(1, 2)
 '    End With
-'    '==========================================================================
+'    '=========================================================================
 '    
 '    
 '    'Arrange:
@@ -1807,7 +1807,7 @@ TestFail:
 End Sub
 
 
-'2do: Add tests with Objects
+'TODO: Add tests with Objects
 
 
 '==============================================================================
@@ -2009,11 +2009,11 @@ TestFail:
 End Sub
 
 
-'@TestMethod
+'@TestMethod("CopyVectorSubSetToVector")
 Public Sub CopyVectorSubSetToVector_ScalarResult_ReturnsFalse()
     On Error GoTo TestFail
 
-    'Arrange:("CopyVectorSubSetToVector")
+   'Arrange:
     Dim InputArray() As Long
     Dim ScalarResult As Long
     
@@ -2980,7 +2980,7 @@ TestFail:
 End Sub
 
 
-'2do: Add tests with Objects
+'TODO: Add tests with Objects
 
 
 '==============================================================================
@@ -3259,7 +3259,7 @@ TestFail:
 End Sub
 
 
-'2do: why does this test fail?
+'TODO: why does this test fail?
 ''@TestMethod("DeleteVectorElement")
 'Public Sub DeleteVectorElement_RemoveElementOfDynamicArrayDontResize2_ReturnsTrueAndModifiedInputArray()
 '   On Error GoTo TestFail
@@ -4780,7 +4780,7 @@ Public Sub InsertElementIntoVector_ValidTestWithStrings_ReturnsTrueAndChangedInp
     For i = LBound(InputArray) To UBound(InputArray)
         Assert.AreEqual aExpected(i), InputArray(i)
     Next
-'2do: why does the following line result in an error?
+'TODO: why does the following line result in an error?
 '   Assert.SequenceEquals aExpected, InputArray
 
 TestExit:
@@ -9173,7 +9173,7 @@ End Sub
 
 
 '@TestMethod("SwapArrayRows")
-    Public Sub SwapArrayRows_1DArr_ReturnsNull()
+Public Sub SwapArrayRows_1DArr_ReturnsNull()
     On Error GoTo TestFail
 
     'Arrange:
