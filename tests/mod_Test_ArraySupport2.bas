@@ -8,31 +8,20 @@ Option Private Module
 '@Folder("Tests")
 
 Private Assert As Rubberduck.PermissiveAssertClass
-Private Fakes As Rubberduck.FakesProvider
+'Private Assert As Rubberduck.AssertClass
 
 
 '@ModuleInitialize
 Public Sub ModuleInitialize()
     'this method runs once per module.
     Set Assert = New Rubberduck.PermissiveAssertClass
-    Set Fakes = New Rubberduck.FakesProvider
+'    Set Assert = New Rubberduck.AssertClass
 End Sub
 
 '@ModuleCleanup
 Public Sub ModuleCleanup()
     'this method runs once per module.
     Set Assert = Nothing
-    Set Fakes = Nothing
-End Sub
-
-'@TestInitialize
-Public Sub TestInitialize()
-    'this method runs before every test in the module.
-End Sub
-
-'@TestCleanup
-Public Sub TestCleanup()
-    'this method runs after every test in the module.
 End Sub
 
 
@@ -636,16 +625,11 @@ Public Sub CombineTwoDArrays_ScalarArr1_ReturnsNull()
     Dim Arr2(1 To 2, 2 To 3) As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Scalar1, Arr2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -663,16 +647,11 @@ Public Sub CombineTwoDArrays_ScalarArr2_ReturnsNull()
     Dim Scalar2 As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Arr1, Scalar2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -690,16 +669,11 @@ Public Sub CombineTwoDArrays_1DArr1_ReturnsNull()
     Dim Arr2(1 To 3, 1 To 2) As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Arr1, Arr2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -717,16 +691,11 @@ Public Sub CombineTwoDArrays_3DArr1_ReturnsNull()
     Dim Arr2(1 To 3, 1 To 2) As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Arr1, Arr2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -744,16 +713,11 @@ Public Sub CombineTwoDArrays_1DArr2_ReturnsNull()
     Dim Arr2(1 To 3) As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Arr1, Arr2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -771,16 +735,11 @@ Public Sub CombineTwoDArrays_3DArr2_ReturnsNull()
     Dim Arr2(1 To 3, 1 To 2, 1 To 4) As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Arr1, Arr2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -798,16 +757,11 @@ Public Sub CombineTwoDArrays_DifferentColNumbers_ReturnsNull()
     Dim Arr2(1 To 3, 1 To 3) As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Arr1, Arr2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -825,16 +779,11 @@ Public Sub CombineTwoDArrays_DifferentLBoundRows_ReturnsNull()
     Dim Arr2(2 To 3, 1 To 2) As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Arr1, Arr2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -852,16 +801,11 @@ Public Sub CombineTwoDArrays_DifferentLBoundCol1_ReturnsNull()
     Dim Arr2(1 To 3, 1 To 2) As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Arr1, Arr2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -879,16 +823,11 @@ Public Sub CombineTwoDArrays_DifferentLBoundCol2_ReturnsNull()
     Dim Arr2(1 To 3, 2 To 3) As Long
     Dim ResArr As Variant
     
-    '==========================================================================
-    Const aExpected As Variant = Null
-    '==========================================================================
-    
-    
     'Act:
     ResArr = modArraySupport2.CombineTwoDArrays(Arr1, Arr2)
     
     'Assert:
-    Assert.AreEqual aExpected, ResArr
+    Assert.IsTrue IsNull(ResArr)
 
 TestExit:
     Exit Sub
@@ -1563,10 +1502,10 @@ End Sub
 '    Dim ResultArray() As Range          'MUST be dynamic
 '    Dim ArrayToAppend(0 To 0) As Range
 '    Dim i As Long
-'    
+'
 '    '=========================================================================
 '    Const CompatibilityCheck As Boolean = True
-'    
+'
 '    Dim wks As Worksheet
 '    Set wks = tblFunctions
 '    Dim aExpected(1 To 2) As Range
@@ -1575,15 +1514,15 @@ End Sub
 '        Set aExpected(2) = .Cells(1, 2)
 '    End With
 '    '=========================================================================
-'    
-'    
+'
+'
 '    'Arrange:
 '    With wks
 '        ReDim ResultArray(1 To 1)
 '        Set ResultArray(1) = .Cells(1, 1)
 '        Set ArrayToAppend(0) = .Cells(1, 2)
 '    End With
-'    
+'
 '    'Act:
 '    If Not modArraySupport2.ConcatenateArrays( _
 '            ResultArray, _
@@ -1591,13 +1530,13 @@ End Sub
 '            CompatibilityCheck _
 '    ) Then _
 '            GoTo TestFail
-'   
+'
 '    'Assert:
 '    For i = LBound(ResultArray) To UBound(ResultArray)
 'Debug.Print aExpected(i) Is ResultArray(i)
 '        Assert.AreSame aExpected(i), ResultArray(i)
 '    Next
-'    
+'
 ''    If B = True Then
 ''        If modArraySupport2.IsArrayAllocated(ResultArray) = True Then
 ''            For i = LBound(ResultArray) To UBound(ResultArray)
@@ -3265,24 +3204,24 @@ End Sub
 '   On Error GoTo TestFail
 '
 '    Dim InputArray() As Variant
-'    
+'
 '    '==========================================================================
 '    Const ElementNumber As Long = 6
 '    Const ResizeDynamic As Boolean = False
-'    
+'
 '    Dim aExpected(5 To 7) As Variant
 '        aExpected(5) = "abc"
 '        aExpected(6) = "ABC"
 '        aExpected(7) = vbNullString
 '    '==========================================================================
-'    
-'    
+'
+'
 '    'Arrange:
 '    ReDim InputArray(5 To 7)
 '    InputArray(5) = "abc"
 '    InputArray(6) = 1234
 '    InputArray(7) = "ABC"
-'    
+'
 '    'Act:
 '    If Not modArraySupport2.DeleteVectorElement( _
 '            InputArray, _
@@ -3290,7 +3229,7 @@ End Sub
 '            ResizeDynamic _
 '    ) Then _
 '            GoTo TestFail
-'    
+'
 '    'Assert:
 '    Assert.SequenceEquals aExpected, InputArray
 '
@@ -3497,8 +3436,6 @@ Public Sub ExpandArray_NoArray_ReturnsNull()
     Const WhichDim As Long = 1
     Const AdditionalElements As Long = 2
     Const FillValue As Long = 11
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -3511,7 +3448,7 @@ Public Sub ExpandArray_NoArray_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -3532,8 +3469,6 @@ Public Sub ExpandArray_UnallocatedArr_ReturnsNull()
     Const WhichDim As Long = 1
     Const AdditionalElements As Long = 2
     Const FillValue As Long = 11
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -3546,7 +3481,7 @@ Public Sub ExpandArray_UnallocatedArr_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -3567,8 +3502,6 @@ Public Sub ExpandArray_1DArr_ReturnsNull()
     Const WhichDim As Long = 1
     Const AdditionalElements As Long = 2
     Const FillValue As Long = 11
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -3581,7 +3514,7 @@ Public Sub ExpandArray_1DArr_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -3602,8 +3535,6 @@ Public Sub ExpandArray_3DArr_ReturnsNull()
     Const WhichDim As Long = 1
     Const AdditionalElements As Long = 2
     Const FillValue As Long = 11
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -3616,7 +3547,7 @@ Public Sub ExpandArray_3DArr_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -3637,8 +3568,6 @@ Public Sub ExpandArray_WhichDimSmallerOne_ReturnsNull()
     Const WhichDim As Long = 0
     Const AdditionalElements As Long = 2
     Const FillValue As Long = 11
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -3651,7 +3580,7 @@ Public Sub ExpandArray_WhichDimSmallerOne_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -3672,8 +3601,6 @@ Public Sub ExpandArray_WhichDimLargerTwo_ReturnsNull()
     Const WhichDim As Long = 3
     Const AdditionalElements As Long = 2
     Const FillValue As Long = 11
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -3686,7 +3613,7 @@ Public Sub ExpandArray_WhichDimLargerTwo_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -3707,8 +3634,6 @@ Public Sub ExpandArray_AdditionalElementsSmallerZero_ReturnsNull()
     Const WhichDim As Long = 1
     Const AdditionalElements As Long = -1
     Const FillValue As Long = 11
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -3721,7 +3646,7 @@ Public Sub ExpandArray_AdditionalElementsSmallerZero_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -7385,23 +7310,23 @@ End Sub
 '    Dim Arr As Variant
 '    Dim InputArray() As String
 '    Dim i As Long
-'    
+'
 '    '==========================================================================
 '    Dim aExpected() As String
 '    '==========================================================================
-'    
-'    
+'
+'
 '    'Arrange:
 ''move entries in the shown range 3 cells down
 '    Arr = ThisWorkbook.Worksheets(1).Range("B32:B44")
-'    
+'
 '    'Act:
 '     If Not modArraySupport2.GetColumn(Arr, InputArray, 1) Then GoTo TestFail
 '    If Not modArraySupport2.MoveEmptyStringsToEndOfVector(InputArray) Then _
 '           GoTo TestFail
 '    Arr = ThisWorkbook.Worksheets(1).Range("B35:B47")
 '    If Not modArraySupport2.GetColumn(Arr, aExpected, 1) Then GoTo TestFail
-'    
+'
 '    'Assert:
 '    For i = LBound(InputArray) To UBound(InputArray)
 '        Assert.AreEqual aExpected(i), InputArray(i)
@@ -7858,7 +7783,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn1DArr_Re
         aExpected(10) = Empty
         aExpected(11) = CInt(0)
         aExpected(12) = CLng(0)
-        aExpected(13) = Null
+        aExpected(13) = Empty
         aExpected(14) = CSng(0)
         aExpected(15) = vbNullString
     '==========================================================================
@@ -7889,6 +7814,8 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn1DArr_Re
     For i = LBound(Arr) To UBound(Arr)
         If IsObject(Arr(i)) Then
             Assert.IsNothing Arr(i)
+        ElseIf IsNull(Arr(i)) Then
+            Assert.IsTrue IsNull(Arr(i))
         Else
             Assert.AreEqual aExpected(i), Arr(i)
         End If
@@ -7925,7 +7852,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn2DArr_Re
         aExpected(2, 5) = Empty
         aExpected(3, 5) = CInt(0)
         aExpected(4, 5) = CLng(0)
-        aExpected(5, 5) = Null
+        aExpected(5, 5) = Empty
         aExpected(6, 5) = CSng(0)
         aExpected(7, 5) = vbNullString
         aExpected(8, 5) = Empty     'non-initialized Variant entry
@@ -7997,7 +7924,7 @@ Public Sub ResetVariantArrayToDefaults_AllSetVariableToDefaultElementsIn3DArr_Re
         aExpected(2, 5, 3) = Empty
         aExpected(3, 5, 3) = CInt(0)
         aExpected(4, 5, 3) = CLng(0)
-        aExpected(5, 5, 3) = Null
+        aExpected(5, 5, 3) = Empty
         aExpected(6, 5, 3) = CSng(0)
         aExpected(7, 5, 3) = vbNullString
         aExpected(8, 5, 3) = Empty     'non-initialized Variant entry
@@ -8765,8 +8692,6 @@ Public Sub SwapArrayColumns_NoArray_ReturnsNull()
     '==========================================================================
     Const Col1 As Long = 3
     Const Col2 As Long = 4
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -8778,7 +8703,7 @@ Public Sub SwapArrayColumns_NoArray_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -8798,8 +8723,6 @@ Public Sub SwapArrayColumns_UnallocatedArr_ReturnsNull()
     '==========================================================================
     Const Col1 As Long = 3
     Const Col2 As Long = 4
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -8811,7 +8734,7 @@ Public Sub SwapArrayColumns_UnallocatedArr_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -8831,8 +8754,6 @@ Public Sub SwapArrayColumns_1DArr_ReturnsNull()
     '==========================================================================
     Const Col1 As Long = 3
     Const Col2 As Long = 4
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -8844,7 +8765,7 @@ Public Sub SwapArrayColumns_1DArr_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -8864,8 +8785,6 @@ Public Sub SwapArrayColumns_3DArr_ReturnsNull()
     '==========================================================================
     Const Col1 As Long = 3
     Const Col2 As Long = 4
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -8877,7 +8796,7 @@ Public Sub SwapArrayColumns_3DArr_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -8897,8 +8816,6 @@ Public Sub SwapArrayColumns_TooSmallCol1_ReturnsNull()
     '==========================================================================
     Const Col1 As Long = 2
     Const Col2 As Long = 4
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -8910,7 +8827,7 @@ Public Sub SwapArrayColumns_TooSmallCol1_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -8930,8 +8847,6 @@ Public Sub SwapArrayColumns_TooSmallCol2_ReturnsNull()
     '==========================================================================
     Const Col1 As Long = 3
     Const Col2 As Long = 2
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -8943,7 +8858,7 @@ Public Sub SwapArrayColumns_TooSmallCol2_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -8963,8 +8878,6 @@ Public Sub SwapArrayColumns_TooLargeCol1_ReturnsNull()
     '==========================================================================
     Const Col1 As Long = 5
     Const Col2 As Long = 4
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -8976,7 +8889,7 @@ Public Sub SwapArrayColumns_TooLargeCol1_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -8996,8 +8909,6 @@ Public Sub SwapArrayColumns_TooLargeCol2_ReturnsNull()
     '==========================================================================
     Const Col1 As Long = 3
     Const Col2 As Long = 5
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -9009,7 +8920,7 @@ Public Sub SwapArrayColumns_TooLargeCol2_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -9117,8 +9028,6 @@ Public Sub SwapArrayRows_NoArray_ReturnsNull()
     '==========================================================================
     Const Row1 As Long = 5
     Const Row2 As Long = 6
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -9130,7 +9039,7 @@ Public Sub SwapArrayRows_NoArray_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -9150,8 +9059,6 @@ Public Sub SwapArrayRows_UnallocatedArr_ReturnsNull()
     '==========================================================================
     Const Row1 As Long = 5
     Const Row2 As Long = 6
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -9163,7 +9070,7 @@ Public Sub SwapArrayRows_UnallocatedArr_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -9183,8 +9090,6 @@ Public Sub SwapArrayRows_1DArr_ReturnsNull()
     '==========================================================================
     Const Row1 As Long = 5
     Const Row2 As Long = 6
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -9196,7 +9101,7 @@ Public Sub SwapArrayRows_1DArr_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -9216,8 +9121,6 @@ Public Sub SwapArrayRows_3DArr_ReturnsNull()
     '==========================================================================
     Const Row1 As Long = 5
     Const Row2 As Long = 6
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -9229,7 +9132,7 @@ Public Sub SwapArrayRows_3DArr_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -9249,8 +9152,6 @@ Public Sub SwapArrayRows_TooSmallRow1_ReturnsNull()
     '==========================================================================
     Const Row1 As Long = 4
     Const Row2 As Long = 6
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -9262,7 +9163,7 @@ Public Sub SwapArrayRows_TooSmallRow1_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -9282,8 +9183,6 @@ Public Sub SwapArrayRows_TooSmallRow2_ReturnsNull()
     '==========================================================================
     Const Row1 As Long = 5
     Const Row2 As Long = 4
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -9295,7 +9194,7 @@ Public Sub SwapArrayRows_TooSmallRow2_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -9315,8 +9214,6 @@ Public Sub SwapArrayRows_TooLargeRow1_ReturnsNull()
     '==========================================================================
     Const Row1 As Long = 7
     Const Row2 As Long = 6
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -9328,7 +9225,7 @@ Public Sub SwapArrayRows_TooLargeRow1_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
@@ -9348,8 +9245,6 @@ Public Sub SwapArrayRows_TooLargeRow2_ReturnsNull()
     '==========================================================================
     Const Row1 As Long = 5
     Const Row2 As Long = 7
-    
-    Const aExpected As Variant = Null
     '==========================================================================
     
     
@@ -9361,7 +9256,7 @@ Public Sub SwapArrayRows_TooLargeRow2_ReturnsNull()
     )
     
     'Assert:
-    Assert.AreEqual aExpected, ResultArr
+    Assert.IsTrue IsNull(ResultArr)
 
 TestExit:
     Exit Sub
