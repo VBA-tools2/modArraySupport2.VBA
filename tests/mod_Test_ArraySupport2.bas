@@ -3107,6 +3107,46 @@ End Sub
 
 
 '@TestMethod("DeleteVectorElement")
+Public Sub DeleteVectorElement_RemoveElementOfStaticArrayResizeDynamicTrue_ReturnsTrueAndModifiedInputArray()
+    On Error GoTo TestFail
+
+    Dim InputArray(5 To 7) As Long
+    
+    '==========================================================================
+    Const ElementNumber As Long = 6
+    Const ResizeDynamic As Boolean = True
+    
+    Dim aExpected(5 To 7) As Long
+        aExpected(5) = 10
+        aExpected(6) = 30
+        aExpected(7) = 0
+    '==========================================================================
+    
+    
+    'Arrange:
+    InputArray(5) = 10
+    InputArray(6) = 20
+    InputArray(7) = 30
+    
+    'Act:
+    If Not modArraySupport2.DeleteVectorElement( _
+            InputArray, _
+            ElementNumber, _
+            ResizeDynamic _
+    ) Then _
+            GoTo TestFail
+    
+    'Assert:
+    Assert.SequenceEquals aExpected, InputArray
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod("DeleteVectorElement")
 Public Sub DeleteVectorElement_RemoveElementOfStaticObjectArray_ReturnsTrueAndModifiedInputArray()
     On Error GoTo TestFail
 
@@ -3412,6 +3452,45 @@ Public Sub DeleteVectorElement_RemoveOnlyElementOfDynamicObjectArrayResize_Retur
     
     'Assert:
     Assert.AreEqual aExpected, InputArray
+
+TestExit:
+    Exit Sub
+TestFail:
+    Assert.Fail "Test raised an error: #" & Err.Number & " - " & Err.Description
+End Sub
+
+
+'@TestMethod("DeleteVectorElement")
+Public Sub DeleteVectorElement_RemoveOnlyElementOfDynamicObjectArrayDontResize_ReturnsTrueAndModifiedInputArray()
+    On Error GoTo TestFail
+
+    Dim InputArray() As String
+    Dim i As Long
+    
+    '==========================================================================
+    Const ElementNumber As Long = 5
+    Const ResizeDynamic As Boolean = False
+    
+    Dim aExpected(5 To 5) As String
+    aExpected(5) = vbNullString
+    '==========================================================================
+    
+    
+    'Arrange:
+    ReDim InputArray(5 To 5)
+    InputArray(5) = "abc"
+    
+    'Act:
+    If Not modArraySupport2.DeleteVectorElement( _
+            InputArray, _
+            ElementNumber, _
+            ResizeDynamic _
+    ) Then _
+            GoTo TestFail
+    
+    'Assert:
+'    Assert.AreEqual aExpected(5), InputArray(5)
+    Assert.SequenceEquals aExpected, InputArray
 
 TestExit:
     Exit Sub
