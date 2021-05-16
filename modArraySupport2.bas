@@ -144,10 +144,6 @@ End Sub
 'a 'Long' (the decimal portion will be lost).
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 'SP: - changed order of arguments (to be consistent: "Source" first, then "Dest")
-'-----
-'called by
-'  - ConcatenateArrays
-'  - CopyArray
 Public Function AreDataTypesCompatible( _
     ByVal SourceVar As Variant, _
     ByVal DestVar As Variant _
@@ -1377,9 +1373,6 @@ End Function
 'which puts empty strings at the beginning of the array.
 'Returns -1 if an error occurred or if the entire array has no empty string.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'called by
-'  - MoveEmptyStringsToEndOfVector
-'---
 Public Function FirstNonEmptyStringIndexInVector( _
     ByVal InputArray As Variant _
         ) As Long
@@ -1679,20 +1672,6 @@ End Function
 ''True' for both allocated and unallocated arrays. This function tests whether
 'the array has actually been allocated.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'called by
-'  - ChangeBoundsOfVector
-'  - ConcatenateArrays
-'  - CopyArray
-'  - CopyVectorSubSetToVector
-'  - DataTypeOfArray
-'  - InsertElementIntoVector
-'  - IsArrayAllDefault
-'  - IsArrayAllNumeric
-'  - IsArrayDynamic
-'  - IsNumericDataType
-'  - IsVariantArrayConsistent
-'  - NumElements
-'  - SetObjectArrayToNothing
 Public Function IsArrayAllocated( _
     ByVal Arr As Variant _
         ) As Boolean
@@ -1792,8 +1771,6 @@ End Function
 'Returns 'True' if 'InputArray' is entirely objects ('Nothing' objects are
 'optionally allowed -- default it 'True', allow 'Nothing' objects).
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'called by
-'  - ReverseVectorOfObjectsInPlace
 Public Function IsArrayObjects( _
     ByRef InputArray As Variant, _
     Optional ByVal AllowNothing As Boolean = True _
@@ -2042,7 +2019,6 @@ End Function
 'Returns 'True' if the array was correctly shifted (if necessary) and 'False'
 'if an error occurred.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'---
 Public Function MoveEmptyStringsToEndOfVector( _
     ByRef InputArray As Variant _
         ) As Boolean
@@ -2095,34 +2071,6 @@ End Function
 'dynamic array has 0 dimensions.
 '(This condition can also be tested with 'Not IsArrayAllocated'.)
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'called by
-'  - ChangeBoundsOfVector
-'  - CombineTwoDArrays
-'  - CompareVectors
-'  - ConcatenateArrays
-'  - CopyArray
-'  - CopyVectorSubSetToVector
-'  - CopyNonNothingObjectsToVector
-'  - DeleteVectorElement
-'  - ExpandArray
-'  - FirstNonEmptyStringIndexInVector
-'  - GetColumn
-'  - GetRow
-'  - InsertElementIntoVector
-'  - IsVectorSorted
-'  - IsArrayObjects
-'  - IsNumericDataType
-'  - IsVariantArrayConsistent
-'  - MoveEmptyStringsToEndOfVector
-'  - NumElements
-'  - ResetVariantArrayToDefaults
-'  - ReverseVectorInPlace
-'  - ReverseVectorOfObjectsInPlace
-'  - SetObjectArrayToNothing
-'  - SwapArrayColumns
-'  - SwapArrayRows
-'  - TransposeArray
-'  - VectorsToArray
 Public Function NumberOfArrayDimensions( _
     ByVal Arr As Variant _
         ) As Long
@@ -2409,8 +2357,6 @@ End Function
 'This procedure sets 'Variable' to the appropriate default value for its data
 'type. Note that it cannot change User-Defined Types.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'called by
-'  - ResetVariantArrayToDefaults
 Public Sub SetVariableToDefault( _
     ByRef Variable As Variant _
 )
@@ -2461,7 +2407,7 @@ Attribute SetVariableToDefault.VB_ProcData.VB_Invoke_Func = " \n20"
             Case vbObject
 '---
 'TODO: this was already checked above
-                Set Variable = Nothing
+            Set Variable = Nothing
 '---
             Case vbSingle
                 Variable = CSng(0)
