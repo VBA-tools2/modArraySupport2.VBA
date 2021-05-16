@@ -38,7 +38,7 @@ Option Compare Text
 '     ChangeBoundsOfVector             --> renamed from 'ChangeBoundsOfArray'
 '     CombineTwoDArrays
 '     CompareVectors                   --> renamed from 'CompareArrays'
-'     ConcatenateArrays
+'     ConcatenateVectors               --> renamed from 'ConcatenateArrays'
 '     CopyArray                        --> changed order of arguments
 '     CopyVectorSubSetToVector         --> renamed from 'CopyArraySubSetToArray'
 '     CopyNonNothingObjectsToVector    --> renamed from 'CopyNonNothingObjectsToArray'
@@ -94,7 +94,7 @@ Public Sub AddUDFToCustomCategory()
         .MacroOptions Category:=sCategory, Macro:="ChangeBoundsOfVector"
         .MacroOptions Category:=sCategory, Macro:="CombineTwoDArrays"
         .MacroOptions Category:=sCategory, Macro:="CompareVectors"
-        .MacroOptions Category:=sCategory, Macro:="ConcatenateArrays"
+        .MacroOptions Category:=sCategory, Macro:="ConcatenateVectors"
         .MacroOptions Category:=sCategory, Macro:="CopyArray"
         .MacroOptions Category:=sCategory, Macro:="CopyVectorSubSetToVector"
         .MacroOptions Category:=sCategory, Macro:="CopyNonNothingObjectsToVector"
@@ -609,123 +609,123 @@ End Function
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-'ConcatenateArrays
-'This function appends 'ArrayToAppend' to the end of 'ResultArray', increasing
-'the size of 'ResultArray' as needed. 'ResultArray' must be a dynamic array,
-'but it need not be allocated. 'ArrayToAppend' may be either static or dynamic,
-'and if dynamic it may be unallocated. If 'ArrayToAppend' is unallocated,
-''ResultArray' is left unchanged.
+'ConcatenateVectors
+'This function appends 'VectorToAppend' to the end of 'ResultVector',
+'increasing the size of 'ResultVector' as needed. 'ResultVector' must be a
+'dynamic array, but it need not be allocated. 'VectorToAppend' may be either
+'static or dynamic, and if dynamic it may be unallocated. If 'VectorToAppend'
+'is unallocated, 'ResultVector' is left unchanged.
 '
-'The data types of 'ResultArray' and 'ArrayToAppend' must be either the same
+'The data types of 'ResultVector' and 'VectorToAppend' must be either the same
 'data type or 'compatible numeric types. A compatible numeric type is a type
 'that will not cause a loss of precision or cause an overflow. For example,
-''ReturnArray' may be 'Long', and 'ArrayToAppend' may by 'Long' or 'Integer',
+''ReturnArray' may be 'Long', and 'VectorToAppend' may by 'Long' or 'Integer',
 'but not 'Single' or 'Double' because information might be lost when converting
 'from 'Double' to 'Long' (the decimal portion would be lost).
 '
-'To skip the compatibility check and allow any variable type in 'ResultArray'
-'and 'ArrayToAppend', set the 'CompatibilityCheck' parameter to 'False'. If you
-'do this, be aware that you may loose precision and you may will get an
-'overflow error which will cause a result of 0 in that element of 'ResultArray'.
+'To skip the compatibility check and allow any variable type in 'ResultVector'
+'and 'VectorToAppend', set the 'CompatibilityCheck' parameter to 'False'. If
+'you do this, be aware that you may loose precision and you may will get an
+'overflow error which will cause a result of 0 in that element of 'ResultVector'.
 '
-'Both 'ResultArray' and 'ArrayToAppend' must be one-dimensional arrays.
+'Both 'ResultVector' and 'VectorToAppend' must be one-dimensional arrays.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-Public Function ConcatenateArrays( _
-    ByRef ResultArray As Variant, _
-    ByVal ArrayToAppend As Variant, _
+Public Function ConcatenateVectors( _
+    ByRef ResultVector As Variant, _
+    ByVal VectorToAppend As Variant, _
     Optional ByVal CompatibilityCheck As Boolean = True _
         ) As Boolean
-Attribute ConcatenateArrays.VB_ProcData.VB_Invoke_Func = " \n20"
+Attribute ConcatenateVectors.VB_ProcData.VB_Invoke_Func = " \n20"
 
     'Set the default result
-    ConcatenateArrays = False
+    ConcatenateVectors = False
     
-    If Not IsArray(ArrayToAppend) Then Exit Function
-    If Not IsArrayDynamic(ResultArray) Then Exit Function
+    If Not IsArray(VectorToAppend) Then Exit Function
+    If Not IsArrayDynamic(ResultVector) Then Exit Function
     
     'Ensure both arrays are single dimensional
     '0 indicates an unallocated array, which is allowed.
-    If NumberOfArrayDimensions(ResultArray) > 1 Then Exit Function
-    If NumberOfArrayDimensions(ArrayToAppend) > 1 Then Exit Function
+    If NumberOfArrayDimensions(ResultVector) > 1 Then Exit Function
+    If NumberOfArrayDimensions(VectorToAppend) > 1 Then Exit Function
     
-    'Ensure 'ArrayToAppend' is allocated. If 'ArrayToAppend' is not allocated,
+    'Ensure 'VectorToAppend' is allocated. If 'VectorToAppend' is not allocated,
     'we have nothing to append, so exit with a 'True' result.
-    If Not IsArrayAllocated(ArrayToAppend) Then
-        ConcatenateArrays = True
+    If Not IsArrayAllocated(VectorToAppend) Then
+        ConcatenateVectors = True
         Exit Function
     End If
     
     If CompatibilityCheck = True Then
         'Ensure the array are compatible data types
-        If Not AreDataTypesCompatible(ArrayToAppend, ResultArray) Then Exit Function
+        If Not AreDataTypesCompatible(VectorToAppend, ResultVector) Then Exit Function
         
         'If one array is an array of objects, ensure the other contains all
         'objects (or 'Nothing')
-        If VarType(ResultArray) - vbArray = vbObject Then
-            If IsArrayAllocated(ArrayToAppend) Then
+        If VarType(ResultVector) - vbArray = vbObject Then
+            If IsArrayAllocated(VectorToAppend) Then
                 Dim i As Long
-                For i = LBound(ArrayToAppend) To UBound(ArrayToAppend)
-                    If Not IsObject(ArrayToAppend(i)) Then Exit Function
+                For i = LBound(VectorToAppend) To UBound(VectorToAppend)
+                    If Not IsObject(VectorToAppend(i)) Then Exit Function
                 Next
             End If
         End If
     End If
     
-    'Get the number of elements in 'ArrayToAppend'
+    'Get the number of elements in 'VectorToAppend'
     Dim NumElementsToAdd As Long
-    NumElementsToAdd = UBound(ArrayToAppend) - LBound(ArrayToAppend) + 1
+    NumElementsToAdd = UBound(VectorToAppend) - LBound(VectorToAppend) + 1
     
-    'Get the bounds for resizing the 'ResultArray'. If ResultArray is allocated
-    'use the 'LBound' and 'UBound+1'. If 'ResultArray' is not allocated, use
-    'the 'LBound' of 'ArrayToAppend' for both the 'LBound' and 'UBound' of
-    ''ResultArray'.
-    If IsArrayAllocated(ResultArray) Then
+    'Get the bounds for resizing the 'ResultVector'. If 'ResultVector' is allocated
+    'use the 'LBound' and 'UBound+1'. If 'ResultVector' is not allocated, use
+    'the 'LBound' of 'VectorToAppend' for both the 'LBound' and 'UBound' of
+    ''ResultVector'.
+    If IsArrayAllocated(ResultVector) Then
         Dim ResultLB As Long
-        ResultLB = LBound(ResultArray)
+        ResultLB = LBound(ResultVector)
         Dim ResultUB As Long
-        ResultUB = UBound(ResultArray)
+        ResultUB = UBound(ResultVector)
         
         Dim ResultWasAllocated As Boolean
         ResultWasAllocated = True
         
-        ReDim Preserve ResultArray(ResultLB To ResultUB + NumElementsToAdd)
+        ReDim Preserve ResultVector(ResultLB To ResultUB + NumElementsToAdd)
     Else
-        ResultUB = UBound(ArrayToAppend)
+        ResultUB = UBound(VectorToAppend)
         ResultWasAllocated = False
-        ReDim ResultArray(LBound(ArrayToAppend) To UBound(ArrayToAppend))
+        ReDim ResultVector(LBound(VectorToAppend) To UBound(VectorToAppend))
     End If
     
-    '''Copy the data from 'ArrayToAppend' to 'ResultArray'.
-    'If 'ResultArray' was allocated, we have to put the data from 'ArrayToAppend'
-    'at the end of the 'ResultArray'.
+    '''Copy the data from 'VectorToAppend' to 'ResultVector'.
+    'If 'ResultVector' was allocated, we have to put the data from 'VectorToAppend'
+    'at the end of the 'ResultVector'.
     If ResultWasAllocated = True Then
         Dim AppendNdx As Long
-        AppendNdx = LBound(ArrayToAppend)
+        AppendNdx = LBound(VectorToAppend)
         
-        For i = ResultUB + 1 To UBound(ResultArray)
-            If IsObject(ArrayToAppend(AppendNdx)) Then
-                Set ResultArray(i) = ArrayToAppend(AppendNdx)
+        For i = ResultUB + 1 To UBound(ResultVector)
+            If IsObject(VectorToAppend(AppendNdx)) Then
+                Set ResultVector(i) = VectorToAppend(AppendNdx)
             Else
-                ResultArray(i) = ArrayToAppend(AppendNdx)
+                ResultVector(i) = VectorToAppend(AppendNdx)
             End If
             AppendNdx = AppendNdx + 1
-            If AppendNdx > UBound(ArrayToAppend) Then
+            If AppendNdx > UBound(VectorToAppend) Then
                 Exit For
             End If
         Next
-    'If 'ResultArray' was not allocated, we simply copy element by element from
-    ''ArrayToAppend' to 'ResultArray'.
+    'If 'ResultVector' was not allocated, we simply copy element by element from
+    ''VectorToAppend' to 'ResultVector'.
     Else
-        For i = LBound(ResultArray) To UBound(ResultArray)
-            If IsObject(ArrayToAppend(i)) Then
-                Set ResultArray(i) = ArrayToAppend(i)
+        For i = LBound(ResultVector) To UBound(ResultVector)
+            If IsObject(VectorToAppend(i)) Then
+                Set ResultVector(i) = VectorToAppend(i)
             Else
-                ResultArray(i) = ArrayToAppend(i)
+                ResultVector(i) = VectorToAppend(i)
             End If
         Next
     End If
     
-    ConcatenateArrays = True
+    ConcatenateVectors = True
 
 End Function
 
