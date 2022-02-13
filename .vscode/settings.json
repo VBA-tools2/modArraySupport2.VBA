@@ -1,0 +1,14 @@
+{
+    "cSpell.ignoreWords": [
+        "cpearson",
+        "defg",
+        "dont",
+        "id",
+        "predeclared",
+        // "resetted",      <-- rename
+        "vb"
+    ],
+    "cSpell.words": [
+        "rubberduck"
+    ]
+}

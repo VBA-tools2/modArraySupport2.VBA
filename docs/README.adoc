@@ -1,0 +1,120 @@
+
+= modArraySupport2.VBA
+:experimental:
+:icons:         // not sure if this is needed
+:uri-commit-messages: https://www.conventionalcommits.org
+:uri-cpearson-modArraySupport: http://www.cpearson.com/excel/vbaarrays.htm
+:uri-GitHub-FirstContribution: https://github.com/firstcontributions/first-contributions
+:uri-license: https://choosealicense.com/licenses/mit/
+:uri-rubberduck: https://rubberduckvba.com/
+:uri-UnitTests: https://en.wikipedia.org/wiki/Unit_testing
+
+Excel VBA module with functions for (VBA) arrays.
+
+This is essentially a rewrite of Charles H. Pearson's {uri-cpearson-modArraySupport}.
+Thank you for the great work!
+
+This repository exists to bundle and publish all improvements made to the original module.
+
+== Features
+
+* (hmm, do _you_ have a good idea for this point?)
+
+== Prerequisites / Dependencies
+
+None.
+
+== How to install / Getting started
+
+Add the modules in the link:../src[src] folder to your project.
+Yes, its that simple.
+
+== Usage / Show it in action
+
+A typical use case to use the functions is when you write functions that need a _vector_ and should work with data from VBA and/or from a worksheet.
+In VBA you of course directly create the (1D) vector, but when reading vector data from a worksheet, you get a (2D) _array_/a matrix.
+Here is the code I usually use to get the vector, where 5 functions of this project are used.
+(This is used e.g. in `+modPolynomReg+`.)
+
+[source,vba]
+----
+Private Function ExtractVector( _
+    ByVal Source As Variant, _
+    ByRef DestVector As Variant _
+        ) As Boolean
+
+    Select Case NumberOfArrayDimensions(Source)
+        Case 2
+            If UBound(Source, 1) > 1 And UBound(Source, 2) = 1 Then
+                If Not GetColumn(Source, DestVector, 1) Then Exit Function
+            ElseIf UBound(Source, 1) = 1 And UBound(Source, 2) > 1 Then
+                If Not GetRow(Source, DestVector, 1) Then Exit Function
+            Else
+                Exit Function
+            End If
+        Case 1
+            If Not CopyArray(Source, DestVector, False) Then Exit Function
+            Dim N As Long
+            N = UBound(DestVector) - LBound(DestVector) + 1
+            If Not ChangeBoundsOfVector(DestVector, 1, N) Then Exit Function
+        Case 0
+            ReDim DestVector(0)
+            DestVector(0) = Source
+        Case Else
+    End Select
+
+    ExtractVector = True
+
+End Function
+----
+
+== Running Tests
+
+Yes, {uri-UnitTests}[Unit Tests] in Excel *are* possible.
+For that you need to have the awesome {uri-rubberduck}[Rubberduck] AddIn installed (and enabled).
+
+. Open the Visual Basic Editor (kbd:[Alt+F11])
+. Add test modules
+  * Code Explorer (of Rubberduck)
+    .. Show up the Code Explorer (kbd:[Ctrl+R])
+    .. Select the project (or an item of that) to which you want to add the test files
+    .. Right-click in the Code Explorer and click: menu:Add[Existing files...]
+    .. Select the file(s) in the link:../tests[tests] folder and click Open
+  * Project Explorer
+    .. Show up the Project Explorer (kbd:[Ctrl+R])
+       (Hit it twice if the Code Explorer shows up first)
+    .. Drag the files in the link:../tests[tests] folder (in an Explorer window) and drop them on the Project in the Project Explorer to which you want to add the tests
+. Check that the files from the link:../src[src] folder are present in that project as well.
+  Otherwise tests will/should fail.
+. Open Test Explorer (menu:Rubberduck[Unit Tests > Test Explorer])
+. Run the tests by clicking: menu:Run[All Tests]
+
+== Used By
+
+This project is used by (at least) these projects:
+
+* <https://github.com/VBA-tools2/modPolynomReg.VBA>
+
+If you know more, I'll be happy to add them here.
+
+== Known issues and limitations
+
+None that I am aware of.
+
+== Contributing
+
+All contributions are highly welcome!!
+
+If you are new to git/GitHub, please have a look at {uri-GitHub-FirstContribution} where you will find a lot of useful information for beginners.
+
+I recently was pointed to {uri-commit-messages}.
+which sounds very promising. I'll use them from now on too (and hopefully don't forget it in a hurry).
+
+== FAQ
+
+. What are the `+'@...+` comments good for in the code?
+  You should really have a look at the awesome {uri-rubberduck}[Rubberduck] project!
+
+== License
+
+{uri-license}[MIT]
